@@ -17,7 +17,6 @@ export function SidebarBanner({
 }) {
   const tabs = useMemo(() => {
     const sidebarTabs = getSidebarTabs(tree);
-    // Add "所有文档" tab at the beginning
     return [
       {
         title: '所有专业',
