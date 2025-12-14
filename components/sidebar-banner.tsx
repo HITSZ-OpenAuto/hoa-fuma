@@ -1,6 +1,6 @@
 'use client';
 
-import { YearSelector } from '@/app/ui/year-selector';
+import { YearSelector } from '@/components/year-selector';
 import { SidebarTabsDropdown } from 'fumadocs-ui/components/sidebar/tabs/dropdown';
 import { useMemo } from 'react';
 import { getSidebarTabs } from 'fumadocs-ui/utils/get-sidebar-tabs';
