@@ -10,10 +10,8 @@ import {
   FileIcon,
   FileSpreadsheetIcon,
   FileTextIcon,
-  GridIcon,
   HeadphonesIcon,
   ImageIcon,
-  ListIcon,
   SearchIcon,
   UploadCloudIcon,
   UploadIcon,
@@ -528,7 +526,6 @@ export default function FileUpload() {
   // Tunables
   const maxSize = 20 * 1024 * 1024 // 20MB
   const maxFiles = 20
-  const [view, setView] = React.useState<"list" | "grid">("list")
   const [query, setQuery] = React.useState("")
   const [sortBy, setSortBy] = React.useState<"name" | "type" | "size">("name")
   const [sortDir, setSortDir] = React.useState<"asc" | "desc">("asc")
@@ -646,31 +643,6 @@ export default function FileUpload() {
             />
           </div>
 
-          <div className="ms-1 flex items-center gap-1">
-            <Button
-              variant={view === "list" ? "default" : "outline"}
-              size="icon"
-              className="size-8"
-              onClick={() => setView("list")}
-              aria-pressed={view === "list"}
-              aria-label="List view"
-              title="List view"
-            >
-              <ListIcon className="size-4" />
-            </Button>
-            <Button
-              variant={view === "grid" ? "default" : "outline"}
-              size="icon"
-              className="size-8"
-              onClick={() => setView("grid")}
-              aria-pressed={view === "grid"}
-              aria-label="Grid view"
-              title="Grid view"
-            >
-              <GridIcon className="size-4" />
-            </Button>
-          </div>
-
           <div className="ms-2 hidden sm:flex gap-2">
             <Button variant="outline" size="sm" onClick={openFileDialog}>
               <UploadCloudIcon className="-ms-0.5 size-3.5 opacity-60" aria-hidden="true" />
@@ -724,9 +696,8 @@ export default function FileUpload() {
             </div>
           </div>
 
-          {view === "list" ? (
-            <div className="bg-background overflow-hidden rounded-md border">
-              <Table>
+          <div className="bg-background overflow-hidden rounded-md border">
+            <Table>
                 <TableHeader className="text-xs">
                   <TableRow className="bg-muted/50">
                     <TableHead className="h-9 w-10 py-2">
@@ -806,92 +777,6 @@ export default function FileUpload() {
                 </TableBody>
               </Table>
             </div>
-          ) : (
-            // Grid view
-            <div
-              className="bg-background grid grid-cols-2 gap-3 rounded-md border p-3 sm:grid-cols-3 lg:grid-cols-4"
-              role="list"
-              aria-label="Files grid"
-            >
-              {filtered.map((entry: UploadEntry) => {
-                const name = getName(entry)
-                const type = getType(entry)
-                const size = getSize(entry)
-                const url = getPreviewUrl(entry)
-                const isImage = type.startsWith("image/")
-                const isSelected = selected.has(entry.id)
-
-                return (
-                  <div
-                    key={entry.id}
-                    role="listitem"
-                    className="border-input data-[selected=true]:ring-ring/60 group relative flex flex-col overflow-hidden rounded-md border"
-                    data-selected={isSelected || undefined}
-                  >
-                    {/* Selection checkbox */}
-                    <label className="bg-background/80 absolute left-2 top-2 z-10 inline-flex items-center gap-1 rounded px-1.5 py-1">
-                      <input
-                        type="checkbox"
-                        className="accent-foreground size-3.5"
-                        checked={isSelected}
-                        onChange={() => toggleOne(entry.id)}
-                        aria-label={`Select ${name}`}
-                      />
-                    </label>
-
-                    {/* Preview */}
-                    <div className="relative h-28 w-full overflow-hidden bg-muted/40">
-                      {isImage && url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={url}
-                          alt={name}
-                          className="h-full w-full object-cover"
-                          draggable={false}
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center">
-                          {getFileIcon(entry)}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Meta + actions */}
-                    <div className="flex flex-1 flex-col gap-1 p-2">
-                      <div className="truncate text-[13px] font-medium" title={name}>
-                        {name}
-                      </div>
-                      <div className="text-muted-foreground text-[12px]">
-                        {niceSubtype(type)} · {formatBytes(size)}
-                      </div>
-                      <div className="mt-auto flex items-center justify-end gap-1">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="size-8"
-                          aria-label={`Open ${name}`}
-                          onClick={() => url && window.open(url, "_blank", "noopener,noreferrer")}
-                          title="Open"
-                        >
-                          <ExternalLinkIcon className="size-4" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="size-8"
-                          aria-label={`Download ${name}`}
-                          onClick={() => downloadOne(entry)}
-                          title="Download"
-                        >
-                          <DownloadIcon className="size-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )}
         </>
       ) : (
         <p className="text-muted-foreground text-center text-sm">
