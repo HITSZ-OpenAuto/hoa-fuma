@@ -4,7 +4,6 @@ import * as React from "react"
 import {
   AlertCircleIcon,
   CheckIcon,
-  CopyIcon,
   DownloadIcon,
   ExternalLinkIcon,
   FileArchiveIcon,
@@ -16,9 +15,6 @@ import {
   ImageIcon,
   ListIcon,
   SearchIcon,
-  SortAscIcon,
-  SortDescIcon,
-  Trash2Icon,
   UploadCloudIcon,
   UploadIcon,
   VideoIcon,
@@ -437,7 +433,7 @@ const initialFiles = [
   {
     name: "report.xlsx",
     size: 352873,
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    type: "xlsx",
     url: "https://originui.com",
     id: "report.xlsx-1744638436563-8u5xuls",
   },
@@ -547,8 +543,6 @@ export default function FileUpload() {
       handleDragOver,
       handleDrop,
       openFileDialog,
-      clearFiles,
-      getInputProps,
     },
   ] = useFileUpload({
     multiple: true,
@@ -627,16 +621,13 @@ export default function FileUpload() {
   }
 
   return (
-    <div className="flex flex-col gap-3 max-w-4xl mx-auto">
+    <div className="flex flex-col gap-3 max-w-4xl mx-auto w-full">
       {/* -- Top toolbar -- */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <h3 className="text-sm font-medium">
             Files <span className="text-muted-foreground">({files.length})</span>
           </h3>
-          <span className="text-muted-foreground text-xs">
-            Total: {formatBytes(totalSize)}
-          </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -645,7 +636,7 @@ export default function FileUpload() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by name, type, or extension…"
+              placeholder="搜索"
               className="bg-background ring-offset-background focus-visible:ring-ring placeholder:text-muted-foreground h-8 w-56 rounded-md border px-7 text-[13px] outline-none focus-visible:ring-[2px]"
               aria-label="Search files"
             />
@@ -653,37 +644,6 @@ export default function FileUpload() {
               className="text-muted-foreground pointer-events-none absolute left-2 top-1/2 size-3 -translate-y-1/2 opacity-70"
               aria-hidden="true"
             />
-          </div>
-
-          <div className="flex items-center gap-1">
-            <label htmlFor="sortby" className="text-muted-foreground sr-only">
-              Sort by
-            </label>
-            <select
-              id="sortby"
-              className="bg-background h-8 rounded-md border px-2 text-[13px]"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              aria-label="Sort files"
-            >
-              <option value="name">Name</option>
-              <option value="type">Type</option>
-              <option value="size">Size</option>
-            </select>
-
-            <Button
-              variant="outline"
-              size="icon"
-              className="size-8"
-              onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
-              aria-label={`Toggle sort direction to ${sortDir === "asc" ? "descending" : "ascending"}`}
-            >
-              {sortDir === "asc" ? (
-                <SortAscIcon className="size-4" />
-              ) : (
-                <SortDescIcon className="size-4" />
-              )}
-            </Button>
           </div>
 
           <div className="ms-1 flex items-center gap-1">
@@ -714,46 +674,9 @@ export default function FileUpload() {
           <div className="ms-2 hidden sm:flex gap-2">
             <Button variant="outline" size="sm" onClick={openFileDialog}>
               <UploadCloudIcon className="-ms-0.5 size-3.5 opacity-60" aria-hidden="true" />
-              Add files
+              上传文件
             </Button>
           </div>
-        </div>
-      </div>
-
-      {/* -- Drop area (always shown) -- */}
-      <div
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        data-dragging={isDragging || undefined}
-        className="border-input data-[dragging=true]:bg-accent/50 has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 rounded-xl border border-dashed p-3 transition-colors has-[input:focus]:ring-[3px]"
-        aria-label="Drop files here or use the select button to upload"
-      >
-        <input
-          {...getInputProps({
-            // You can filter accepted types here:
-            // accept: "image/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.txt",
-            "aria-label": "Upload files",
-          })}
-          className="sr-only"
-        />
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <div className="bg-background me-1 flex size-9 shrink-0 items-center justify-center rounded-full border">
-              <FileIcon className="size-4 opacity-60" aria-hidden="true" />
-            </div>
-            <div className="text-xs">
-              <p className="font-medium">Drop files to upload</p>
-              <p className="text-muted-foreground">
-                Up to {maxFiles} files · {formatBytes(maxSize)} per file
-              </p>
-            </div>
-          </div>
-          <Button variant="outline" size="sm" onClick={openFileDialog}>
-            <UploadIcon className="-ms-1 size-3.5 opacity-60" aria-hidden="true" />
-            Select files
-          </Button>
         </div>
       </div>
 
@@ -796,7 +719,7 @@ export default function FileUpload() {
                 title={noneSelected ? "Select files to download" : "Download selected"}
               >
                 <DownloadIcon className="-ms-0.5 size-3.5 opacity-60" aria-hidden="true" />
-                Download selected
+                批量下载
               </Button>
             </div>
           </div>
@@ -809,10 +732,10 @@ export default function FileUpload() {
                     <TableHead className="h-9 w-10 py-2">
                       <span className="sr-only">Select</span>
                     </TableHead>
-                    <TableHead className="h-9 py-2">Name</TableHead>
-                    <TableHead className="h-9 py-2">Type</TableHead>
-                    <TableHead className="h-9 py-2">Size</TableHead>
-                    <TableHead className="h-9 w-0 py-2 text-right">Actions</TableHead>
+                    <TableHead className="h-9 py-2">文件名</TableHead>
+                    <TableHead className="h-9 py-2">最后修改日期</TableHead>
+                    <TableHead className="h-9 py-2">文件大小</TableHead>
+                    <TableHead className="h-9 w-0 py-2 text-right">操作</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody className="text-[13px]">
