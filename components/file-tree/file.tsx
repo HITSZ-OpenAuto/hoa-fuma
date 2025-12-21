@@ -41,7 +41,7 @@ export function File({
         )}
       </TableCell>
       <TableCell className="py-2 font-medium">
-        <div className="flex items-center gap-2" style={{ paddingLeft: `${level * 1.5}rem` }}>
+        <div className="flex items-center gap-2" style={{ paddingLeft: `${Math.max(0, level - 1) * 1.5}rem` }}>
           <span className="shrink-0">{icon}</span>
           <span className="truncate">{name}</span>
         </div>
