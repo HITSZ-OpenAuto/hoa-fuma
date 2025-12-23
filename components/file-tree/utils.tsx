@@ -28,6 +28,27 @@ export function collectIds(nodes: ReactNode, parentPath: string = ""): string[] 
   return ids
 }
 
+export function collectFilesWithUrls(nodes: ReactNode, parentPath: string = ""): { path: string, url: string }[] {
+  const files: { path: string, url: string }[] = []
+  Children.forEach(nodes, (child) => {
+    if (!isValidElement(child)) return
+    const element = child as ReactElement<{ name?: string; url?: string; children?: ReactNode }>
+    
+    const name = element.props.name
+    if (!name) return
+
+    const fullPath = parentPath ? `${parentPath}/${name}` : name
+    if (element.props.url) {
+      files.push({ path: fullPath, url: element.props.url })
+    }
+    
+    if (element.props.children) {
+      files.push(...collectFilesWithUrls(element.props.children, fullPath))
+    }
+  })
+  return files
+}
+
 export function hasMatch(nodes: ReactNode, query: string): boolean {
   if (!query) return true
   const normalizedQuery = query.toLowerCase()
