@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface CircularProgressProps {
   progress: number;
   size?: number;
@@ -7,12 +5,12 @@ interface CircularProgressProps {
   className?: string;
 }
 
-export const CircularProgress: React.FC<CircularProgressProps> = ({
+export function CircularProgress({
   progress,
   size = 16,
   strokeWidth = 2,
   className = '',
-}) => {
+}: CircularProgressProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (progress / 100) * circumference;
