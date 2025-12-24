@@ -67,6 +67,16 @@ export function hasMatch(nodes: ReactNode, query: string): boolean {
   return match
 }
 
+export function getAcceleratedUrl(url: string) {
+  if (!url) return url
+  const isExcluded = url.endsWith(".docx") || url.endsWith(".pptx") || url.endsWith(".xlsx")
+  if (isExcluded) return url
+
+  let newUrl = url.replace("gh.hoa.moe/github.com", "gitea.osa.moe")
+  newUrl = newUrl.replace("/raw/", "/raw/branch/")
+  return newUrl
+}
+
 export function getFileIcon(name: string, type: string = "") {
   const ext = name.split(".").pop()?.toLowerCase() || ""
 

@@ -8,6 +8,7 @@ interface FileTreeContextValue {
   selectBatch: (ids: string[], selected: boolean) => void
   isSelectable: boolean
   searchQuery: string
+  isAccelerated: boolean
 }
 
 export const FileTreeContext = createContext<FileTreeContextValue>({
@@ -18,6 +19,7 @@ export const FileTreeContext = createContext<FileTreeContextValue>({
   selectBatch: () => {},
   isSelectable: false,
   searchQuery: "",
+  isAccelerated: false,
 })
 
 export function useFileTree() {

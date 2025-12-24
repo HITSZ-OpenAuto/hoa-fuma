@@ -2,7 +2,7 @@
 
 import { TableCell, TableRow } from "@/components/ui/table"
 import { useFileTree } from "./ctx"
-import { getFileIcon, formatBytes } from "./utils"
+import { getFileIcon, formatBytes, getAcceleratedUrl } from "./utils"
 import { ExternalLinkIcon, DownloadIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CircularProgress } from "@/components/ui/circular-progress"
@@ -23,21 +23,23 @@ export function File({
   url?: string,
   type?: string
 }) {
-  const { level, path, selected, toggleSelect, isSelectable, searchQuery } = useFileTree()
+  const { level, path, selected, toggleSelect, isSelectable, searchQuery, isAccelerated } = useFileTree()
   const [isDownloading, setIsDownloading] = useState(false)
   const [progress, setProgress] = useState(0)
   const icon = getFileIcon(name, type)
   const fullPath = path ? `${path}/${name}` : name
   const isSelected = selected.has(fullPath)
 
+  const finalUrl = url && isAccelerated ? getAcceleratedUrl(url) : url
+
   const handleDownload = async (e: React.MouseEvent) => {
-    if (!url) return
+    if (!finalUrl) return
     e.preventDefault()
     setIsDownloading(true)
     setProgress(0)
 
     try {
-      await downloadSingleFile(url, name, (p) => setProgress(p))
+      await downloadSingleFile(finalUrl, name, (p) => setProgress(p))
     } catch (error) {
       console.error("Download failed:", error)
       alert("下载失败，请重试")
@@ -80,11 +82,11 @@ export function File({
         {size ? formatBytes(size) : "-"}
       </TableCell>
       <TableCell className="py-2 text-right whitespace-nowrap">
-        {url && (
+        {finalUrl && (
             <>
               <Button variant="ghost" size="icon-sm" asChild>
                 <Link
-                    href={url}
+                    href={`https://prev.hoa.moe?file=${encodeURI(finalUrl)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                 >

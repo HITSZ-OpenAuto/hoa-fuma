@@ -19,7 +19,7 @@ export function Folder({
   date?: string,
   size?: number
 }) {
-  const { level, path, selected, toggleSelect, selectBatch, isSelectable, searchQuery } = useFileTree()
+  const { level, path, selected, toggleSelect, selectBatch, isSelectable, searchQuery, isAccelerated } = useFileTree()
   const [isOpen, setIsOpen] = useState(defaultOpen === true || defaultOpen === "true")
   
   const fullPath = path ? `${path}/${name}` : name
@@ -53,7 +53,8 @@ export function Folder({
       toggleSelect, 
       selectBatch, 
       isSelectable,
-      searchQuery: selfMatch ? "" : searchQuery 
+      searchQuery: selfMatch ? "" : searchQuery,
+      isAccelerated
     }}>
       <TableRow 
         className="hover:bg-muted/50 cursor-pointer h-12" 

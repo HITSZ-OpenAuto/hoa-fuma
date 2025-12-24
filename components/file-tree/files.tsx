@@ -9,18 +9,21 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ReactNode, useState, Children, isValidElement, useMemo, ReactElement, useEffect, useRef } from "react"
-import { SearchIcon, UploadCloudIcon, DownloadIcon } from "lucide-react"
+import { SearchIcon, UploadCloudIcon, DownloadIcon, ZapIcon } from "lucide-react"
 import { FileTreeContext } from "./ctx"
-import { collectIds, hasMatch, collectFilesWithUrls } from "./utils"
+import { collectIds, hasMatch, collectFilesWithUrls, getAcceleratedUrl } from "./utils"
 import { Button } from "@/components/ui/button"
 import { CircularProgress } from "@/components/ui/circular-progress"
 import { downloadBatchFiles } from "@/lib/download"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 
 export function Files({ children, className }: { children: ReactNode, className?: string }) {
   const [query, setQuery] = useState("")
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadProgress, setDownloadProgress] = useState(0)
+  const [isAccelerated, setIsAccelerated] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
 
   const allIds = useMemo(() => collectIds(children), [children])
@@ -72,7 +75,12 @@ export function Files({ children, className }: { children: ReactNode, className?
 
     try {
       const allFiles = collectFilesWithUrls(children)
-      const selectedFiles = allFiles.filter(file => selected.has(file.path))
+      const selectedFiles = allFiles
+        .filter(file => selected.has(file.path))
+        .map(file => ({
+          ...file,
+          url: isAccelerated ? getAcceleratedUrl(file.url) : file.url
+        }))
 
       if (selectedFiles.length === 0) {
         alert("请选择要下载的文件")
@@ -135,6 +143,22 @@ export function Files({ children, className }: { children: ReactNode, className?
             />
           </div>
 
+          <div className="flex items-center gap-1.5 px-2.5 h-8 rounded-md bg-blue-50/50 hover:bg-blue-100/50 transition-colors border border-blue-100/50">
+            <Label 
+              htmlFor="accelerate-mode" 
+              className={`flex items-center gap-1 cursor-pointer whitespace-nowrap transition-colors ${isAccelerated ? 'text-blue-600' : 'text-muted-foreground'}`}
+            >
+              <ZapIcon className={`size-4 transition-colors ${isAccelerated ? 'fill-blue-600 text-blue-600' : ''}`} />
+              校园网加速
+            </Label>
+            <Switch
+              id="accelerate-mode"
+              checked={isAccelerated}
+              onCheckedChange={setIsAccelerated}
+              className="scale-75 data-[state=checked]:bg-blue-600"
+            />
+          </div>
+
           <div className="ms-2 hidden sm:flex gap-2">
             <Button variant="outline" size="sm">
               <UploadCloudIcon />
@@ -180,7 +204,7 @@ export function Files({ children, className }: { children: ReactNode, className?
             </TableRow>
           </TableHeader>
           <TableBody className="text-[13px]">
-            <FileTreeContext.Provider value={{ level: 0, path: "", selected, toggleSelect, selectBatch, isSelectable: true, searchQuery: query }}>
+            <FileTreeContext.Provider value={{ level: 0, path: "", selected, toggleSelect, selectBatch, isSelectable: true, searchQuery: query, isAccelerated }}>
               {matches ? children : (
                 <TableRow>
                   <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
