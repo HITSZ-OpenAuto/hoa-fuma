@@ -101,9 +101,9 @@ export function Files({ children, className }: { children: ReactNode, className?
   }
 
   return (
-    <div className={cn("flex flex-col gap-3 w-full not-prose", className)}>
-      <div className="flex flex-wrap items-center justify-end gap-2">
-        <div className="flex flex-wrap items-center gap-2">
+    <div className={cn("flex flex-col gap-4 w-full not-prose", className)}>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
           <div className="relative">
             <input
               type="text"
@@ -118,13 +118,20 @@ export function Files({ children, className }: { children: ReactNode, className?
               aria-hidden="true"
             />
           </div>
+        </div>
 
-          <div className="flex items-center gap-1.5 px-2.5 h-8 rounded-md bg-blue-50/50 hover:bg-blue-100/50 transition-colors border border-blue-100/50">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className={cn(
+            "flex items-center gap-2 px-2.5 h-8 rounded-md transition-all border",
+            isAccelerated 
+              ? "bg-blue-500/5 border-blue-500/20 text-blue-600" 
+              : "border-input text-muted-foreground bg-muted/50 hover:bg-background"
+          )}>
+            <ZapIcon className={cn("size-4 transition-transform")} />
             <Label 
               htmlFor="accelerate-mode" 
-              className={`flex items-center gap-1 cursor-pointer whitespace-nowrap transition-colors ${isAccelerated ? 'text-blue-600' : 'text-muted-foreground'}`}
+              className="text-[13px] font-medium cursor-pointer whitespace-nowrap"
             >
-              <ZapIcon className={`size-4 transition-colors ${isAccelerated ? 'fill-blue-600 text-blue-600' : ''}`} />
               校园网加速
             </Label>
             <Switch
@@ -135,27 +142,31 @@ export function Files({ children, className }: { children: ReactNode, className?
             />
           </div>
 
-          <div className="ms-2 hidden sm:flex gap-2">
-            <Button variant="outline" size="sm">
-              <UploadCloudIcon />
-              上传文件
+          <div className="hidden sm:flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="h-8 rounded-md border-input hover:bg-muted/50 px-3"
+            >
+              <UploadCloudIcon className="size-4 text-muted-foreground" />
+              <span className="text-[13px]">上传文件</span>
             </Button>
           </div>
-          <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={selected.size === 0 || isDownloading}
-                onClick={handleBatchDownload}
-              >
-                {isDownloading ? (
-                  <CircularProgress progress={downloadProgress} size={16} />
-                ) : (
-                  <DownloadIcon />
-                )}
-                批量下载
-              </Button>
-          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 rounded-md border-input hover:bg-muted/50 px-3"
+            disabled={selected.size === 0 || isDownloading}
+            onClick={handleBatchDownload}
+          >
+            {isDownloading ? (
+              <CircularProgress progress={downloadProgress} size={16} />
+            ) : (
+              <DownloadIcon className={cn("size-4 text-muted-foreground")} />
+            )}
+            <span className="text-[13px]">批量下载</span>
+          </Button>
         </div>
       </div>
 
