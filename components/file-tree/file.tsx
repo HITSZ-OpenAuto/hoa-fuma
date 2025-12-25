@@ -77,10 +77,10 @@ export function File({
         </div>
       </TableCell>
       <TableCell className="text-muted-foreground py-2">
-        {type ? type.toUpperCase() : date}
+        {size ? formatBytes(size) : "-"}
       </TableCell>
       <TableCell className="text-muted-foreground py-2">
-        {size ? formatBytes(size) : "-"}
+        {type ? type.toUpperCase() : date}
       </TableCell>
       <TableCell className="py-2 text-right whitespace-nowrap">
         {finalUrl && (

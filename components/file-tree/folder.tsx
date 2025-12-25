@@ -81,10 +81,10 @@ export function Folder({
           </div>
         </TableCell>
         <TableCell className="text-muted-foreground py-2">
-            {date}
+            {size ? formatBytes(size) : "-"}
         </TableCell>
         <TableCell className="text-muted-foreground py-2">
-            {size ? formatBytes(size) : "-"}
+            {date}
         </TableCell>
         <TableCell className="py-2 text-right whitespace-nowrap">
         </TableCell>

@@ -197,8 +197,8 @@ export function Files({ children, className, url }: { children: ReactNode, class
                 />
               </TableHead>
               <TableHead className="h-9 py-2">文件名</TableHead>
-              <TableHead className="h-9 py-2">最后修改日期</TableHead>
               <TableHead className="h-9 py-2">文件大小</TableHead>
+              <TableHead className="h-9 py-2">最后修改日期</TableHead>
               <TableHead className="h-9 w-0 py-2 text-right">操作</TableHead>
             </TableRow>
           </TableHeader>
