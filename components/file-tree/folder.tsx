@@ -4,7 +4,7 @@ import { TableCell, TableRow } from "@/components/ui/table"
 import { Folder as FolderIcon, FolderOpen } from "lucide-react"
 import { useState, ReactNode, useMemo, useEffect } from "react"
 import { FileTreeContext, useFileTree } from "./ctx"
-import { formatBytes, collectIds, hasMatch } from "./utils"
+import { formatBytes } from "./utils"
 
 export function Folder({ 
   name, 
@@ -19,30 +19,43 @@ export function Folder({
   date?: string,
   size?: number
 }) {
-  const { level, path, selected, toggleSelect, selectBatch, isSelectable, searchQuery, isAccelerated } = useFileTree()
+  const { 
+    level, 
+    path, 
+    selected, 
+    toggleSelect, 
+    selectBatch, 
+    isSelectable, 
+    searchQuery, 
+    isAccelerated,
+    getMetadata
+  } = useFileTree()
+  
   const [isOpen, setIsOpen] = useState(defaultOpen === true || defaultOpen === "true")
   
   const fullPath = path ? `${path}/${name}` : name
-  const allChildIds = useMemo(() => collectIds(children, fullPath), [children, fullPath])
-  const isSelected = selected.has(fullPath)
+  
+  const { allIds, hasMatch } = useMemo(() => 
+    getMetadata(children, fullPath), 
+    [children, fullPath, getMetadata]
+  )
 
-  const selfMatch = searchQuery ? name.toLowerCase().includes(searchQuery.toLowerCase()) : true
-  const childMatch = useMemo(() => hasMatch(children, searchQuery), [children, searchQuery])
+  const isSelected = selected.has(fullPath)
+  const isSelfMatch = searchQuery ? name.toLowerCase().includes(searchQuery.toLowerCase()) : true
 
   useEffect(() => {
-    if (searchQuery && childMatch) {
+    if (searchQuery && hasMatch && !isSelfMatch) {
       setIsOpen(true)
     }
-  }, [searchQuery, childMatch])
+  }, [searchQuery, hasMatch, isSelfMatch])
 
-  if (searchQuery && !selfMatch && !childMatch) {
+  if (!hasMatch && !isSelfMatch) {
     return null
   }
   
-  const handleSelect = () => {
-    const shouldSelect = !isSelected
-    // Select/deselect folder and all children
-    selectBatch([fullPath, ...allChildIds], shouldSelect)
+  const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation()
+    selectBatch([fullPath, ...allIds], e.target.checked)
   }
 
   return (
@@ -53,22 +66,24 @@ export function Folder({
       toggleSelect, 
       selectBatch, 
       isSelectable,
-      searchQuery: selfMatch ? "" : searchQuery,
-      isAccelerated
+      searchQuery: isSelfMatch ? "" : searchQuery,
+      isAccelerated,
+      getMetadata
     }}>
       <TableRow 
         className="hover:bg-muted/50 cursor-pointer h-12" 
         onClick={() => setIsOpen(!isOpen)}
         data-selected={isSelected || undefined}
       >
-        <TableCell className="py-2 w-10" onClick={(e) => e.stopPropagation()}>
+        <TableCell className="w-10 py-2">
           {isSelectable && (
-            <div className="flex items-center h-full">
+            <div className="flex items-center">
               <input
                 type="checkbox"
                 className="accent-foreground size-3.5"
                 checked={isSelected}
                 onChange={handleSelect}
+                onClick={(e) => e.stopPropagation()}
                 aria-label={`Select ${name}`}
               />
             </div>
@@ -83,13 +98,12 @@ export function Folder({
           </div>
         </TableCell>
         <TableCell className="text-muted-foreground py-2">
-            {size ? formatBytes(size) : "-"}
+          {size ? formatBytes(size) : "-"}
         </TableCell>
         <TableCell className="text-muted-foreground py-2">
-            {date}
+          {date}
         </TableCell>
-        <TableCell className="py-2 text-right whitespace-nowrap">
-        </TableCell>
+        <TableCell className="py-2 text-right" />
       </TableRow>
       {isOpen && children}
     </FileTreeContext.Provider>

@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react"
+import { TreeMetadata } from "./utils"
 
 interface FileTreeContextValue {
   level: number
@@ -9,6 +10,8 @@ interface FileTreeContextValue {
   isSelectable: boolean
   searchQuery: string
   isAccelerated: boolean
+  // New helper to avoid redundant traversals
+  getMetadata: (nodes: React.ReactNode, path: string) => TreeMetadata
 }
 
 export const FileTreeContext = createContext<FileTreeContextValue>({
@@ -20,6 +23,7 @@ export const FileTreeContext = createContext<FileTreeContextValue>({
   isSelectable: false,
   searchQuery: "",
   isAccelerated: false,
+  getMetadata: () => ({ allIds: [], files: [], hasMatch: true }),
 })
 
 export function useFileTree() {

@@ -8,11 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ReactNode, useState, useMemo, useEffect, useRef } from "react"
+import { ReactNode, useState, useMemo, useEffect, useRef, useCallback } from "react"
 import { SearchIcon, UploadCloudIcon, DownloadIcon, ZapIcon, HardDrive } from "lucide-react"
 import { FileTreeContext } from "./ctx"
 import { cn } from "@/lib/utils"
-import { collectIds, hasMatch, collectFilesWithUrls, getAcceleratedUrl } from "./utils"
+import { getTreeMetadata, getAcceleratedUrl } from "./utils"
 import { Button } from "@/components/ui/button"
 import { CircularProgress } from "@/components/ui/circular-progress"
 import { downloadBatchFiles } from "@/lib/download"
@@ -28,14 +28,13 @@ export function Files({ children, className, url }: { children: ReactNode, class
   const [isAccelerated, setIsAccelerated] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
 
-  const allIds = useMemo(() => collectIds(children), [children])
+  const { allIds, files, hasMatch } = useMemo(() => 
+    getTreeMetadata(children, query), 
+    [children, query]
+  )
+
   const isAllSelected = allIds.length > 0 && allIds.every(id => selected.has(id))
   const isIndeterminate = selected.size > 0 && !isAllSelected
-
-  const matches = useMemo(() => {
-    if (!query) return true
-    return hasMatch(children, query)
-  }, [children, query])
 
   useEffect(() => {
     if (checkboxRef.current) {
@@ -44,22 +43,18 @@ export function Files({ children, className, url }: { children: ReactNode, class
   }, [isIndeterminate])
 
   const toggleAll = () => {
-    if (isAllSelected) {
-      setSelected(new Set())
-    } else {
-      setSelected(new Set(allIds))
-    }
+    setSelected(isAllSelected ? new Set() : new Set(allIds))
   }
 
-  const toggleSelect = (id: string) => {
+  const toggleSelect = useCallback((id: string) => {
     setSelected((prev) => {
       const next = new Set(prev)
       next.has(id) ? next.delete(id) : next.add(id)
       return next
     })
-  }
+  }, [])
 
-  const selectBatch = (ids: string[], shouldSelect: boolean) => {
+  const selectBatch = useCallback((ids: string[], shouldSelect: boolean) => {
     setSelected((prev) => {
       const next = new Set(prev)
       ids.forEach(id => {
@@ -68,7 +63,11 @@ export function Files({ children, className, url }: { children: ReactNode, class
       })
       return next
     })
-  }
+  }, [])
+
+  const getMetadata = useCallback((nodes: ReactNode, path: string) => {
+    return getTreeMetadata(nodes, query, path)
+  }, [query])
 
   const handleBatchDownload = async () => {
     if (selected.size === 0) return
@@ -76,17 +75,14 @@ export function Files({ children, className, url }: { children: ReactNode, class
     setDownloadProgress(0)
 
     try {
-      const allFiles = collectFilesWithUrls(children)
-      const selectedFiles = allFiles
+      const selectedFiles = files
         .filter(file => selected.has(file.path))
         .map(file => ({
           ...file,
           url: isAccelerated ? getAcceleratedUrl(file.url) : file.url
         }))
 
-      await downloadBatchFiles(selectedFiles, (progress) => {
-        setDownloadProgress(progress)
-      })
+      await downloadBatchFiles(selectedFiles, setDownloadProgress)
     } catch (error: any) {
       console.error("Batch download failed:", error)
       toast.error(`下载失败: ${error.message}`)
@@ -122,7 +118,7 @@ export function Files({ children, className, url }: { children: ReactNode, class
               ? "bg-blue-500/5 border-blue-500/20 text-blue-600" 
               : "border-input text-muted-foreground bg-muted/50 hover:bg-background"
           )}>
-            <ZapIcon className={cn("size-4 transition-transform")} />
+            <ZapIcon className="size-4" />
             <Label 
               htmlFor="accelerate-mode" 
               className="text-[13px] font-medium cursor-pointer whitespace-nowrap"
@@ -141,7 +137,7 @@ export function Files({ children, className, url }: { children: ReactNode, class
             <Button 
               variant="outline" 
               size="sm"
-              className="h-8 rounded-md border-input hover:bg-muted/50 px-3"
+              className="h-8 px-3"
             >
               <UploadCloudIcon className="size-4 text-muted-foreground" />
               <span className="text-[13px]">上传文件</span>
@@ -151,7 +147,7 @@ export function Files({ children, className, url }: { children: ReactNode, class
           <Button
             variant="outline"
             size="sm"
-            className="h-8 rounded-md border-input hover:bg-muted/50 px-3"
+            className="h-8 px-3"
             asChild
           >
             <a href={url} target="_blank" rel="noopener noreferrer">
@@ -163,14 +159,14 @@ export function Files({ children, className, url }: { children: ReactNode, class
           <Button
             variant="outline"
             size="sm"
-            className="h-8 rounded-md border-input hover:bg-muted/50 px-3"
+            className="h-8 px-3"
             disabled={selected.size === 0 || isDownloading}
             onClick={handleBatchDownload}
           >
             {isDownloading ? (
               <CircularProgress progress={downloadProgress} />
             ) : (
-              <DownloadIcon className={cn("size-4 text-muted-foreground")} />
+              <DownloadIcon className="size-4 text-muted-foreground" />
             )}
             <span className="text-[13px]">批量下载</span>
           </Button>
@@ -182,7 +178,7 @@ export function Files({ children, className, url }: { children: ReactNode, class
           <TableHeader className="text-xs">
             <TableRow className="bg-muted/50 whitespace-nowrap">
               <TableHead className="h-9 w-10 py-2">
-                <div className="flex items-center h-full">
+                <div className="flex items-center">
                   <input
                     type="checkbox"
                     className="accent-foreground size-3.5"
@@ -200,8 +196,18 @@ export function Files({ children, className, url }: { children: ReactNode, class
             </TableRow>
           </TableHeader>
           <TableBody className="text-[13px]">
-            <FileTreeContext.Provider value={{ level: 0, path: "", selected, toggleSelect, selectBatch, isSelectable: true, searchQuery: query, isAccelerated }}>
-              {matches ? children : (
+            <FileTreeContext.Provider value={{ 
+              level: 0, 
+              path: "", 
+              selected, 
+              toggleSelect, 
+              selectBatch, 
+              isSelectable: true, 
+              searchQuery: query, 
+              isAccelerated,
+              getMetadata
+            }}>
+              {hasMatch ? children : (
                 <TableRow>
                   <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
                     未找到相关文件

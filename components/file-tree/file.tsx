@@ -27,11 +27,14 @@ export function File({
   const { level, path, selected, toggleSelect, isSelectable, searchQuery, isAccelerated } = useFileTree()
   const [isDownloading, setIsDownloading] = useState(false)
   const [progress, setProgress] = useState(0)
-  const icon = getFileIcon(url)
+  
   const fullPath = path ? `${path}/${name}` : name
   const isSelected = selected.has(fullPath)
-
   const finalUrl = url && isAccelerated ? getAcceleratedUrl(url) : url
+
+  if (searchQuery && !name.toLowerCase().includes(searchQuery.toLowerCase())) {
+    return null
+  }
 
   const handleDownload = async (e: React.MouseEvent) => {
     if (!finalUrl) return
@@ -40,7 +43,7 @@ export function File({
     setProgress(0)
 
     try {
-      await downloadSingleFile(finalUrl, name, (p) => setProgress(p))
+      await downloadSingleFile(finalUrl, name, setProgress)
     } catch (error: any) {
       console.error("Download failed:", error)
       toast.error(`下载失败: ${error.message}`)
@@ -50,18 +53,14 @@ export function File({
     }
   }
 
-  if (searchQuery && !name.toLowerCase().includes(searchQuery.toLowerCase())) {
-    return null
-  }
-
   return (
     <TableRow 
       className="hover:bg-muted/50 h-12"
       data-selected={isSelected || undefined}
     >
-      <TableCell className="py-2 w-10">
+      <TableCell className="w-10 py-2">
         {isSelectable && (
-          <div className="flex items-center h-full">
+          <div className="flex items-center">
             <input
               type="checkbox"
               className="accent-foreground size-3.5"
@@ -73,8 +72,8 @@ export function File({
         )}
       </TableCell>
       <TableCell className="py-2 font-medium">
-        <div className="flex items-center gap-2" style={{ paddingLeft: `${Math.max(0, level - 1) * 1.5}rem` }}>
-          <span className="shrink-0">{icon}</span>
+        <div className="flex items-center gap-2" style={{ paddingLeft: `${level * 1.5}rem` }}>
+          <span className="shrink-0">{getFileIcon(url)}</span>
           <span className="truncate">{name}</span>
         </div>
       </TableCell>
@@ -86,29 +85,29 @@ export function File({
       </TableCell>
       <TableCell className="py-2 text-right whitespace-nowrap">
         {finalUrl && (
-            <>
-              <Button variant="ghost" size="icon-sm" asChild>
-                <Link
-                    href={`https://prev.hoa.moe?file=${encodeURIComponent(finalUrl)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <ExternalLinkIcon />
-                </Link>
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon-sm" 
-                onClick={handleDownload}
-                disabled={isDownloading}
+          <div className="flex justify-end gap-1">
+            <Button variant="ghost" size="icon-sm" asChild>
+              <Link
+                href={`https://prev.hoa.moe?file=${encodeURIComponent(finalUrl)}`}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                {isDownloading ? (
-                  <CircularProgress progress={progress} />
-                ) : (
-                  <DownloadIcon />
-                )}
-              </Button>
-            </>
+                <ExternalLinkIcon className="size-4" />
+              </Link>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon-sm" 
+              onClick={handleDownload}
+              disabled={isDownloading}
+            >
+              {isDownloading ? (
+                <CircularProgress progress={progress} className="size-4" />
+              ) : (
+                <DownloadIcon className="size-4" />
+              )}
+            </Button>
+          </div>
         )}
       </TableCell>
     </TableRow>

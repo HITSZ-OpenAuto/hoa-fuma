@@ -7,139 +7,126 @@ import {
   FileImage,
   FilePlay,
   FileChartPie,
+  LucideIcon,
 } from "lucide-react"
 import React, { Children, isValidElement, ReactElement, ReactNode } from "react"
 
-export function collectIds(nodes: ReactNode, parentPath: string = ""): string[] {
-  const ids: string[] = []
-  Children.forEach(nodes, (child) => {
-    if (!isValidElement(child)) return
-    const element = child as ReactElement<{ name?: string; children?: ReactNode }>
-    
-    const name = element.props.name
-    if (!name) return
-
-    const fullPath = parentPath ? `${parentPath}/${name}` : name
-    ids.push(fullPath)
-    
-    if (element.props.children) {
-      ids.push(...collectIds(element.props.children, fullPath))
-    }
-  })
-  return ids
+export interface TreeFile {
+  path: string
+  url: string
+  name: string
 }
 
-export function collectFilesWithUrls(nodes: ReactNode, parentPath: string = ""): { path: string, url: string }[] {
-  const files: { path: string, url: string }[] = []
-  Children.forEach(nodes, (child) => {
-    if (!isValidElement(child)) return
-    const element = child as ReactElement<{ name?: string; url?: string; children?: ReactNode }>
-    
-    const name = element.props.name
-    if (!name) return
-
-    const fullPath = parentPath ? `${parentPath}/${name}` : name
-    if (element.props.url) {
-      files.push({ path: fullPath, url: element.props.url })
-    }
-    
-    if (element.props.children) {
-      files.push(...collectFilesWithUrls(element.props.children, fullPath))
-    }
-  })
-  return files
+export interface TreeMetadata {
+  allIds: string[]
+  files: TreeFile[]
+  hasMatch: boolean
 }
 
-export function hasMatch(nodes: ReactNode, query: string): boolean {
-  if (!query) return true
+/**
+ * Consolidated tree traversal to collect IDs, files, and check for matches in one pass.
+ */
+export function getTreeMetadata(nodes: ReactNode, query: string = "", parentPath: string = ""): TreeMetadata {
+  const allIds: string[] = []
+  const files: TreeFile[] = []
   const normalizedQuery = query.toLowerCase()
-  let match = false
+  let hasMatchInTree = false
+
   Children.forEach(nodes, (child) => {
-    if (match || !isValidElement(child)) return
-    const props = child.props as { name?: string; children?: ReactNode }
-    if (props.name?.toLowerCase().includes(normalizedQuery)) {
-      match = true
-      return
+    if (!isValidElement(child)) return
+    
+    // Type assertion for children props
+    const element = child as ReactElement<{ name: string; url?: string; children?: ReactNode }>
+    const { name, url, children } = element.props
+    if (!name) return
+
+    const fullPath = parentPath ? `${parentPath}/${name}` : name
+    allIds.push(fullPath)
+
+    const isSelfMatch = normalizedQuery ? name.toLowerCase().includes(normalizedQuery) : true
+    if (isSelfMatch && !url) {
+        // If it's a folder and it matches, we still need to check children for their matches
+        // but the folder itself is a match.
+        hasMatchInTree = true
     }
-    if (props.children && hasMatch(props.children, query)) {
-      match = true
+
+    if (url) {
+      files.push({ path: fullPath, url, name })
+      if (isSelfMatch) hasMatchInTree = true
+    }
+
+    if (children) {
+      const childMetadata = getTreeMetadata(children, query, fullPath)
+      allIds.push(...childMetadata.allIds)
+      files.push(...childMetadata.files)
+      if (childMetadata.hasMatch) hasMatchInTree = true
     }
   })
-  return match
+
+  return { allIds, files, hasMatch: !query || hasMatchInTree }
 }
 
 export function getAcceleratedUrl(url: string) {
   if (!url) return url
-  const isExcluded = url.endsWith(".docx") || url.endsWith(".pptx") || url.endsWith(".xlsx")
+  const isExcluded = /\.(docx|pptx|xlsx)$/i.test(url)
   if (isExcluded) return url
 
-  let newUrl = url.replace("gh.hoa.moe/github.com", "gitea.osa.moe")
-  newUrl = newUrl.replace("/raw/", "/raw/branch/")
-  return newUrl
+  return url
+    .replace("gh.hoa.moe/github.com", "gitea.osa.moe")
+    .replace("/raw/", "/raw/branch/")
 }
 
-export function getFileIcon(url: string) {
-  const urlPath = new URL(url).pathname
-  const urlDecoded = decodeURIComponent(urlPath)
-  const ext = urlDecoded.split(".").pop()?.toLowerCase() || ""
-
-  // PDF files
-  if (ext === "pdf") {
-    return <FileTextIcon className="size-4" aria-hidden="true" />
-  }
-
-  // Word documents
-  if (ext === "doc" || ext === "docx") {
-    return <FileTextIcon className="size-4" aria-hidden="true" />
-  }
-
-  // PowerPoint presentations
-  if (ext === "ppt" || ext === "pptx") {
-    return <FileChartPie className="size-4" aria-hidden="true" />
-  }
-
-  // Excel/Spreadsheet files
-  if (ext === "xls" || ext === "xlsx" || ext === "csv") {
-    return <FileSpreadsheet className="size-4" aria-hidden="true" />
-  }
-
-  // Archive files
-  if (ext === "zip" || ext === "rar" || ext === "7z" || ext === "tar" || ext === "gz") {
-    return <FileArchive className="size-4" aria-hidden="true" />
-  }
-
-  // Video files
-  if (["mp4", "mov", "webm", "mkv", "avi", "flv", "wmv"].includes(ext)) {
-    return <FilePlay className="size-4" aria-hidden="true" />
-  }
-
-  // Audio files
-  if (["mp3", "wav", "flac", "m4a", "aac", "ogg", "wma"].includes(ext)) {
-    return <FileHeadphone className="size-4" aria-hidden="true" />
-  }
-
-  // Image files
-  if (["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "ico"].includes(ext)) {
-    return <FileImage className="size-4" aria-hidden="true" />
-  }
-
-  // Text files and code files
-  if (["txt", "md", "mdx", "tsx", "jsx", "ts", "js", "json", "css", "html", "xml", "yaml", "yml"].includes(ext)) {
-    return <FileTextIcon className="size-4" aria-hidden="true" />
-  }
-
-  // Default file icon
-  return <FileIcon className="size-4" aria-hidden="true" />
+const EXTENSION_MAP: Record<string, LucideIcon> = {
+  pdf: FileTextIcon,
+  doc: FileTextIcon,
+  docx: FileTextIcon,
+  txt: FileTextIcon,
+  md: FileTextIcon,
+  mdx: FileTextIcon,
+  ppt: FileChartPie,
+  pptx: FileChartPie,
+  xls: FileSpreadsheet,
+  xlsx: FileSpreadsheet,
+  csv: FileSpreadsheet,
+  zip: FileArchive,
+  rar: FileArchive,
+  "7z": FileArchive,
+  tar: FileArchive,
+  gz: FileArchive,
+  mp4: FilePlay,
+  mov: FilePlay,
+  webm: FilePlay,
+  mkv: FilePlay,
+  mp3: FileHeadphone,
+  wav: FileHeadphone,
+  flac: FileHeadphone,
+  m4a: FileHeadphone,
+  png: FileImage,
+  jpg: FileImage,
+  jpeg: FileImage,
+  gif: FileImage,
+  webp: FileImage,
+  svg: FileImage,
 }
 
-export const formatBytes = (bytes: number, decimals = 2): string => {
+export function getFileIcon(url?: string) {
+  if (!url) return <FileIcon className="size-4" aria-hidden="true" />
+  
+  try {
+    const urlPath = new URL(url).pathname
+    const ext = decodeURIComponent(urlPath).split(".").pop()?.toLowerCase() || ""
+    const Icon = EXTENSION_MAP[ext] || FileIcon
+    return <Icon className="size-4" aria-hidden="true" />
+  } catch {
+    return <FileIcon className="size-4" aria-hidden="true" />
+  }
+}
+
+export function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return "0 Bytes"
-
   const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-
+  const dm = Math.max(0, decimals)
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"]
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + sizes[i]
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
