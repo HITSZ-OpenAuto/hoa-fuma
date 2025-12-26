@@ -2,7 +2,7 @@
 
 import { TableCell, TableRow } from "@/components/ui/table"
 import { useFileTree } from "./ctx"
-import { getFileIcon, formatBytes, getAcceleratedUrl } from "./utils"
+import { getFileIcon, formatBytes, getAcceleratedUrl, getFileExtension } from "./utils"
 import { ExternalLinkIcon, DownloadIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CircularProgress } from "@/components/ui/circular-progress"
@@ -74,7 +74,14 @@ export function File({
       <TableCell className="py-2 font-medium">
         <div className="flex items-center gap-2" style={{ paddingLeft: `${level * 1.5}rem` }}>
           <span className="shrink-0">{getFileIcon(url)}</span>
-          <span className="truncate">{name}</span>
+          <div className="flex flex-col min-w-0 leading-tight">
+            <span className="truncate">{name}</span>
+            {url && (
+              <span className="text-xs text-muted-foreground">
+                {getFileExtension(url)}
+              </span>
+            )}
+          </div>
         </div>
       </TableCell>
       <TableCell className="text-muted-foreground py-2">
