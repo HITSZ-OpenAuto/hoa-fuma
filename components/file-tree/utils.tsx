@@ -107,17 +107,20 @@ const EXTENSION_MAP: Record<string, LucideIcon> = {
   svg: FileImage,
 }
 
-export function getFileIcon(url?: string) {
-  if (!url) return <FileIcon className="size-4" aria-hidden="true" />
-  
+export function getFileExtension(url?: string) {
+  if (!url) return ""
   try {
     const urlPath = new URL(url).pathname
-    const ext = decodeURIComponent(urlPath).split(".").pop()?.toLowerCase() || ""
-    const Icon = EXTENSION_MAP[ext] || FileIcon
-    return <Icon className="size-4" aria-hidden="true" />
+    return decodeURIComponent(urlPath).split(".").pop()?.toLowerCase() || ""
   } catch {
-    return <FileIcon className="size-4" aria-hidden="true" />
+    return ""
   }
+}
+
+export function getFileIcon(url?: string) {
+  const ext = getFileExtension(url)
+  const Icon = EXTENSION_MAP[ext] || FileIcon
+  return <Icon className="size-4" aria-hidden="true" />
 }
 
 export function formatBytes(bytes: number, decimals = 2): string {
