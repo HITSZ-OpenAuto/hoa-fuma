@@ -43,11 +43,10 @@ export function Folder({
   const isSelected = selected.has(fullPath)
   const isSelfMatch = searchQuery ? name.toLowerCase().includes(searchQuery.toLowerCase()) : true
 
-  useEffect(() => {
-    if (searchQuery && hasMatch && !isSelfMatch) {
-      setIsOpen(true)
-    }
-  }, [searchQuery, hasMatch, isSelfMatch])
+  // Open folder if search query matches children
+  if (searchQuery && hasMatch && !isSelfMatch && !isOpen) {
+    setIsOpen(true)
+  }
 
   if (!hasMatch && !isSelfMatch) {
     return null
