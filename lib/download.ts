@@ -33,11 +33,12 @@ export async function downloadSingleFile(
     if (!reader) throw new Error("Failed to get reader");
 
     let receivedLength = 0;
-    const chunks = [];
+    const chunks: BlobPart[] = [];
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
+      if (!value) continue;
       chunks.push(value);
       receivedLength += value.length;
       onProgress?.(Math.round((receivedLength / total) * 100));
