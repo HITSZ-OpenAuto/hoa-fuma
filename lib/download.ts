@@ -1,4 +1,4 @@
-import JSZip from "jszip";
+import { zip, type AsyncZippable } from "fflate";
 
 export interface DownloadFile {
   path: string;
@@ -61,7 +61,7 @@ export async function downloadBatchFiles(
   files: DownloadFile[],
   onProgress?: (progress: number) => void
 ) {
-  const zip = new JSZip();
+  const zippable: AsyncZippable = {};
   let completed = 0;
 
   await Promise.all(
@@ -69,6 +69,7 @@ export async function downloadBatchFiles(
       const response = await fetch(file.url);
       if (!response.ok) throw new Error(`Failed to fetch ${file.path}`);
       const blob = await response.blob();
+      const buffer = await blob.arrayBuffer();
 
       // Ensure extension is preserved in the ZIP
       let zipPath = file.path;
@@ -82,17 +83,25 @@ export async function downloadBatchFiles(
         }
       }
 
-      zip.file(zipPath, blob);
+      zippable[zipPath] = new Uint8Array(buffer);
       completed++;
       onProgress?.(Math.round((completed / files.length) * 90));
     })
   );
 
-  const content = await zip.generateAsync({ type: "blob" }, (metadata) => {
-    onProgress?.(90 + Math.round(metadata.percent * 0.1));
+  const content = await new Promise<Uint8Array>((resolve, reject) => {
+    zip(zippable, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
   });
 
-  const url = URL.createObjectURL(content);
+  onProgress?.(100);
+
+  const url = URL.createObjectURL(new Blob([content as BlobPart], { type: "application/zip" }));
   const link = document.createElement("a");
   link.href = url;
   link.download = `download-${new Date().getTime()}.zip`;

@@ -84,11 +84,6 @@ export function Files({ children, className, url }: { children: ReactNode, class
           url: isAccelerated ? getAcceleratedUrl(file.url) : file.url
         }))
 
-      if (selectedFiles.length === 0) {
-        toast.error("请选择要下载的文件")
-        return
-      }
-
       await downloadBatchFiles(selectedFiles, (progress) => {
         setDownloadProgress(progress)
       })
