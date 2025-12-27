@@ -97,7 +97,7 @@ export function Folder({
         <TableCell className="py-2 font-medium">
           <div className="flex items-center gap-2" style={{ paddingLeft: `${level * 1.5}rem` }}>
             <span className="shrink-0">
-              {isOpen ? <FolderOpen className="size-8 opacity-60" /> : <FolderIcon className="size-9 opacity-60" />}
+              {isOpen ? <FolderOpen className="size-4 opacity-60" /> : <FolderIcon className="size-4 opacity-60" />}
             </span>
             <span className="truncate">{name}</span>
           </div>

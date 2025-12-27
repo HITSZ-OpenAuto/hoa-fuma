@@ -55,7 +55,7 @@ export function File({
 
   return (
     <TableRow 
-      className="hover:bg-muted/50 h-12"
+      className="hover:bg-muted/50 h-14"
       data-selected={isSelected || undefined}
     >
       <TableCell className="w-10 py-2">
