@@ -55,7 +55,7 @@ export function File({
 
   return (
     <TableRow 
-      className="hover:bg-muted/50 h-14"
+      className="hover:bg-muted/50 h-12"
       data-selected={isSelected || undefined}
     >
       <TableCell className="w-10 py-2">
@@ -75,12 +75,7 @@ export function File({
         <div className="flex items-center gap-2" style={{ paddingLeft: `${level * 1.5}rem` }}>
           <span className="shrink-0">{getFileIcon(url)}</span>
           <div className="flex flex-col min-w-0 leading-tight">
-            <span className="truncate">{name}</span>
-            {url && (
-              <span className="text-xs text-muted-foreground">
-                {getFileExtension(url)}
-              </span>
-            )}
+            <span>{name}</span>
           </div>
         </div>
       </TableCell>
