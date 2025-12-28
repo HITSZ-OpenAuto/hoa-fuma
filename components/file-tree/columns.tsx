@@ -5,7 +5,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { CircularProgress } from "@/components/ui/circular-progress"
 import { 
-  ChevronRight, 
   ExternalLinkIcon, 
   DownloadIcon,
   Folder,
@@ -30,7 +29,6 @@ function NameCell({
 }) {
   const node = row.original
   const isFolder = node.type === "folder"
-  const canExpand = row.getCanExpand()
   const isExpanded = row.getIsExpanded()
 
   return (
@@ -44,13 +42,8 @@ function NameCell({
             e.stopPropagation()
             row.toggleExpanded()
           }}
-          className="shrink-0 mt-0.5 sm:mt-0 flex items-center"
+          className="shrink-0 mt-1 sm:mt-0 flex items-center"
         >
-          {canExpand && (
-            <ChevronRight 
-              className={`size-4 opacity-60 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
-            />
-          )}
           {isExpanded ? (
             <FolderOpen className="size-4 opacity-60" />
           ) : (
@@ -58,9 +51,9 @@ function NameCell({
           )}
         </button>
       ) : (
-        <span className="shrink-0 mt-0.5 sm:mt-0">{getFileIcon(node.url)}</span>
+        <span className="shrink-0 mt-1 sm:mt-0">{getFileIcon(node.url)}</span>
       )}
-      <span className="break-words sm:break-normal">{node.name}</span>
+      <span className="flex-1 text-wrap break-all sm:break-normal min-w-0">{node.name}</span>
     </div>
   )
 }
@@ -169,6 +162,9 @@ export function createColumns(options: ColumnOptions): ColumnDef<FileNode>[] {
         if (!filterValue) return true
         const name = row.getValue(columnId) as string
         return name.toLowerCase().includes(filterValue.toLowerCase())
+      },
+      meta: {
+        className: "whitespace-normal min-w-0",
       },
     },
     {
