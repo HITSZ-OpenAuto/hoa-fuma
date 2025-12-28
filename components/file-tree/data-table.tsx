@@ -179,7 +179,7 @@ export function DataTable({ data, className, url }: DataTableProps) {
               value={globalFilter}
               onChange={(e) => setGlobalFilter(e.target.value)}
               placeholder="搜索"
-              className="bg-background ring-offset-background focus-visible:ring-ring placeholder:text-muted-foreground h-8 w-full rounded-md border px-7 outline-none focus-visible:ring-2"
+              className="bg-background text-sm ring-offset-background focus-visible:ring-ring placeholder:text-muted-foreground h-8 w-full rounded-md border px-7 outline-none focus-visible:ring-2"
               aria-label="Search files"
             />
             <SearchIcon
