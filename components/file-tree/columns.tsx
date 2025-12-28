@@ -53,7 +53,7 @@ function NameCell({
       ) : (
         <span className="shrink-0 mt-1 sm:mt-0">{getFileIcon(node.url)}</span>
       )}
-      <span className="flex-1 text-wrap break-all sm:break-normal min-w-0">{node.name}</span>
+      <span className="flex-1 text-wrap break-normal min-w-0">{node.name}</span>
     </div>
   )
 }
