@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc';
-import { cn } from '@/lib/utils';
-import { buttonVariants } from 'fumadocs-ui/components/ui/button';
+import Image from 'next/image';
 import Link from 'next/link';
 import { blog } from '@/lib/source';
 import { getMDXComponents } from '@/mdx-components';
@@ -19,24 +18,52 @@ export default async function Page(props: {
 
   return (
     <article className="mx-auto flex w-full max-w-200 flex-col px-4 py-8">
-      <div className="mb-8 flex flex-row gap-4 text-sm">
-        <div>
-          <p className="text-fd-muted-foreground mb-1">Written by</p>
-          <p className="font-medium">{page.data.author}</p>
-        </div>
-        <div>
-          <p className="text-fd-muted-foreground mb-1 text-sm">At</p>
-          <p className="font-medium">
-            {new Date(
-              page.data.date ??
-                PathUtils.basename(page.path, PathUtils.extname(page.path))
-            ).toDateString()}
-          </p>
-        </div>
-      </div>
-
       <h1 className="mb-4 text-3xl font-semibold">{page.data.title}</h1>
       <p className="text-fd-muted-foreground mb-8">{page.data.description}</p>
+
+      <div className="text-fd-muted-foreground mb-8 flex flex-row items-center gap-2 text-sm">
+        <p>
+          {new Date(
+            page.data.date ??
+              PathUtils.basename(page.path, PathUtils.extname(page.path))
+          ).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </p>
+        <span>·</span>
+        {page.data.authorLink ? (
+          <Link
+            href={page.data.authorLink}
+            className="text-fd-foreground flex flex-row items-center gap-2 font-medium hover:underline"
+          >
+            {page.data.authorAvatar && (
+              <Image
+                src={page.data.authorAvatar}
+                alt={page.data.author}
+                width={24}
+                height={24}
+                className="rounded-full"
+              />
+            )}
+            {page.data.author}
+          </Link>
+        ) : (
+          <div className="flex flex-row items-center gap-2">
+            {page.data.authorAvatar && (
+              <Image
+                src={page.data.authorAvatar}
+                alt={page.data.author}
+                width={24}
+                height={24}
+                className="rounded-full"
+              />
+            )}
+            <p className="text-fd-foreground font-medium">{page.data.author}</p>
+          </div>
+        )}
+      </div>
 
       <div className="prose min-w-0 flex-1">
         <InlineTOC items={toc} />
