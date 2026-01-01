@@ -32,36 +32,51 @@ export default async function Page(props: {
             day: 'numeric',
           })}
         </p>
-        <span>·</span>
-        {page.data.authorLink ? (
-          <Link
-            href={page.data.authorLink}
-            className="text-fd-foreground flex flex-row items-center gap-2 font-medium hover:underline"
-          >
-            {page.data.authorAvatar && (
-              <Image
-                src={page.data.authorAvatar}
-                alt={page.data.author}
-                width={24}
-                height={24}
-                className="rounded-full"
-              />
-            )}
-            {page.data.author}
-          </Link>
-        ) : (
-          <div className="flex flex-row items-center gap-2">
-            {page.data.authorAvatar && (
-              <Image
-                src={page.data.authorAvatar}
-                alt={page.data.author}
-                width={24}
-                height={24}
-                className="rounded-full"
-              />
-            )}
-            <p className="text-fd-foreground font-medium">{page.data.author}</p>
-          </div>
+        {page.data.authors && page.data.authors.length > 0 && (
+          <>
+            <span>·</span>
+            <div className="flex flex-row flex-wrap items-center">
+              {page.data.authors.map((author, index) => (
+                <div
+                  key={index}
+                  className="mx-1 flex flex-row items-center gap-1.5"
+                >
+                  {author.link ? (
+                    <Link
+                      href={author.link}
+                      className="text-fd-foreground flex flex-row items-center gap-1.5 font-medium hover:underline"
+                    >
+                      {author.image && (
+                        <Image
+                          src={author.image}
+                          alt={author.name}
+                          width={24}
+                          height={24}
+                          className="rounded-full"
+                        />
+                      )}
+                      {author.name}
+                    </Link>
+                  ) : (
+                    <div className="flex flex-row items-center gap-1.5">
+                      {author.image && (
+                        <Image
+                          src={author.image}
+                          alt={author.name}
+                          width={24}
+                          height={24}
+                          className="rounded-full"
+                        />
+                      )}
+                      <p className="text-fd-foreground font-medium">
+                        {author.name}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 

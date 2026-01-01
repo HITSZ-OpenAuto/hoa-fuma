@@ -26,9 +26,15 @@ export const blog = defineDocs({
   dir: 'content/blog',
   docs: {
     schema: frontmatterSchema.extend({
-      author: z.string(),
-      authorAvatar: z.string().optional(),
-      authorLink: z.string().optional(),
+      authors: z
+        .array(
+          z.object({
+            name: z.string(),
+            link: z.string().optional(),
+            image: z.string().optional(),
+          })
+        )
+        .optional(),
       description: z.string(),
       date: z.iso.date().or(z.date()),
     }),
