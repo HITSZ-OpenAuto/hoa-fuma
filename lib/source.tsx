@@ -1,4 +1,4 @@
-import { docs, blog as blogDocs } from 'fumadocs-mdx:collections/server';
+import { docs, blog as blogPosts } from 'fumadocs-mdx:collections/server';
 import { type InferPageType, loader } from 'fumadocs-core/source';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 
@@ -28,7 +28,7 @@ ${processed}`;
 
 export const blog = loader({
   baseUrl: '/blog',
-  source: blogDocs.toFumadocsSource(),
+  source: blogPosts.toFumadocsSource(),
 });
 
 export function getAvailableYears(): string[] {
