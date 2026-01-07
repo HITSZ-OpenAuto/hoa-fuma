@@ -44,7 +44,13 @@ export default function Page() {
             </p>
 
             <p className="text-brand mt-auto pt-4 text-xs">
-              {new Date(post.data.date ?? getName(post.path)).toDateString()}
+              {new Date(
+                post.data.date ?? getName(post.path)
+              ).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
             </p>
           </Link>
         ))}
