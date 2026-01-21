@@ -151,29 +151,75 @@ export function CourseInfo({ data, className }: CourseInfoProps) {
               成绩构成
             </h4>
           </div>
-          <div className="flex w-full" style={{ gap: '1px' }}>
-            {GRADING_SCHEME_CONFIG.map(({ key, label, bgClass, textClass }) => {
-              const percentage = data.gradingScheme[key];
-              if (percentage <= 0) return null;
-              return (
-                <div key={key} style={{ width: `${percentage}%` }}>
-                  <div className="text-muted-foreground mb-1 truncate text-xs">
-                    {label}
-                  </div>
-                  <div
-                    className={cn(
-                      'flex h-4 items-center justify-center text-xs font-medium',
-                      bgClass,
-                      textClass
-                    )}
-                    title={`${label} ${percentage}%`}
-                  >
-                    {percentage >= 10 && `${percentage}%`}
-                  </div>
+          {(() => {
+            const activeItems = GRADING_SCHEME_CONFIG.filter(
+              ({ key }) => data.gradingScheme[key] > 0
+            );
+            const regularItems = activeItems.filter(
+              ({ key }) => key !== 'finalExamination'
+            );
+            const finalItem = activeItems.find(
+              ({ key }) => key === 'finalExamination'
+            );
+            const regularTotal = regularItems.reduce(
+              (sum, { key }) => sum + data.gradingScheme[key],
+              0
+            );
+
+            return (
+              <div className="flex w-full flex-col gap-1 sm:flex-row sm:gap-px">
+                {/* First row: all items except final exam */}
+                <div
+                  className="flex min-w-0 gap-px"
+                  style={{ flex: `${regularTotal} 0 0` }}
+                >
+                  {regularItems.map(({ key, label, bgClass, textClass }) => {
+                    const percentage = data.gradingScheme[key];
+                    return (
+                      <div key={key} style={{ flex: `${percentage} 0 0` }}>
+                        <div className="text-muted-foreground mb-1 truncate text-xs">
+                          {label}
+                        </div>
+                        <div
+                          className={cn(
+                            'flex h-4 items-center justify-center text-xs font-medium',
+                            bgClass,
+                            textClass
+                          )}
+                          title={`${label} ${percentage}%`}
+                        >
+                          {percentage >= 10 && `${percentage}%`}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
+                {/* Second row on mobile, inline on desktop: final exam */}
+                {finalItem && (
+                  <div
+                    style={{
+                      flex: `${data.gradingScheme.finalExamination} 0 0`,
+                    }}
+                  >
+                    <div className="text-muted-foreground mb-1 truncate text-xs">
+                      {finalItem.label}
+                    </div>
+                    <div
+                      className={cn(
+                        'flex h-4 items-center justify-center text-xs font-medium',
+                        finalItem.bgClass,
+                        finalItem.textClass
+                      )}
+                      title={`${finalItem.label} ${data.gradingScheme.finalExamination}%`}
+                    >
+                      {data.gradingScheme.finalExamination >= 10 &&
+                        `${data.gradingScheme.finalExamination}%`}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </div>
       </div>
     </section>
