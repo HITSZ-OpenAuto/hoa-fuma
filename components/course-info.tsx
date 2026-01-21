@@ -11,9 +11,6 @@ import {
   PencilLine,
   Monitor,
   Users,
-  Smile,
-  ScrollText,
-  FileText,
   Clock,
   Info,
   Award,
@@ -26,10 +23,6 @@ type CourseInfoProps = {
 
 function formatCredit(credit: number) {
   return Number.isInteger(credit) ? credit.toFixed(1) : credit.toString();
-}
-
-function formatPercent(value: number) {
-  return `${value}%`;
 }
 
 function InfoItem({
@@ -145,41 +138,75 @@ export function CourseInfo({ data, className }: CourseInfoProps) {
           </dl>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4 border-t pt-4">
-          <h4 className="flex items-center gap-2 text-sm font-semibold">
-            <Award className="size-4 text-yellow-500" />
-            成绩构成
-          </h4>
-          <dl className="flex flex-wrap items-start gap-4">
+        <div className="border-t pt-4">
+          <div className="mb-3 flex items-center gap-2">
+            <h4 className="flex items-center gap-2 text-sm font-semibold">
+              <Award className="size-4 text-yellow-500" />
+              成绩构成
+            </h4>
+          </div>
+          <div className="flex w-full" style={{ gap: '1 px' }}>
             {data.gradingScheme.classParticipation > 0 && (
-              <InfoItem
-                label="平时表现"
-                icon={Smile}
-                value={formatPercent(data.gradingScheme.classParticipation)}
-              />
+              <div
+                style={{ width: `${data.gradingScheme.classParticipation}%` }}
+              >
+                <div className="text-muted-foreground mb-1 truncate text-xs">
+                  平时表现
+                </div>
+                <div
+                  className="flex h-4 items-center justify-center bg-emerald-200 text-xs font-medium text-emerald-700"
+                  title={`平时表现 ${data.gradingScheme.classParticipation}%`}
+                >
+                  {data.gradingScheme.classParticipation >= 10 &&
+                    `${data.gradingScheme.classParticipation}%`}
+                </div>
+              </div>
             )}
             {data.gradingScheme.homeworkAssignments > 0 && (
-              <InfoItem
-                label="平时作业"
-                icon={ScrollText}
-                value={formatPercent(data.gradingScheme.homeworkAssignments)}
-              />
+              <div
+                style={{ width: `${data.gradingScheme.homeworkAssignments}%` }}
+              >
+                <div className="text-muted-foreground mb-1 truncate text-xs">
+                  平时作业
+                </div>
+                <div
+                  className="flex h-4 items-center justify-center bg-blue-200 text-xs font-medium text-blue-700"
+                  title={`平时作业 ${data.gradingScheme.homeworkAssignments}%`}
+                >
+                  {data.gradingScheme.homeworkAssignments >= 10 &&
+                    `${data.gradingScheme.homeworkAssignments}%`}
+                </div>
+              </div>
             )}
             {data.gradingScheme.laboratoryWork > 0 && (
-              <InfoItem
-                label="实验成绩"
-                icon={Beaker}
-                value={formatPercent(data.gradingScheme.laboratoryWork)}
-              />
+              <div style={{ width: `${data.gradingScheme.laboratoryWork}%` }}>
+                <div className="text-muted-foreground mb-1 truncate text-xs">
+                  实验成绩
+                </div>
+                <div
+                  className="flex h-4 items-center justify-center bg-purple-200 text-xs font-medium text-purple-700"
+                  title={`实验成绩 ${data.gradingScheme.laboratoryWork}%`}
+                >
+                  {data.gradingScheme.laboratoryWork >= 10 &&
+                    `${data.gradingScheme.laboratoryWork}%`}
+                </div>
+              </div>
             )}
             {data.gradingScheme.finalExamination > 0 && (
-              <InfoItem
-                label="期末考试"
-                icon={FileText}
-                value={formatPercent(data.gradingScheme.finalExamination)}
-              />
+              <div style={{ width: `${data.gradingScheme.finalExamination}%` }}>
+                <div className="text-muted-foreground mb-1 truncate text-xs">
+                  期末考试
+                </div>
+                <div
+                  className="flex h-4 items-center justify-center bg-amber-200 text-xs font-medium text-amber-700"
+                  title={`期末考试 ${data.gradingScheme.finalExamination}%`}
+                >
+                  {data.gradingScheme.finalExamination >= 10 &&
+                    `${data.gradingScheme.finalExamination}%`}
+                </div>
+              </div>
             )}
-          </dl>
+          </div>
         </div>
       </div>
     </section>
