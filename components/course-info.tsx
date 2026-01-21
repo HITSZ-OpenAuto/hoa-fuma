@@ -98,7 +98,7 @@ export function CourseInfo({ data, className }: CourseInfoProps) {
   return (
     <section
       className={cn(
-        'not-prose bg-card/50 overflow-hidden rounded-lg border',
+        'not-prose bg-fd-secondary/50 overflow-hidden rounded-lg border',
         className
       )}
     >
