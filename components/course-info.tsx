@@ -37,7 +37,7 @@ function InfoItem({
   return (
     <div className="flex items-start gap-3">
       <dt className="text-muted-foreground flex items-center gap-2 text-sm">
-        <Icon className="size-3.5" />
+        <Icon className="size-4" />
         {label}
       </dt>
       <dd className="text-sm font-medium">{value}</dd>
