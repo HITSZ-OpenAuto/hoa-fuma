@@ -45,6 +45,42 @@ function InfoItem({
   );
 }
 
+const HOUR_DISTRIBUTION_CONFIG = [
+  { key: 'theory', label: '理论', icon: BookOpen },
+  { key: 'lab', label: '实验', icon: Beaker },
+  { key: 'practice', label: '实践', icon: UserCheck },
+  { key: 'exercise', label: '习题', icon: PencilLine },
+  { key: 'computer', label: '上机', icon: Monitor },
+  { key: 'tutoring', label: '辅导', icon: Users },
+] as const;
+
+const GRADING_SCHEME_CONFIG = [
+  {
+    key: 'classParticipation',
+    label: '平时表现',
+    bgClass: 'bg-emerald-200',
+    textClass: 'text-emerald-700',
+  },
+  {
+    key: 'homeworkAssignments',
+    label: '平时作业',
+    bgClass: 'bg-blue-200',
+    textClass: 'text-blue-700',
+  },
+  {
+    key: 'laboratoryWork',
+    label: '实验成绩',
+    bgClass: 'bg-purple-200',
+    textClass: 'text-purple-700',
+  },
+  {
+    key: 'finalExamination',
+    label: '期末考试',
+    bgClass: 'bg-amber-200',
+    textClass: 'text-amber-700',
+  },
+] as const;
+
 export function CourseInfo({ data, className }: CourseInfoProps) {
   if (!data) {
     return (
@@ -93,48 +129,18 @@ export function CourseInfo({ data, className }: CourseInfoProps) {
             学时分配
           </h4>
           <dl className="flex flex-wrap items-start gap-4">
-            {data.hourDistribution.theory > 0 && (
-              <InfoItem
-                label="理论"
-                icon={BookOpen}
-                value={`${data.hourDistribution.theory} 学时`}
-              />
-            )}
-            {data.hourDistribution.lab > 0 && (
-              <InfoItem
-                label="实验"
-                icon={Beaker}
-                value={`${data.hourDistribution.lab} 学时`}
-              />
-            )}
-            {data.hourDistribution.practice > 0 && (
-              <InfoItem
-                label="实践"
-                icon={UserCheck}
-                value={`${data.hourDistribution.practice} 学时`}
-              />
-            )}
-            {data.hourDistribution.exercise > 0 && (
-              <InfoItem
-                label="习题"
-                icon={PencilLine}
-                value={`${data.hourDistribution.exercise} 学时`}
-              />
-            )}
-            {data.hourDistribution.computer > 0 && (
-              <InfoItem
-                label="上机"
-                icon={Monitor}
-                value={`${data.hourDistribution.computer} 学时`}
-              />
-            )}
-            {data.hourDistribution.tutoring > 0 && (
-              <InfoItem
-                label="辅导"
-                icon={Users}
-                value={`${data.hourDistribution.tutoring} 学时`}
-              />
-            )}
+            {HOUR_DISTRIBUTION_CONFIG.map(({ key, label, icon }) => {
+              const value = data.hourDistribution[key];
+              if (value <= 0) return null;
+              return (
+                <InfoItem
+                  key={key}
+                  label={label}
+                  icon={icon}
+                  value={`${value} 学时`}
+                />
+              );
+            })}
           </dl>
         </div>
 
@@ -146,66 +152,27 @@ export function CourseInfo({ data, className }: CourseInfoProps) {
             </h4>
           </div>
           <div className="flex w-full" style={{ gap: '1px' }}>
-            {data.gradingScheme.classParticipation > 0 && (
-              <div
-                style={{ width: `${data.gradingScheme.classParticipation}%` }}
-              >
-                <div className="text-muted-foreground mb-1 truncate text-xs">
-                  平时表现
+            {GRADING_SCHEME_CONFIG.map(({ key, label, bgClass, textClass }) => {
+              const percentage = data.gradingScheme[key];
+              if (percentage <= 0) return null;
+              return (
+                <div key={key} style={{ width: `${percentage}%` }}>
+                  <div className="text-muted-foreground mb-1 truncate text-xs">
+                    {label}
+                  </div>
+                  <div
+                    className={cn(
+                      'flex h-4 items-center justify-center text-xs font-medium',
+                      bgClass,
+                      textClass
+                    )}
+                    title={`${label} ${percentage}%`}
+                  >
+                    {percentage >= 10 && `${percentage}%`}
+                  </div>
                 </div>
-                <div
-                  className="flex h-4 items-center justify-center bg-emerald-200 text-xs font-medium text-emerald-700"
-                  title={`平时表现 ${data.gradingScheme.classParticipation}%`}
-                >
-                  {data.gradingScheme.classParticipation >= 10 &&
-                    `${data.gradingScheme.classParticipation}%`}
-                </div>
-              </div>
-            )}
-            {data.gradingScheme.homeworkAssignments > 0 && (
-              <div
-                style={{ width: `${data.gradingScheme.homeworkAssignments}%` }}
-              >
-                <div className="text-muted-foreground mb-1 truncate text-xs">
-                  平时作业
-                </div>
-                <div
-                  className="flex h-4 items-center justify-center bg-blue-200 text-xs font-medium text-blue-700"
-                  title={`平时作业 ${data.gradingScheme.homeworkAssignments}%`}
-                >
-                  {data.gradingScheme.homeworkAssignments >= 10 &&
-                    `${data.gradingScheme.homeworkAssignments}%`}
-                </div>
-              </div>
-            )}
-            {data.gradingScheme.laboratoryWork > 0 && (
-              <div style={{ width: `${data.gradingScheme.laboratoryWork}%` }}>
-                <div className="text-muted-foreground mb-1 truncate text-xs">
-                  实验成绩
-                </div>
-                <div
-                  className="flex h-4 items-center justify-center bg-purple-200 text-xs font-medium text-purple-700"
-                  title={`实验成绩 ${data.gradingScheme.laboratoryWork}%`}
-                >
-                  {data.gradingScheme.laboratoryWork >= 10 &&
-                    `${data.gradingScheme.laboratoryWork}%`}
-                </div>
-              </div>
-            )}
-            {data.gradingScheme.finalExamination > 0 && (
-              <div style={{ width: `${data.gradingScheme.finalExamination}%` }}>
-                <div className="text-muted-foreground mb-1 truncate text-xs">
-                  期末考试
-                </div>
-                <div
-                  className="flex h-4 items-center justify-center bg-amber-200 text-xs font-medium text-amber-700"
-                  title={`期末考试 ${data.gradingScheme.finalExamination}%`}
-                >
-                  {data.gradingScheme.finalExamination >= 10 &&
-                    `${data.gradingScheme.finalExamination}%`}
-                </div>
-              </div>
-            )}
+              );
+            })}
           </div>
         </div>
       </div>
