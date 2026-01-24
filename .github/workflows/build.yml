@@ -27,13 +27,13 @@ jobs:
           activate-environment: true
 
       - name: Set up Python
-        run: uv python install --directory scripts/
+        run: uv python install --project scripts/
 
       - name: Install HOA CLI
         run: uv tool install git+https://github.com/HITSZ-OpenAuto/hoa-majors.git
 
       - name: Install the project
-        run: uv sync --locked --directory scripts/
+        run: uv sync --locked --project scripts/
 
       - name: Build course pages
         run: uv run scripts/main.py
