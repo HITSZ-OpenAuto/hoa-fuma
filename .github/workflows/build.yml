@@ -24,16 +24,17 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
+          working-directory: scripts
           activate-environment: true
 
       - name: Set up Python
-        run: uv python install --project scripts/
+        run: uv python install 3.14
 
       - name: Install HOA CLI
         run: uv tool install git+https://github.com/HITSZ-OpenAuto/hoa-majors.git
 
       - name: Install the project
-        run: uv sync --locked --project scripts/
+        run: uv sync --locked --directory scripts/
 
       - name: Build course pages
         run: uv run scripts/main.py
