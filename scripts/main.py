@@ -40,6 +40,7 @@ def update_plan_course(plan: Plan, repos_list):
             args=f"hoa courses {plan.plan_id}",
             capture_output=True,
             text=True,
+            shell=True
         ).stdout
     ).splitlines()
 
