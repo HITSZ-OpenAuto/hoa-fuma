@@ -1,9 +1,10 @@
-import asyncio
+from itertools import count
 import os
 import subprocess
 import json
 
 from pathlib import Path
+from dataclasses import dataclass
 from github import Auth, Github
 
 
@@ -12,19 +13,19 @@ auth = Auth.Token(token=access_token)
 g = Github(auth=auth)
 
 
+@dataclass
 class Course:
-    def __init__(self, course_code, course_name):
-        self.course_code: str = course_code
-        self.course_name: str = course_name
+    course_code: str
+    course_name: str
 
 
+@dataclass
 class Plan:
-    def __init__(self, plan_id, major_code, major_name, plan_year, plan_courses):
-        self.plan_id = plan_id
-        self.major_code = major_code
-        self.major_name = major_name
-        self.plan_year: str = plan_year
-        self.plan_courses: list[Course] = plan_courses
+    plan_id: str
+    major_code: str
+    major_name: str
+    plan_year: str
+    plan_courses: list[Course]
 
 
 def create_plan_dir(plan: Plan):
@@ -59,10 +60,10 @@ def create_course_page(plan: Plan):
 
         source_path = Path(f"repos/{c.course_code}.mdx")
 
-        with open(file=source_path, mode="r") as f:
+        with open(file=source_path, mode="r", encoding="utf-8") as f:
             source_content = f.read()
 
-        with open(file=f"{course_path}", mode="w") as f:
+        with open(file=f"{course_path}", mode="w", encoding="utf-8") as f:
             s: str = ""
             s += "---\n"
             s += f"title: {c.course_name}\n"
@@ -79,7 +80,7 @@ def fetch_repo_readme(owner, repo):
         gh_repo = g.get_repo(f"{owner}/{repo}")
         contents = gh_repo.get_contents("README.md", ref="main")
         content = contents.decoded_content.decode("utf-8")
-        with file_path.open(mode="w") as f:
+        with file_path.open(mode="w", encoding="utf-8") as f:
             f.write(content)
 
 
