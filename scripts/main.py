@@ -96,12 +96,12 @@ def create_metadata(plan: Plan):
 
     major_path = Path(f"content/docs/{plan.plan_year}/{plan.major_code}/meta.json")
     with open(file=major_path, mode="w", encoding="utf-8") as f:
-        major_info: dict = {
-            "title": f"{plan.major_name}",
-            "root": "true",
-            "defaultOpen": "true",
-        }
-        json.dump(obj=major_info, fp=f, ensure_ascii=False)
+        major_info: str = f"""{{
+    "title": "{plan.major_name}",
+    "root": true,
+    "defaultOpen": true
+}}"""
+        f.write(major_info)
 
 
 def main():
