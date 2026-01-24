@@ -6,7 +6,8 @@ import json
 from pathlib import Path
 from github import Auth, Github
 
-access_token = str(os.environ.get("PERSONAL_ACCESS_TOKEN"))
+
+access_token = os.environ.get("PERSONAL_ACCESS_TOKEN")
 auth = Auth.Token(token=access_token)
 g = Github(auth=auth)
 
