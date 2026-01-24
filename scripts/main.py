@@ -36,7 +36,6 @@ async def update_plan_course(plan: Plan, repos_list):
     courses: list[str] = str(
         subprocess.run(
             args=f"hoa courses {plan.plan_id}",
-            shell=True,
             capture_output=True,
             text=True,
         ).stdout
