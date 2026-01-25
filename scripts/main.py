@@ -41,7 +41,6 @@ async def fetch_readme(
     """Fetch README from GitHub and cache it locally in 'repos/'."""
     path = Path("repos") / f"{repo}.mdx"
     if not path.exists():
-        print(f"Fetching README: {repo}...")
         try:
             async with (sem or asyncio.Lock()):
                 resp = await github.rest.repos.async_get_content(
@@ -49,7 +48,6 @@ async def fetch_readme(
                 )
             encoded = getattr(resp.parsed_data, "content", "").replace("\n", "")
             path.write_text(base64.b64decode(encoded).decode("utf-8"))
-            print(f"Successfully fetched README: {repo}")
         except Exception as e:
             print(f"Error fetching {repo}: {e}")
             return ""
@@ -60,13 +58,11 @@ async def update_plan(
     plan: Plan, repos_set: set[str], sem: asyncio.Semaphore | None = None
 ) -> None:
     """Fetch courses for a specific plan and filter by existing repos."""
-    print(f"Fetching courses for plan: {plan.major_name} ({plan.year})...")
     lines = await run_hoa("courses", plan.id, sem=sem)
     for line in lines:
         parts = line.split()
         if len(parts) >= 2 and parts[0] in repos_set:
             plan.courses.append(Course(parts[0], parts[1]))
-    print(f"Done fetching courses for plan: {plan.major_name} ({plan.year})")
 
 
 async def main() -> None:
@@ -95,8 +91,6 @@ async def main() -> None:
         p = line.split()
         if len(p) >= 4:
             plans.append(Plan(id=p[0], year=p[1], major_code=p[2], major_name=p[3]))
-
-    print(f"Read {len(plans)} plans.")
 
     print(
         f"Fetching courses for {len(plans)} plans and "
@@ -135,6 +129,8 @@ async def main() -> None:
     for year in years:
         meta_path = docs_dir / year / "meta.json"
         meta_path.write_text(json.dumps({"title": year}, indent=2))
+
+    print("Done!")
 
 
 if __name__ == "__main__":
