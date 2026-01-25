@@ -40,6 +40,37 @@ def fix_malformed_html(content: str) -> str:
     return content
 
 
+def css_property_to_camel_case(prop: str) -> str:
+    """Convert CSS property name to camelCase for JSX."""
+    parts = prop.strip().split("-")
+    return parts[0] + "".join(word.capitalize() for word in parts[1:])
+
+
+def convert_style_to_jsx(content: str) -> str:
+    """Convert HTML style attributes to JSX format.
+
+    Converts style="text-align:center;" to style={{textAlign: "center"}}
+    """
+
+    def convert_style_attr(match: re.Match[str]) -> str:
+        style_str = match.group(1)
+        # Parse CSS properties
+        jsx_props = []
+        for prop in style_str.split(";"):
+            prop = prop.strip()
+            if not prop or ":" not in prop:
+                continue
+            name, value = prop.split(":", 1)
+            camel_name = css_property_to_camel_case(name.strip())
+            jsx_props.append(f'{camel_name}: "{value.strip()}"')
+
+        if jsx_props:
+            return "style={{" + ", ".join(jsx_props) + "}}"
+        return ""
+
+    return re.sub(r'style="([^"]*)"', convert_style_attr, content)
+
+
 def escape_curly_braces_in_math(content: str) -> str:
     """Escape curly braces inside LaTeX math expressions for MDX compatibility.
 
@@ -182,6 +213,7 @@ def format_mdx_file(filepath: Path) -> bool:
     content = remove_shield_badges(content)
     content = fix_self_closing_tags(content)
     content = fix_malformed_html(content)
+    content = convert_style_to_jsx(content)
     content = escape_curly_braces_in_math(content)
     content = convert_hugo_details_to_accordion(content)
 
