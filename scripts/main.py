@@ -116,7 +116,8 @@ async def generate_pages(plans: list[Plan]) -> None:
         # Generate course pages
         for course in plan.courses:
             path = repos_dir / f"{course.code}.mdx"
-            content = path.read_text()
+            # Remove first two lines (title)
+            content = "\n".join(path.read_text().splitlines()[2:])
             (major_dir / f"{course.code}.mdx").write_text(
                 f"---\ntitle: {course.name}\n---\n\n{content}"
             )
