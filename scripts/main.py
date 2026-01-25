@@ -44,18 +44,12 @@ async def fetch_readme(
         print(f"Fetching README: {repo}...")
         try:
             async with (sem or asyncio.Lock()):
-                resp = await asyncio.wait_for(
-                    github.rest.repos.async_get_content(
-                        "HITSZ-OpenAuto", repo, "README.md"
-                    ),
-                    timeout=10.0,
+                resp = await github.rest.repos.async_get_content(
+                    "HITSZ-OpenAuto", repo, "README.md"
                 )
             encoded = getattr(resp.parsed_data, "content", "").replace("\n", "")
             path.write_text(base64.b64decode(encoded).decode("utf-8"))
             print(f"Successfully fetched README: {repo}")
-        except asyncio.TimeoutError:
-            print(f"Timeout fetching README for {repo}")
-            return ""
         except Exception as e:
             print(f"Error fetching {repo}: {e}")
             return ""
