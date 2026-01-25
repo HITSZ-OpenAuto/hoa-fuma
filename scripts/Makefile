@@ -17,7 +17,7 @@ install-hooks: ## Install pre-commit hooks
 	@echo "✓ Pre-commit hooks installed!"
 
 run: ## Run main script
-	uv run src/hoa_ci/main.py
+	cd .. && uv run sripts/main.py
 
 lint: ## Run ruff linter
 	uv run ruff check . --fix
