@@ -3,7 +3,7 @@
 
 # generated content
 .source
-content/
+content/*
 !content/blog/
 
 # test & build
