@@ -44,23 +44,22 @@ export const docs = defineDocs({
   },
 });
 
-export const blog = defineDocs({
+export const blogPosts = defineCollections({
+  type: 'doc',
   dir: 'content/blog',
-  docs: {
-    schema: frontmatterSchema.extend({
-      authors: z
-        .array(
-          z.object({
-            name: z.string(),
-            link: z.string().optional(),
-            image: z.string().optional(),
-          })
-        )
-        .optional(),
-      description: z.string(),
-      date: z.iso.date().or(z.date()),
-    }),
-  },
+  schema: frontmatterSchema.extend({
+    authors: z
+      .array(
+        z.object({
+          name: z.string(),
+          link: z.string().optional(),
+          image: z.string().optional(),
+        })
+      )
+      .optional(),
+    description: z.string(),
+    date: z.iso.date().or(z.date()),
+  }),
 });
 
 export default defineConfig({
