@@ -37,7 +37,6 @@ export function Toolbar({
 }: ToolbarProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
-      {/* Search Box - Top on mobile, Middle on desktop */}
       <div className="flex w-full items-center gap-2 sm:order-2 sm:mx-auto sm:w-auto sm:max-w-md sm:flex-1">
         <div className="relative w-full">
           <input
@@ -55,7 +54,6 @@ export function Toolbar({
         </div>
       </div>
 
-      {/* Acceleration Mode - Left on desktop */}
       <div
         className={cn(
           'flex h-8 cursor-pointer items-center gap-2 rounded-md border px-2.5 transition-all select-none sm:order-1',
@@ -77,7 +75,6 @@ export function Toolbar({
         />
       </div>
 
-      {/* Action Buttons - Right on desktop */}
       <div className="flex flex-wrap items-center gap-2 sm:order-3">
         <Button variant="outline" size="sm" className="h-8 px-2 sm:px-3">
           <UploadCloudIcon className="text-muted-foreground size-4" />

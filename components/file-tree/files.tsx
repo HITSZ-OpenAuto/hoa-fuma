@@ -1,33 +1,11 @@
-'use client';
-
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 import { transformChildrenToData } from './utils';
 import { FileTreeTable } from './table';
-import type { FileNode } from '@/lib/types';
 
 export interface FilesProps {
   children: ReactNode;
   className?: string;
   url?: string;
-}
-
-export interface FileTreeFromDataProps {
-  data: FileNode[];
-  repo: string;
-  className?: string;
-}
-
-/**
- * FileTreeFromData component - renders FileTree directly from pre-computed data.
- * Used when generating MDX at build time with pre-computed tree structure.
- */
-export function FileTreeFromData({
-  data,
-  repo,
-  className,
-}: FileTreeFromDataProps) {
-  const url = `https://github.com/HITSZ-OpenAuto/${repo}`;
-  return <FileTreeTable data={data} className={className} url={url} />;
 }
 
 /**
@@ -36,7 +14,7 @@ export function FileTreeFromData({
  * Usage in MDX:
  * ```mdx
  * <Files>
- *   <Folder name="docs" defaultOpen>
+ *   <Folder name="docs">
  *     <File name="readme.md" url="..." />
  *   </Folder>
  *   <File name="index.ts" url="..." />
@@ -44,7 +22,7 @@ export function FileTreeFromData({
  * ```
  */
 export function Files({ children, className, url }: FilesProps) {
-  const data = useMemo(() => transformChildrenToData(children), [children]);
+  const data = transformChildrenToData(children);
 
   return <FileTreeTable data={data} className={className} url={url} />;
 }
@@ -66,8 +44,6 @@ export function Folder({
   date?: string;
   size?: number;
 }) {
-  // This component is only used for its props by transformChildrenToData
-  // It should never actually render in the browser
   return null;
 }
 
@@ -88,7 +64,5 @@ export function File({
   url?: string;
   type?: string;
 }) {
-  // This component is only used for its props by transformChildrenToData
-  // It should never actually render in the browser
   return null;
 }

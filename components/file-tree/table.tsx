@@ -42,7 +42,6 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>(() => {
-    // Initialize expanded state based on defaultOpen
     const initialExpanded: Record<string, boolean> = {};
     function initExpanded(nodes: FileNode[]) {
       for (const node of nodes) {
@@ -62,13 +61,11 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
   const [downloadProgress, setDownloadProgress] = useState(0);
   const prevFilterRef = useRef(globalFilter);
 
-  // Memoize columns with current acceleration state
   const columns = useMemo(
     () => createColumns({ isAccelerated }),
     [isAccelerated]
   );
 
-  // Auto-expand folders that match search
   useEffect(() => {
     if (globalFilter) {
       const newExpanded: Record<string, boolean> = {};
@@ -98,7 +95,6 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
       expandMatching(data);
       setExpanded(newExpanded);
     } else if (prevFilterRef.current !== '') {
-      // Clear all expanded folders when search is cleared
       setExpanded({});
     }
     prevFilterRef.current = globalFilter;
@@ -140,7 +136,6 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
     setDownloadProgress(0);
 
     try {
-      // Get all file nodes and filter by selection
       const allFiles = getFileNodes(data);
       const selectedFiles = allFiles
         .filter((file) => rowSelection[file.id])
@@ -179,7 +174,6 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
         url={url}
       />
 
-      {/* Table */}
       <div className="bg-background overflow-hidden rounded-md border">
         <Table>
           <TableHeader className="text-xs">
