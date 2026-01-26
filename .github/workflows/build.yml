@@ -46,11 +46,10 @@ jobs:
           uv run scripts/main.py
           uv run scripts/format_mdx.py
 
-      - name: Commit and push changes
+      - name: Commit and push changes to production branch
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
-          git add content/
-          git commit -m "docs: update course pages" || exit 0
-          git pull --rebase
-          git push origin HEAD
+          git add --force content/
+          git commit -m "docs: update course pages" || echo "No changes to commit"          
+          git push origin HEAD:production --force

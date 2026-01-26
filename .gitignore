@@ -3,6 +3,8 @@
 
 # generated content
 .source
+content/
+!content/blog/
 
 # test & build
 /coverage
