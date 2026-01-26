@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from githubkit import GitHub
 from rich.progress import Progress, TaskID
 
-from tree_utils import flat_to_tree, tree_to_json_string
+from tree_utils import flat_to_tree, tree_to_jsx
 
 
 @dataclass
@@ -123,17 +123,12 @@ async def generate_pages(plans: list[Plan]) -> None:
             # Remove first two lines (title)
             content = "\n".join(path.read_text().splitlines()[2:])
 
-            # Generate FileTree from JSON if exists
+            # Generate FileTree from JSON
             filetree_content = ""
-            if json_path.exists():
-                try:
-                    flat_data = json.loads(json_path.read_text())
-                    tree = flat_to_tree(flat_data, course.code)
-                    if tree:  # Only add if there are files to show
-                        tree_json = tree_to_json_string(tree)
-                        filetree_content = f'\n\n## 资源下载\n\n<FileTreeFromData repo="{course.code}" data={{JSON.parse(\'{tree_json}\')}} />'
-                except Exception as e:
-                    print(f"Error processing JSON for {course.code}: {e}")
+            flat_data = json.loads(json_path.read_text())
+            tree = flat_to_tree(flat_data, course.code)
+            tree_jsx = tree_to_jsx(tree)
+            filetree_content = f'\n\n## 资源下载\n\n<Files url="https://github.com/HITSZ-OpenAuto/{course.code}">\n{tree_jsx}\n</Files>'
 
             (major_dir / f"{course.code}.mdx").write_text(
                 f"---\ntitle: {course.name}\n---\n\n{content}{filetree_content}"

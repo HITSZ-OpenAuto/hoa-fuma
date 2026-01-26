@@ -21,7 +21,6 @@ interface ColumnOptions {
   isAccelerated: boolean;
 }
 
-// Cell component for file/folder name with indentation and expand toggle
 function NameCell({ row }: { row: Row<FileNode> }) {
   const node = row.original;
   const isFolder = node.type === 'folder';
@@ -54,7 +53,6 @@ function NameCell({ row }: { row: Row<FileNode> }) {
   );
 }
 
-// Cell component for actions (preview, download)
 function ActionsCell({
   row,
   isAccelerated,
@@ -119,7 +117,6 @@ function ActionsCell({
   );
 }
 
-// Checkbox cell for row selection
 function SelectCell({ row }: { row: Row<FileNode> }) {
   return (
     <Checkbox

@@ -113,12 +113,26 @@ def flat_to_tree(flat_data: dict[str, dict[str, Any]], repo_name: str) -> list[d
     return convert_children(root)
 
 
-def tree_to_json_string(tree: list[dict]) -> str:
-    """Convert tree structure to compact JSON string for embedding in MDX.
+def tree_to_jsx(nodes: list[dict], level: int = 1) -> str:
+    """Convert tree structure to declarative JSX string."""
+    indent = "  " * level
+    jsx = []
 
-    Escapes backslashes and single quotes for safe embedding in JS string literals.
-    """
-    json_str = json.dumps(tree, ensure_ascii=False, separators=(",", ":"))
-    # Escape backslashes first, then single quotes for embedding in '...'
-    json_str = json_str.replace("\\", "\\\\").replace("'", "\\'")
-    return json_str
+    for node in nodes:
+        if node["type"] == "folder":
+            jsx.append(f'{indent}<Folder name="{node["name"]}">')
+            jsx.append(tree_to_jsx(node["children"], level + 1))
+            jsx.append(f'{indent}</Folder>')
+        else:
+            props = [f'name="{node["name"]}"']
+            if node.get("url"):
+                props.append(f'url="{node["url"]}"')
+            if node.get("date"):
+                props.append(f'date="{node["date"]}"')
+            if node.get("size"):
+                props.append(f'size={{{node["size"]}}}')
+
+            jsx.append(f'{indent}<File {" ".join(props)} />')
+
+    return "\n".join(jsx)
+

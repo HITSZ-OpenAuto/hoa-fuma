@@ -1,5 +1,5 @@
 import { Children, isValidElement, ReactElement, ReactNode } from 'react';
-import { zip, type AsyncZippable } from 'fflate';
+import type { AsyncZippable } from 'fflate';
 import {
   FileArchive,
   FileIcon,
@@ -60,14 +60,10 @@ export function formatBytes(bytes: number, decimals = 2): string {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
-export function getFileExtension(url?: string) {
+function getFileExtension(url?: string) {
   if (!url) return '';
-  try {
-    const urlPath = new URL(url).pathname;
-    return decodeURIComponent(urlPath).split('.').pop()?.toLowerCase() || '';
-  } catch {
-    return '';
-  }
+  const pathname = url.includes('://') ? new URL(url).pathname : url;
+  return pathname.split('.').pop()?.toLowerCase() || '';
 }
 
 export function getFileIcon(url?: string) {
@@ -105,7 +101,6 @@ export function transformChildrenToData(
 
     const fullPath = parentPath ? `${parentPath}/${name}` : name;
 
-    // Check if it's a folder (has children prop that contains more nodes)
     const children = (element.props as FolderProps).children;
     const isFolder = children !== undefined;
 
@@ -162,16 +157,12 @@ export function flattenNodes(nodes: FileNode[]): FileNode[] {
   return result;
 }
 
-/**
- * Gets all file nodes (non-folders) from the tree.
- */
+// Gets all file nodes (non-folders) from the tree
 export function getFileNodes(nodes: FileNode[]): FileNode[] {
   return flattenNodes(nodes).filter((node) => node.type === 'file' && node.url);
 }
 
-/**
- * Trigger a browser download for a blob
- */
+// Trigger a browser download for a blob
 function triggerDownload(blob: Blob, filename: string) {
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -183,9 +174,7 @@ function triggerDownload(blob: Blob, filename: string) {
   window.URL.revokeObjectURL(url);
 }
 
-/**
- * Downloads a single file with progress tracking
- */
+// Downloads a single file with progress tracking
 export async function downloadSingleFile(
   url: string,
   name: string,
@@ -222,9 +211,7 @@ export async function downloadSingleFile(
   triggerDownload(blob, name);
 }
 
-/**
- * Downloads multiple files as a ZIP archive with progress tracking
- */
+// Downloads multiple files as a ZIP archive with progress tracking
 export async function downloadBatchFiles(
   files: DownloadFile[],
   onProgress?: (progress: number) => void
@@ -240,7 +227,6 @@ export async function downloadBatchFiles(
 
       const buffer = await response.arrayBuffer();
 
-      // Ensure extension is preserved if missing in path but present in URL
       let zipPath = file.path;
       const urlPath = file.url.split(/[?#]/)[0];
       const extMatch = urlPath.match(/\.[a-z0-9]+$/i);
@@ -261,6 +247,8 @@ export async function downloadBatchFiles(
   if (Object.keys(zippable).length === 0) {
     throw new Error('No files were successfully downloaded');
   }
+
+  const { zip } = await import('fflate');
 
   const content = await new Promise<Uint8Array>((resolve, reject) => {
     zip(zippable, (err, data) => {

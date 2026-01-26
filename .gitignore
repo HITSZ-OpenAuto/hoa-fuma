@@ -34,3 +34,4 @@ next-env.d.ts
 repos/
 repos_list.txt
 scripts/.env
+content/
