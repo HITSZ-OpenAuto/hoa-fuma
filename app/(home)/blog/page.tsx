@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { blog } from '@/lib/source';
-import BannerImage from './banner-hoa.png';
+import BannerImage from './hoa-banner.png';
 import Image from 'next/image';
 
 export default function Page() {
