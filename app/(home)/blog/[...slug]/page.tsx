@@ -6,10 +6,10 @@ import { blog } from '@/lib/source';
 import { getMDXComponents } from '@/mdx-components';
 
 export default async function Page(props: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 }) {
   const params = await props.params;
-  const page = blog.getPage([params.slug]);
+  const page = blog.getPage(params.slug);
 
   if (!page) notFound();
   const Mdx = page.data.body;
@@ -84,17 +84,17 @@ export default async function Page(props: {
   );
 }
 
-export function generateStaticParams(): { slug: string }[] {
+export function generateStaticParams(): { slug: string[] }[] {
   return blog.getPages().map((page) => ({
-    slug: page.slugs[0],
+    slug: page.slugs,
   }));
 }
 
 export async function generateMetadata(props: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 }) {
   const params = await props.params;
-  const page = blog.getPage([params.slug]);
+  const page = blog.getPage(params.slug);
   if (!page) notFound();
   return {
     title: page.data.title,
