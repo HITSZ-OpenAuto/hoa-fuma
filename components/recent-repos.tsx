@@ -20,7 +20,7 @@ export function RecentRepos({
 }: RecentReposProps) {
   return (
     <section className="mx-auto w-full max-w-5xl pb-16 text-left">
-      <p className="mb-4 text-xs tracking-[0.22em] text-[#3b342e]/70 uppercase">
+      <p className="text-muted-foreground mb-4 text-xs tracking-[0.22em] uppercase">
         {title}
       </p>
       <Cards className="grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

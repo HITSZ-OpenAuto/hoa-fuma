@@ -56,10 +56,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div
-      className="min-h-svh px-6 text-[#1f1b16]"
-      style={{ backgroundColor: 'var(--background)' }}
-    >
+    <div className="bg-background text-foreground min-h-svh px-6">
       <section className="flex min-h-svh items-center justify-center text-center">
         <h1
           className={`${display.className} max-w-[12ch] text-[clamp(3rem,6vw,5.4rem)] leading-[1.12] tracking-[0.01em] text-balance`}
@@ -70,7 +67,7 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto w-full max-w-5xl pb-8 text-left">
-        <p className="mb-4 text-xs tracking-[0.22em] text-[#3b342e]/70 uppercase">
+        <p className="text-muted-foreground mb-4 text-xs tracking-[0.22em] uppercase">
           最近文章
         </p>
         <Cards className="grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -91,7 +88,7 @@ export default function HomePage() {
 
       <RecentRepos repos={recentRepos} title="最近更新的仓库" />
 
-      <footer className="pb-6 text-left text-xs text-[#3b342e]/70">
+      <footer className="text-muted-foreground pb-6 text-left text-xs">
         © 2026 HITSZ OpenAuto
       </footer>
     </div>
