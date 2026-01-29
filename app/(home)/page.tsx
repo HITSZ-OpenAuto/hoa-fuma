@@ -26,7 +26,7 @@ export default function HomePage() {
     .filter(
       (page) => page.slugs.length === 1 && !seriesSlugs.has(page.slugs[0])
     )
-    .filter((page) => page.data?.date && page.data?.draft !== true)
+    .filter((page) => page.data?.date)
     .sort(
       (a, b) =>
         new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
