@@ -36,18 +36,21 @@ export default function HomePage() {
 
   const recentRepos = [
     {
+      id: '1',
       name: 'HITSZ-OpenAuto/hoa-fuma',
       description: 'Placeholder repository',
       href: 'https://github.com/HITSZ-OpenAuto/hoa-fuma/',
       updatedAt: '2026-01-29',
     },
     {
+      id: '2',
       name: 'HITSZ-OpenAuto/hoa-fuma',
       description: 'Placeholder repository',
       href: 'https://github.com/HITSZ-OpenAuto/hoa-fuma/',
       updatedAt: '2026-01-25',
     },
     {
+      id: '3',
       name: 'HITSZ-OpenAuto/hoa-fuma',
       description: 'Placeholder repository',
       href: 'https://github.com/HITSZ-OpenAuto/hoa-fuma/',

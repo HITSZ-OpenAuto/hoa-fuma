@@ -3,6 +3,7 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { formatDate } from '@/lib/utils';
 
 type RepoItem = {
+  id: string;
   name: string;
   description?: string;
   href: string;
@@ -25,11 +26,7 @@ export function RecentRepos({
       </p>
       <Cards className="grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {repos.map((repo, index) => (
-          <ScrollReveal
-            key={`${repo.href}-${index}`}
-            delay={index * 120}
-            className="h-full"
-          >
+          <ScrollReveal key={repo.id} delay={index * 120} className="h-full">
             <Card
               title={repo.name}
               description={repo.description}
