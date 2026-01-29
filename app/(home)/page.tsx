@@ -3,6 +3,7 @@ import { blog } from '@/lib/source';
 import { Cards, Card } from 'fumadocs-ui/components/card';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { RecentRepos } from '@/components/recent-repos';
+import { formatDate } from '@/lib/utils';
 
 const display = Cormorant_Garamond({
   subsets: ['latin'],
@@ -32,13 +33,6 @@ export default function HomePage() {
         new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
     )
     .slice(0, 3);
-
-  const formatDate = (value: string | Date) =>
-    new Date(value).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
 
   const recentRepos = [
     {
@@ -95,11 +89,7 @@ export default function HomePage() {
         </Cards>
       </section>
 
-      <RecentRepos
-        repos={recentRepos}
-        title="最近更新的仓库"
-        formatDate={formatDate}
-      />
+      <RecentRepos repos={recentRepos} title="最近更新的仓库" />
 
       <footer className="pb-6 text-left text-xs text-[#3b342e]/70">
         © 2026 HITSZ OpenAuto

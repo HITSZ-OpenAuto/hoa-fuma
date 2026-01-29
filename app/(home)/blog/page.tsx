@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { blog } from '@/lib/source';
 import BannerImage from './hoa-banner.png';
 import Image from 'next/image';
+import { formatDate } from '@/lib/utils';
 
 export default function Page() {
   const pages = blog.getPages();
@@ -94,11 +95,7 @@ export default function Page() {
 
             {item.date && (
               <p className="text-brand mt-auto pt-4 text-xs">
-                {item.date.toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
+                {formatDate(item.date)}
               </p>
             )}
           </Link>

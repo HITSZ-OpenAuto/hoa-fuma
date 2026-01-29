@@ -1,5 +1,6 @@
 import { Card, Cards } from 'fumadocs-ui/components/card';
 import { ScrollReveal } from '@/components/scroll-reveal';
+import { formatDate } from '@/lib/utils';
 
 type RepoItem = {
   name: string;
@@ -11,13 +12,11 @@ type RepoItem = {
 type RecentReposProps = {
   title?: string;
   repos: RepoItem[];
-  formatDate?: (value: string | Date) => string;
 };
 
 export function RecentRepos({
   title = '最近更新的仓库',
   repos,
-  formatDate,
 }: RecentReposProps) {
   return (
     <section className="mx-auto w-full max-w-5xl pb-16 text-left">
@@ -37,14 +36,7 @@ export function RecentRepos({
               href={repo.href}
               className="bg-fd-card hover:bg-fd-accent hover:text-fd-accent-foreground [&>div:last-child]:text-brand flex h-full flex-col rounded-2xl border p-4 text-left shadow-sm transition-colors [&>div:last-child]:mt-auto [&>div:last-child]:pt-4 [&>div:last-child]:text-xs"
             >
-              {repo.updatedAt
-                ? (formatDate?.(repo.updatedAt) ??
-                  new Date(repo.updatedAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  }))
-                : null}
+              {repo.updatedAt ? formatDate(repo.updatedAt) : null}
             </Card>
           </ScrollReveal>
         ))}
