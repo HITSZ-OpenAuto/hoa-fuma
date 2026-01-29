@@ -1,7 +1,7 @@
-name: Build
+name: Preview
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -9,19 +9,17 @@ env:
   NEXT_TELEMETRY_DISABLED: 1
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+  pull_request:
 
 jobs:
-  build:
+  preview:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
           repository: ${{ github.repository }}
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Fetch repositories in the organization
         run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
@@ -52,23 +50,15 @@ jobs:
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
-      
+
       - uses: oven-sh/setup-bun@v2
       - run: bun install
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} --archive=tgz
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Commit and push changes to production branch
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Actions"
-          git add --force content/
-          git commit -m "docs: update course pages" || echo "No changes to commit"          
-          git push origin HEAD:production --force
+      - name: Deploy Preview to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --archive=tgz
