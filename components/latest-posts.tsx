@@ -50,9 +50,9 @@ export function LatestPosts() {
 
   return (
     <section className="mx-auto w-full max-w-5xl pb-8 text-left">
-      <p className="text-muted-foreground mb-4 text-xs tracking-[0.22em] uppercase">
+      <h4 className="text-foreground mb-4 text-lg font-semibold tracking-tight">
         最近文章
-      </p>
+      </h4>
       <Cards className="grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {latestPosts.map((post, index) => (
           <PostCard key={post.url} post={post} index={index} />

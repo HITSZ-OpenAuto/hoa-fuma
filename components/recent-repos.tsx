@@ -21,9 +21,9 @@ export function RecentRepos({
 }: RecentReposProps) {
   return (
     <section className="mx-auto w-full max-w-5xl pb-16 text-left">
-      <p className="text-muted-foreground mb-4 text-xs tracking-[0.22em] uppercase">
+      <h4 className="text-foreground mb-4 text-lg font-semibold tracking-tight">
         {title}
-      </p>
+      </h4>
       <Cards className="grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {repos.map((repo, index) => (
           <ScrollReveal key={repo.id} delay={index * 120} className="h-full">
