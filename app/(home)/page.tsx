@@ -1,9 +1,6 @@
 import { Cormorant_Garamond } from 'next/font/google';
-import { blog } from '@/lib/source';
-import { Cards, Card } from 'fumadocs-ui/components/card';
-import { ScrollReveal } from '@/components/scroll-reveal';
 import { RecentRepos } from '@/components/recent-repos';
-import { formatDate } from '@/lib/utils';
+import { LatestPosts } from '@/components/latest-posts';
 
 const display = Cormorant_Garamond({
   subsets: ['latin'],
@@ -12,28 +9,6 @@ const display = Cormorant_Garamond({
 });
 
 export default function HomePage() {
-  const pages = blog.getPages();
-  const seriesSlugs = new Set<string>();
-
-  for (const page of pages) {
-    const seriesSlug = page.slugs[0];
-    if (!seriesSlug) continue;
-    if (page.slugs.length > 1) {
-      seriesSlugs.add(seriesSlug);
-    }
-  }
-
-  const latestPosts = pages
-    .filter(
-      (page) => page.slugs.length === 1 && !seriesSlugs.has(page.slugs[0])
-    )
-    .filter((page) => page.data?.date)
-    .sort(
-      (a, b) =>
-        new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-    )
-    .slice(0, 3);
-
   const recentRepos = [
     {
       id: '1',
@@ -69,25 +44,7 @@ export default function HomePage() {
         </h1>
       </section>
 
-      <section className="mx-auto w-full max-w-5xl pb-8 text-left">
-        <p className="text-muted-foreground mb-4 text-xs tracking-[0.22em] uppercase">
-          最近文章
-        </p>
-        <Cards className="grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {latestPosts.map((post, index) => (
-            <ScrollReveal key={post.url} delay={index * 120} className="h-full">
-              <Card
-                title={post.data.title}
-                description={post.data.description}
-                href={post.url}
-                className="bg-fd-card hover:bg-fd-accent hover:text-fd-accent-foreground [&>div:last-child]:text-brand flex h-full flex-col rounded-2xl border p-4 text-left shadow-sm transition-colors [&>div:last-child]:mt-auto [&>div:last-child]:pt-4 [&>div:last-child]:text-xs"
-              >
-                {formatDate(post.data.date)}
-              </Card>
-            </ScrollReveal>
-          ))}
-        </Cards>
-      </section>
+      <LatestPosts />
 
       <RecentRepos repos={recentRepos} title="最近更新的仓库" />
 
