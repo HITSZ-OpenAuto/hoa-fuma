@@ -49,10 +49,10 @@ export function LatestPosts() {
   if (latestPosts.length === 0) return null;
 
   return (
-    <section className="mx-auto w-full max-w-5xl pb-8 text-left">
-      <h4 className="text-foreground mb-4 text-lg font-semibold tracking-tight">
+    <section className="mx-auto w-full max-w-5xl pb-6 text-left">
+      <h2 className="text-foreground mb-4 text-sm font-semibold tracking-tight">
         最近文章
-      </h4>
+      </h2>
       <Cards className="grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {latestPosts.map((post, index) => (
           <PostCard key={post.url} post={post} index={index} />
