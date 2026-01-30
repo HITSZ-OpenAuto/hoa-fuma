@@ -31,6 +31,9 @@ next-env.d.ts
 # tools
 .vscode
 .claude
+.codex
+.gemini
+.agents
 
 # artifacts
 repos/

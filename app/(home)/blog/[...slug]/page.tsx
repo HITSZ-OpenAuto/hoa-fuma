@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { blog } from '@/lib/source';
 import { getMDXComponents } from '@/mdx-components';
+import { formatDate } from '@/lib/utils';
 
 export default async function Page(props: {
   params: Promise<{ slug: string[] }>;
@@ -46,11 +47,7 @@ export default async function Page(props: {
                 {post.data.description}
               </p>
               <p className="text-brand mt-auto pt-4 text-xs">
-                {new Date(post.data.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
+                {formatDate(post.data.date)}
               </p>
             </Link>
           ))}
@@ -65,13 +62,7 @@ export default async function Page(props: {
       <p className="text-fd-muted-foreground mb-8">{page.data.description}</p>
 
       <div className="text-fd-muted-foreground mb-8 flex flex-row items-center gap-2 text-sm">
-        <p>
-          {new Date(page.data.date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </p>
+        <p>{formatDate(page.data.date)}</p>
         {page.data.authors && page.data.authors.length > 0 && (
           <>
             <span>·</span>
