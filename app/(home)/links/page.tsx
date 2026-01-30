@@ -12,10 +12,10 @@ export default async function LinksPage() {
   const MDX = page.data.body;
 
   return (
-    <div className="container py-12">
+    <main className="max-w-page mx-auto w-full px-4 pb-12 md:py-12">
       <h1 className="mb-8 text-3xl font-bold">{page.data.title}</h1>
       <MDX components={getMDXComponents()} />
-    </div>
+    </main>
   );
 }
 
