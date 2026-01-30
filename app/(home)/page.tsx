@@ -44,9 +44,9 @@ export default function HomePage() {
         </h1>
       </section>
 
-      <LatestPosts />
-
       <RecentRepos repos={recentRepos} title="最近更新的仓库" />
+
+      <LatestPosts />
 
       <footer className="text-muted-foreground pb-6 text-left text-xs">
         © 2026 HITSZ OpenAuto
