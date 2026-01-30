@@ -64,6 +64,24 @@ export const blogPosts = defineCollections({
   }),
 });
 
+export const newsPosts = defineCollections({
+  type: 'doc',
+  dir: 'content/news',
+  schema: frontmatterSchema.extend({
+    authors: z
+      .array(
+        z.object({
+          name: z.string(),
+          link: z.string().optional(),
+          image: z.string().optional(),
+        })
+      )
+      .optional(),
+    description: z.string().optional(),
+    date: z.iso.date().or(z.date()),
+  }),
+});
+
 export default defineConfig({
   mdxOptions: {
     remarkPlugins: [remarkMath],

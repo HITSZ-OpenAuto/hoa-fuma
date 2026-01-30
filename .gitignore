@@ -5,6 +5,7 @@
 .source
 content/*
 !content/blog/
+!content/news/
 
 # test & build
 /coverage
