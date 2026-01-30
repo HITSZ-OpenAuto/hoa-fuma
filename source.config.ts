@@ -64,6 +64,14 @@ export const blogPosts = defineCollections({
   }),
 });
 
+export const pages = defineCollections({
+  type: 'doc',
+  dir: 'content/pages',
+  schema: frontmatterSchema.extend({
+    description: z.string().optional(),
+  }),
+});
+
 export default defineConfig({
   mdxOptions: {
     remarkPlugins: [remarkMath],

@@ -1,0 +1,18 @@
+$ bun --bun next dev
+▲ Next.js 16.1.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+[MDX] generated files in 32.75801999999999ms
+[MDX] started dev server
+[MDX] started dev server
+✓ Ready in 1007ms
+[bun] Warning: async_hooks.createHook is not implemented in Bun. Hooks can still be created but will never be called.
+[bun] Warning: async_hooks.executionAsyncId/triggerAsyncId are not implemented in Bun. It will return 0 every time.
+ GET /about 200 in 3.6s (compile: 1627ms, render: 1954ms)
+ GET /about 200 in 1044ms (compile: 7ms, render: 1037ms)
+✓ Compiled in 821ms
+ GET /about 200 in 1790ms (compile: 519ms, render: 1271ms)
+✓ Compiled in 172ms
+✓ Compiled in 122ms

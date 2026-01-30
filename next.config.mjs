@@ -6,11 +6,17 @@ const withMDX = createMDX();
 const config = {
   reactStrictMode: true,
   images: {
+    dangerouslyAllowSVG: true,
     dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'github.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'contrib.nn.ci',
         pathname: '/**',
       },
     ],
