@@ -16,3 +16,6 @@ $ bun --bun next dev
  GET /about 200 in 1790ms (compile: 519ms, render: 1271ms)
 ✓ Compiled in 172ms
 ✓ Compiled in 122ms
+✓ Compiled in 1230ms
+✓ Compiled in 167ms
+✓ Compiled in 144ms
