@@ -64,6 +64,12 @@ export const blogPosts = defineCollections({
   }),
 });
 
+export const links = defineCollections({
+  type: 'doc',
+  dir: 'content/links',
+  schema: frontmatterSchema,
+});
+
 export default defineConfig({
   mdxOptions: {
     remarkPlugins: [remarkMath],

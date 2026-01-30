@@ -1,4 +1,8 @@
-import { docs, blogPosts } from 'fumadocs-mdx:collections/server';
+import {
+  docs,
+  blogPosts,
+  links as linksCollection,
+} from 'fumadocs-mdx:collections/server';
 import { type InferPageType, loader } from 'fumadocs-core/source';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { toFumadocsSource } from 'fumadocs-mdx/runtime/server';
@@ -22,6 +26,11 @@ export function getPageImage(page: InferPageType<typeof source>) {
 export const blog = loader({
   baseUrl: '/blog',
   source: toFumadocsSource(blogPosts, []),
+});
+
+export const links = loader({
+  baseUrl: '/links',
+  source: toFumadocsSource(linksCollection, []),
 });
 
 export function getAvailableYears(): string[] {
