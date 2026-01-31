@@ -3,7 +3,7 @@ name = "hoa-ci"
 version = "0.1.0"
 description = "Build course pages from HOA."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.14"
 dependencies = [
     "githubkit>=0.14.3",
     "python-dotenv>=1.2.1",
