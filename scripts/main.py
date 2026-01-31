@@ -30,7 +30,7 @@ class Plan:
 
 async def run_hoa(*args: str, sem: asyncio.Semaphore | None = None) -> list[str]:
     """Helper to run 'hoa' CLI commands and return output lines."""
-    async with (sem or asyncio.Lock()):
+    async with sem or asyncio.Lock():
         proc = await asyncio.create_subprocess_exec(
             "hoa", *args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
         )
@@ -52,7 +52,7 @@ async def fetch_repo_data(
     # Fetch README if not exists
     if not path.exists():
         try:
-            async with (sem or asyncio.Lock()):
+            async with sem or asyncio.Lock():
                 resp = await github.rest.repos.async_get_content(
                     "HITSZ-OpenAuto", repo, "README.md"
                 )
@@ -64,7 +64,7 @@ async def fetch_repo_data(
     # Fetch worktree.json if not exists
     if not json_path.exists():
         try:
-            async with (sem or asyncio.Lock()):
+            async with sem or asyncio.Lock():
                 resp = await github.rest.repos.async_get_content(
                     "HITSZ-OpenAuto", repo, "worktree.json", ref="worktree"
                 )
@@ -142,9 +142,11 @@ async def generate_pages(plans: list[Plan]) -> None:
 
 async def main() -> None:
     load_dotenv()
-    token = os.environ.get("PERSONAL_ACCESS_TOKEN")
+    token = os.environ.get("PERSONAL_ACCESS_TOKEN") or os.environ.get("GITHUB_TOKEN")
     if not token:
-        sys.exit("Error: PERSONAL_ACCESS_TOKEN environment variable is required.")
+        sys.exit(
+            "Error: no GitHub token found. Set PERSONAL_ACCESS_TOKEN (recommended for CI) or GITHUB_TOKEN, or login via `gh auth login`."
+        )
 
     github = GitHub(token)
     Path("repos").mkdir(exist_ok=True)
@@ -178,7 +180,9 @@ async def main() -> None:
         task = progress.add_task("Fetching repos...", total=len(repos_list))
         await asyncio.gather(
             *(
-                fetch_repo_data(github, r, sem=github_sem, progress=progress, task_id=task)
+                fetch_repo_data(
+                    github, r, sem=github_sem, progress=progress, task_id=task
+                )
                 for r in repos_list
             )
         )
