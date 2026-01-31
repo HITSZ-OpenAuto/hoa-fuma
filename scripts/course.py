@@ -74,10 +74,14 @@ def _to_yaml(value: object, indent: int = 0) -> str:
                 if nested:
                     lines.append(nested)
             elif isinstance(v, list):
-                lines.append(f"{pad}{k}:")
-                nested = _to_yaml(v, indent + 1)
-                if nested:
-                    lines.append(nested)
+                # For empty lists, keep it on the same line: `key: []`
+                if not v:
+                    lines.append(f"{pad}{k}: []")
+                else:
+                    lines.append(f"{pad}{k}:")
+                    nested = _to_yaml(v, indent + 1)
+                    if nested:
+                        lines.append(nested)
             else:
                 rendered = _to_yaml(v, 0)
                 if rendered == "":

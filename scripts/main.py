@@ -110,6 +110,10 @@ def resolve_github_token() -> str | None:
 
 
 async def main() -> None:
+    # Always run relative to the repository root, regardless of current working dir.
+    repo_root = Path(__file__).resolve().parent.parent
+    os.chdir(repo_root)
+
     load_dotenv()
 
     token = resolve_github_token()
@@ -122,10 +126,9 @@ async def main() -> None:
     github = GitHub(token)
     Path("repos").mkdir(exist_ok=True)
 
+    repos_list_path = repo_root / "scripts" / "repos_list.txt"
     repos_list = {
-        line.strip()
-        for line in Path("repos_list.txt").read_text().splitlines()
-        if line.strip()
+        line.strip() for line in repos_list_path.read_text().splitlines() if line.strip()
     }
 
     github_sem = asyncio.Semaphore(20)
