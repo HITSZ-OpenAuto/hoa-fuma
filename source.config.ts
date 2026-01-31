@@ -23,12 +23,12 @@ const courseInfoSchema = z.object({
     computer: z.number(),
     tutoring: z.number(),
   }),
-  gradingScheme: z.object({
-    classParticipation: z.number(),
-    homeworkAssignments: z.number(),
-    laboratoryWork: z.number(),
-    finalExamination: z.number(),
-  }),
+  gradingScheme: z.array(
+    z.object({
+      name: z.string(),
+      percent: z.number(),
+    })
+  ),
 });
 
 export const docs = defineDocs({

@@ -46,12 +46,10 @@ export type CourseHourDistribution = {
   tutoring: number;
 };
 
-export type CourseGradingScheme = {
-  classParticipation: number;
-  homeworkAssignments: number;
-  laboratoryWork: number;
-  finalExamination: number;
-};
+export type CourseGradingScheme = Array<{
+  name: string;
+  percent: number;
+}>;
 
 export type CourseInfoData = {
   credit: number;

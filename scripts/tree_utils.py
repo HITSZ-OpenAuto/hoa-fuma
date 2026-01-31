@@ -1,6 +1,5 @@
 """Utilities for converting flat JSON worktree data to nested FileNode tree structure."""
 
-import json
 from datetime import datetime
 from typing import Any
 from urllib.parse import quote
@@ -46,7 +45,9 @@ def format_timestamp(unix_ts: int) -> str:
 def generate_url(repo: str, path: str) -> str:
     """Generate download URL with proper encoding for Chinese characters and spaces."""
     encoded_path = quote(path, safe="/")
-    return f"https://gh.hoa.moe/github.com/HITSZ-OpenAuto/{repo}/raw/main/{encoded_path}"
+    return (
+        f"https://gh.hoa.moe/github.com/HITSZ-OpenAuto/{repo}/raw/main/{encoded_path}"
+    )
 
 
 def flat_to_tree(flat_data: dict[str, dict[str, Any]], repo_name: str) -> list[dict]:
@@ -99,7 +100,10 @@ def flat_to_tree(flat_data: dict[str, dict[str, Any]], repo_name: str) -> list[d
     def convert_children(node: dict) -> list[dict]:
         """Convert children dict to sorted list and recursively process folders."""
         result = []
-        for child in sorted(node["children"].values(), key=lambda x: (x["type"] == "file", x["name"].lower())):
+        for child in sorted(
+            node["children"].values(),
+            key=lambda x: (x["type"] == "file", x["name"].lower()),
+        ):
             if child["type"] == "folder":
                 child_copy = {k: v for k, v in child.items() if k != "children"}
                 child_copy["children"] = convert_children(child)
@@ -122,7 +126,7 @@ def tree_to_jsx(nodes: list[dict], level: int = 1) -> str:
         if node["type"] == "folder":
             jsx.append(f'{indent}<Folder name="{node["name"]}">')
             jsx.append(tree_to_jsx(node["children"], level + 1))
-            jsx.append(f'{indent}</Folder>')
+            jsx.append(f"{indent}</Folder>")
         else:
             props = [f'name="{node["name"]}"']
             if node.get("url"):
@@ -130,9 +134,8 @@ def tree_to_jsx(nodes: list[dict], level: int = 1) -> str:
             if node.get("date"):
                 props.append(f'date="{node["date"]}"')
             if node.get("size"):
-                props.append(f'size={{{node["size"]}}}')
+                props.append(f"size={{{node['size']}}}")
 
-            jsx.append(f'{indent}<File {" ".join(props)} />')
+            jsx.append(f"{indent}<File {' '.join(props)} />")
 
     return "\n".join(jsx)
-
