@@ -1,64 +1,47 @@
 import { cn } from '@/lib/utils';
 import type { CourseGradingScheme } from '@/lib/types';
-import { GRADING_SCHEME_CONFIG } from './config';
+
+const COLOR_CLASSES = [
+  { bg: 'bg-emerald-200', text: 'text-emerald-700' },
+  { bg: 'bg-blue-200', text: 'text-blue-700' },
+  { bg: 'bg-purple-200', text: 'text-purple-700' },
+  { bg: 'bg-amber-200', text: 'text-amber-700' },
+  { bg: 'bg-rose-200', text: 'text-rose-700' },
+  { bg: 'bg-cyan-200', text: 'text-cyan-700' },
+  { bg: 'bg-indigo-200', text: 'text-indigo-700' },
+];
 
 export function GradingBar({ scheme }: { scheme: CourseGradingScheme }) {
-  const activeItems = GRADING_SCHEME_CONFIG.filter(
-    ({ key }) => scheme[key] > 0
-  );
-  const regularItems = activeItems.filter(
-    ({ key }) => key !== 'finalExamination'
-  );
-  const finalItem = activeItems.find(({ key }) => key === 'finalExamination');
-  const regularTotal = regularItems.reduce(
-    (sum, { key }) => sum + scheme[key],
-    0
-  );
+  if (!scheme || scheme.length === 0) {
+    return (
+      <div className="text-muted-foreground text-sm">暂无成绩构成信息</div>
+    );
+  }
+
+  const total = scheme.reduce((sum, item) => sum + item.percent, 0);
 
   return (
     <div className="flex w-full flex-col gap-1 sm:flex-row sm:gap-px">
-      <div
-        className="flex min-w-0 gap-px"
-        style={{ flex: `${regularTotal} 0 0` }}
-      >
-        {regularItems.map(({ key, label, bgClass, textClass }) => {
-          const percentage = scheme[key];
-          return (
-            <div key={key} style={{ flex: `${percentage} 0 0` }}>
-              <div className="text-muted-foreground mb-1 truncate text-xs">
-                {label}
-              </div>
-              <div
-                className={cn(
-                  'flex h-4 items-center justify-center text-xs font-medium',
-                  bgClass,
-                  textClass
-                )}
-                title={`${label} ${percentage}%`}
-              >
-                {percentage >= 10 && `${percentage}%`}
-              </div>
+      {scheme.map((item, index) => {
+        const colors = COLOR_CLASSES[index % COLOR_CLASSES.length];
+        return (
+          <div key={item.name} style={{ flex: `${item.percent} 0 0` }}>
+            <div className="text-muted-foreground mb-1 truncate text-xs">
+              {item.name}
             </div>
-          );
-        })}
-      </div>
-      {finalItem && (
-        <div style={{ flex: `${scheme.finalExamination} 0 0` }}>
-          <div className="text-muted-foreground mb-1 truncate text-xs">
-            {finalItem.label}
+            <div
+              className={cn(
+                'flex h-4 items-center justify-center text-xs font-medium',
+                colors.bg,
+                colors.text
+              )}
+              title={`${item.name} ${item.percent}%`}
+            >
+              {item.percent >= 10 && `${item.percent}%`}
+            </div>
           </div>
-          <div
-            className={cn(
-              'flex h-4 items-center justify-center text-xs font-medium',
-              finalItem.bgClass,
-              finalItem.textClass
-            )}
-            title={`${finalItem.label} ${scheme.finalExamination}%`}
-          >
-            {scheme.finalExamination >= 10 && `${scheme.finalExamination}%`}
-          </div>
-        </div>
-      )}
+        );
+      })}
     </div>
   );
 }
