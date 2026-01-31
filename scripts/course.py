@@ -145,10 +145,9 @@ def _extract_course_info(raw: dict[str, object]) -> dict[str, object]:
         return 0
 
     hour_raw = g("hour_distribution", "hourDistribution", "hours") or {}
-    grading_raw = g("grading_scheme", "gradingScheme", "grading") or {}
+    grade_details = g("grade_details")
 
     hour_dict = hour_raw if isinstance(hour_raw, dict) else {}
-    grading_dict = grading_raw if isinstance(grading_raw, dict) else {}
 
     hour = {
         "theory": num(hour_dict.get("theory") or hour_dict.get("lecture")),
@@ -159,28 +158,28 @@ def _extract_course_info(raw: dict[str, object]) -> dict[str, object]:
         "tutoring": num(hour_dict.get("tutoring")),
     }
 
-    grading = {
-        "classParticipation": num(
-            grading_dict.get("classParticipation")
-            or grading_dict.get("class_participation")
-            or grading_dict.get("participation")
-        ),
-        "homeworkAssignments": num(
-            grading_dict.get("homeworkAssignments")
-            or grading_dict.get("homework_assignments")
-            or grading_dict.get("homework")
-        ),
-        "laboratoryWork": num(
-            grading_dict.get("laboratoryWork")
-            or grading_dict.get("laboratory_work")
-            or grading_dict.get("lab")
-        ),
-        "finalExamination": num(
-            grading_dict.get("finalExamination")
-            or grading_dict.get("final_examination")
-            or grading_dict.get("final")
-        ),
-    }
+    def parse_percent(value: object) -> int:
+        """Parse percentage from string like '10%' or number."""
+        if isinstance(value, (int, float)):
+            return int(value)
+        if isinstance(value, str):
+            # Remove % sign and parse
+            cleaned = value.replace("%", "").strip()
+            try:
+                return int(float(cleaned))
+            except Exception:
+                return 0
+        return 0
+
+    # Parse grade_details array from CLI
+    grading_scheme = []
+    if grade_details and isinstance(grade_details, list):
+        for item in grade_details:
+            if isinstance(item, dict):
+                name = str(item.get("name", ""))
+                percent = parse_percent(item.get("percent", 0))
+                if name and percent > 0:
+                    grading_scheme.append({"name": name, "percent": percent})
 
     return {
         "credit": num(g("credit", "credits")),
@@ -188,7 +187,7 @@ def _extract_course_info(raw: dict[str, object]) -> dict[str, object]:
         or "",
         "courseNature": g("courseNature", "course_nature", "nature") or "",
         "hourDistribution": hour,
-        "gradingScheme": grading,
+        "gradingScheme": grading_scheme,
     }
 
 
