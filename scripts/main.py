@@ -1,9 +1,7 @@
 import asyncio
 import base64
-import json
 import os
 import sys
-from dataclasses import dataclass, field
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -11,21 +9,7 @@ from githubkit import GitHub
 from rich.progress import Progress, TaskID
 
 from course import generate_pages
-
-
-@dataclass
-class Course:
-    code: str
-    name: str
-
-
-@dataclass
-class Plan:
-    id: str
-    year: str
-    major_code: str
-    major_name: str
-    courses: list[Course] = field(default_factory=list)
+from models import Course, Plan
 
 
 async def run_hoa(*args: str, sem: asyncio.Semaphore | None = None) -> list[str]:
@@ -116,7 +100,9 @@ def resolve_github_token() -> str | None:
     try:
         import subprocess
 
-        out = subprocess.check_output(["gh", "auth", "token"], stderr=subprocess.DEVNULL)
+        out = subprocess.check_output(
+            ["gh", "auth", "token"], stderr=subprocess.DEVNULL
+        )
         token = out.decode().strip()
         return token or None
     except Exception:
@@ -172,7 +158,6 @@ async def main() -> None:
             )
         )
 
-    print("Generating pages...")
     await generate_pages(plans, run_hoa=run_hoa, hoa_sem=hoa_sem)
 
     print("Done!")
