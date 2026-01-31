@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from githubkit import GitHub
 from rich.progress import Progress, TaskID
 
-from tree_utils import flat_to_tree, tree_to_jsx
+from course import generate_pages
 
 
 @dataclass
@@ -96,55 +96,41 @@ async def update_plan(
         progress.advance(task_id)
 
 
-async def generate_pages(plans: list[Plan]) -> None:
-    """Generate course pages and metadata from plans."""
-    years = set()
-    repos_dir = Path("repos")
-    docs_dir = Path("content/docs")
-    for plan in plans:
-        years.add(plan.year)
-        major_dir = docs_dir / plan.year / plan.major_code
-        major_dir.mkdir(parents=True, exist_ok=True)
+def resolve_github_token() -> str | None:
+    """Resolve a GitHub token without requiring the user to manually export a PAT.
 
-        # Write major metadata
-        (major_dir / "meta.json").write_text(
-            json.dumps(
-                {"title": plan.major_name, "root": True, "defaultOpen": True},
-                indent=2,
-                ensure_ascii=False,
-            )
-        )
+    Priority:
+    1) PERSONAL_ACCESS_TOKEN (explicit)
+    2) GITHUB_TOKEN (common in GitHub Actions)
+    3) `gh auth token` (local dev machines with GitHub CLI logged in)
+    """
 
-        # Generate course pages
-        for course in plan.courses:
-            path = repos_dir / f"{course.code}.mdx"
-            json_path = repos_dir / f"{course.code}.json"
+    token = os.environ.get("PERSONAL_ACCESS_TOKEN")
+    if token:
+        return token
 
-            # Remove first two lines (title)
-            content = "\n".join(path.read_text().splitlines()[2:])
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        return token
 
-            # Generate FileTree from JSON
-            filetree_content = ""
-            flat_data = json.loads(json_path.read_text())
-            tree = flat_to_tree(flat_data, course.code)
-            tree_jsx = tree_to_jsx(tree)
-            filetree_content = f'\n\n## 资源下载\n\n<Files url="https://github.com/HITSZ-OpenAuto/{course.code}">\n{tree_jsx}\n</Files>'
+    try:
+        import subprocess
 
-            (major_dir / f"{course.code}.mdx").write_text(
-                f"---\ntitle: {course.name}\n---\n\n{content}{filetree_content}"
-            )
-
-    # Write year metadata once per year
-    for year in years:
-        meta_path = docs_dir / year / "meta.json"
-        meta_path.write_text(json.dumps({"title": year}, indent=2))
+        out = subprocess.check_output(["gh", "auth", "token"], stderr=subprocess.DEVNULL)
+        token = out.decode().strip()
+        return token or None
+    except Exception:
+        return None
 
 
 async def main() -> None:
     load_dotenv()
-    token = os.environ.get("PERSONAL_ACCESS_TOKEN")
+    token = resolve_github_token()
     if not token:
-        sys.exit("Error: PERSONAL_ACCESS_TOKEN environment variable is required.")
+        sys.exit(
+            "Error: no GitHub token found. Set PERSONAL_ACCESS_TOKEN (recommended for CI) "
+            "or GITHUB_TOKEN, or login via `gh auth login`."
+        )
 
     github = GitHub(token)
     Path("repos").mkdir(exist_ok=True)
@@ -184,7 +170,7 @@ async def main() -> None:
         )
 
     print("Generating pages...")
-    await generate_pages(plans)
+    await generate_pages(plans, run_hoa=run_hoa, hoa_sem=hoa_sem)
 
     print("Done!")
 
