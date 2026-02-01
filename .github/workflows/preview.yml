@@ -24,30 +24,30 @@ jobs:
       - name: Fetch repositories in the organization
         run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-          cache-dependency-glob: "uv.lock"
-          working-directory: scripts
-          activate-environment: true
+      - name: Clone hoa-major-data
+        run: |
+              git clone https://github.com/HITSZ-OpenAuto/hoa-major-data
 
-      - name: Set up Python
-        run: uv python install 3.13
+      - name: Fetch repositories in the organization
+        run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
 
-      - name: Install HOA CLI
-        run: uv tool install git+https://github.com/HITSZ-OpenAuto/hoa-majors.git
+      - name: Download and Setup fuma-rs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download --repo HITSZ-OpenAuto/fuma-rs --pattern "fuma_rs-linux.tar.gz"
+          tar -xzf fuma_rs-linux.tar.gz
+          chmod +x fuma_rs
+          sudo mv fuma_rs /usr/local/bin/
 
-      - name: Install the project
-        run: uv sync --locked --directory scripts/
+          rm fuma_rs-linux.tar.gz
 
       - name: Build course pages
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          uv run scripts/main.py
-          uv run scripts/lib/format_mdx.py
+          fuma_rs --fetch
+
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
