@@ -19,7 +19,7 @@ help:
 
 prepare:
 	$(PM) install
-	git submodule update --init --recursive
+	test -d hoa-major-data || git clone https://github.com/HITSZ-OpenAuto/hoa-major-data
 	cargo install --git https://github.com/HITSZ-OpenAuto/fuma-rs.git
 	curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
 
