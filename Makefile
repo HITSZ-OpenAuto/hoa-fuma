@@ -1,3 +1,4 @@
+
 PM := pnpm
 
 .PHONY: help prepare sync docs run build start clean clean-docs lint format check
@@ -17,16 +18,14 @@ help:
 		"  clean       Remove node_modules, .next, .source, and scripts/.venv" \
 		"  clean-docs  Remove content/docs/"
 
-prepare: sync
+prepare:
 	$(PM) install
-	uv tool install git+https://github.com/HITSZ-OpenAuto/hoa-majors.git
-
-sync:
-	uv sync --locked --project scripts
+	git submodule update --init --recursive
+	cargo install --git https://github.com/HITSZ-OpenAuto/fuma-rs.git
+	curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
 
 docs:
-	uv run --project scripts scripts/main.py
-	uv run --project scripts scripts/lib/format_mdx.py
+	fuma_rs --fetch
 
 run:
 	$(PM) run dev
