@@ -1,4 +1,3 @@
-
 PM := pnpm
 
 .PHONY: help prepare sync docs run build start clean clean-docs lint format check
