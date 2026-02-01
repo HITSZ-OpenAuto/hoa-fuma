@@ -34,18 +34,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # 1. 使用 gh 命令从指定仓库下载最新的 release 资源
-          # --repo 指定目标仓库，--pattern 指定匹配的文件名
           gh release download --repo HITSZ-OpenAuto/fuma-rs --pattern "fuma_rs-linux.tar.gz"
-
-          # 2. 解压文件
           tar -xzf fuma_rs-linux.tar.gz
-
-          # 3. 赋予执行权限并移动到系统 PATH 路径下
           chmod +x fuma_rs
           sudo mv fuma_rs /usr/local/bin/
 
-          # 4. 清理下载的压缩包（可选）
           rm fuma_rs-linux.tar.gz
 
       - name: Build course pages
