@@ -33,7 +33,7 @@ jobs:
           activate-environment: true
 
       - name: Set up Python
-        run: uv python install 3.14
+        run: uv python install 3.13
 
       - name: Install HOA CLI
         run: uv tool install git+https://github.com/HITSZ-OpenAuto/hoa-majors.git
