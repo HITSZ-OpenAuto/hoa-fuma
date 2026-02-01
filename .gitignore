@@ -41,3 +41,6 @@ next-env.d.ts
 repos/
 repos_list.txt
 scripts/.env
+
+# local clones
+hoa-major-data/
