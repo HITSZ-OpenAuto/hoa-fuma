@@ -28,9 +28,6 @@ jobs:
       - name: Clone hoa-major-data
         run: git clone https://github.com/HITSZ-OpenAuto/hoa-major-data
 
-      - name: Fetch repositories in the organization
-        run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
-
       - name: Download and Setup fuma-rs
         env:
           GH_TOKEN: ${{ github.token }}
