@@ -31,6 +31,8 @@ jobs:
         run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
 
       - name: Download and Setup fuma-rs
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           # 1. 使用 gh 命令从指定仓库下载最新的 release 资源
           # --repo 指定目标仓库，--pattern 指定匹配的文件名
