@@ -1,1 +1,0 @@
-"""Course page generation modules."""
