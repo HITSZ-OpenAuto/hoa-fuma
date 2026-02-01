@@ -20,6 +20,7 @@ help:
 
 prepare:
 	$(PM) install
+	git submodule update --init --recursive
 	cargo install --git https://github.com/HITSZ-OpenAuto/fuma-rs.git
 	curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
 
