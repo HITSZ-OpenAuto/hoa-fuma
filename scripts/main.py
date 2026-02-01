@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from githubkit import GitHub
 from rich.progress import Progress, TaskID
 
-from course import generate_pages
+from course.pages import generate_pages
 from models import Course, Plan
 
 

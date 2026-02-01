@@ -47,7 +47,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           uv run scripts/main.py
-          uv run scripts/format_mdx.py
+          uv run scripts/lib/format_mdx.py
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm

@@ -228,7 +228,7 @@ def format_mdx_file(filepath: Path) -> bool:
 
 def main() -> None:
     """Format all MDX files in content/docs/."""
-    docs_dir = Path(__file__).parent.parent / "content" / "docs"
+    docs_dir = Path(__file__).parent.parent.parent / "content" / "docs"
 
     if not docs_dir.exists():
         print(f"Error: {docs_dir} does not exist")
