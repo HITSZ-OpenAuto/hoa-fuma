@@ -28,6 +28,7 @@ async def _process_course(
     hoa_sem: asyncio.Semaphore | None,
     progress: Progress,
     task_id: TaskID,
+    courses_by_semester: dict[Path, list[tuple[str, str]]],
 ) -> None:
     """Process a single course - can run concurrently."""
     path = repos_dir / f"{course.code}.mdx"
@@ -56,9 +57,10 @@ async def _process_course(
         semester_folder, semester_title = bucket
         target_dir = major_dir / semester_folder
         target_dir.mkdir(parents=True, exist_ok=True)
-        index_path = target_dir / "index.mdx"
-        if not index_path.exists():
-            index_path.write_text(f"---\ntitle: {semester_title}\n---\n")
+        # Track course for semester index generation
+        if target_dir not in courses_by_semester:
+            courses_by_semester[target_dir] = []
+        courses_by_semester[target_dir].append((course.code, course.name))
     else:
         target_dir = major_dir
 
@@ -121,6 +123,9 @@ async def generate_pages(
                 )
             )
 
+            # Track courses by semester for this major
+            courses_by_semester: dict[Path, list[tuple[str, str]]] = {}
+
             # Generate course pages concurrently
             await asyncio.gather(
                 *(
@@ -133,11 +138,29 @@ async def generate_pages(
                         hoa_sem,
                         progress,
                         task,
+                        courses_by_semester,
                     )
                     for course in plan.courses
                 ),
                 return_exceptions=True,
             )
+
+            # Generate semester index pages with course cards
+            for sem_dir, courses in courses_by_semester.items():
+                sem_title = sem_dir.name.replace("-", " ").title()
+                # Find the proper title from SEMESTER_MAPPING
+                for folder, title in SEMESTER_MAPPING.values():
+                    if folder == sem_dir.name:
+                        sem_title = title
+                        break
+
+                cards = ["---", f"title: {sem_title}", "---", "", "<Cards>"]
+                for code, name in courses:
+                    cards.append(
+                        f'  <Card title="{name}" href="/docs/{plan.year}/{plan.major_code}/{sem_dir.name}/{code}" />'
+                    )
+                cards.append("</Cards>")
+                (sem_dir / "index.mdx").write_text("\n".join(cards))
 
             # Create major index with Cards for semesters
             (major_dir / "index.mdx").write_text(
