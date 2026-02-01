@@ -1,1 +1,3 @@
 pnpx lint-staged
+uv run --project scripts ruff check . --fix
+uv run --project scripts ruff format .

@@ -26,7 +26,7 @@ sync:
 
 docs:
 	uv run --project scripts scripts/main.py
-	uv run --project scripts scripts/format_mdx.py
+	uv run --project scripts scripts/lib/format_mdx.py
 
 run:
 	$(PM) run dev
