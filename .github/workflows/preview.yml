@@ -65,6 +65,10 @@ jobs:
         if: ${{ env.VERCEL_TOKEN != '' }}
         run: vercel build --token=${{ env.VERCEL_TOKEN }}
 
+      - name: Build Project Artifacts (no Vercel token)
+        if: ${{ env.VERCEL_TOKEN == '' }}
+        run: pnpm run build
+
       - name: Deploy Preview to Vercel
         if: ${{ env.VERCEL_TOKEN != '' }}
         run: vercel deploy --prebuilt --token=${{ env.VERCEL_TOKEN }} --archive=tgz
