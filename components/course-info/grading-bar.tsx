@@ -21,7 +21,7 @@ export function GradingBar({ scheme }: { scheme: CourseGradingScheme }) {
   const total = scheme.reduce((sum, item) => sum + item.percent, 0);
 
   return (
-    <div className="flex w-full flex-col gap-1 sm:flex-row sm:gap-px">
+    <div className="flex w-full flex-row flex-wrap gap-1">
       {scheme.map((item, index) => {
         const colors = COLOR_CLASSES[index % COLOR_CLASSES.length];
         return (
@@ -37,7 +37,7 @@ export function GradingBar({ scheme }: { scheme: CourseGradingScheme }) {
               )}
               title={`${item.name} ${item.percent}%`}
             >
-              {item.percent >= 10 && `${item.percent}%`}
+              {`${item.percent}%`}
             </div>
           </div>
         );
