@@ -5,6 +5,9 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: 'HITSZ 课程攻略共享计划',
     },
+    themeSwitch: {
+      mode: 'light-dark-system',
+    },
     links: [
       {
         text: '文档',
