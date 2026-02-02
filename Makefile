@@ -1,6 +1,6 @@
 PM := pnpm
 
-.PHONY: help prepare sync docs run build start clean clean-docs lint format check
+.PHONY: help prepare sync docs dev build start clean clean-docs lint format check
 
 help:
 	@printf "%s\n" \
@@ -8,7 +8,7 @@ help:
 		"  prepare     Install frontend deps and sync scripts venv" \
 		"  sync        Sync scripts venv from uv.lock (.python-version driven)" \
 		"  docs        Run scripts/main.py and format_mdx.py" \
-		"  run         Launch the frontend dev server" \
+		"  dev         Launch the frontend dev server" \
 		"  build       Build the frontend" \
 		"  start       Start the built frontend (production)" \
 		"  lint        Lint frontend and scripts" \
@@ -26,7 +26,7 @@ prepare:
 docs:
 	fuma_rs --fetch
 
-run:
+dev:
 	$(PM) run dev
 
 build:
@@ -46,7 +46,7 @@ format:
 check: lint format
 
 clean:
-	rm -rf node_modules .next .source scripts/.venv
+	rm -rf node_modules .next .source
 
 clean-docs:
 	rm -rf content/docs/
