@@ -2,12 +2,14 @@ import { docs, blogPosts, newsPosts } from 'fumadocs-mdx:collections/server';
 import { type InferPageType, loader } from 'fumadocs-core/source';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { toFumadocsSource } from 'fumadocs-mdx/runtime/server';
+import { i18n } from '@/lib/i18n';
 
 // See https://fumadocs.dev/docs/headless/source-api for more info
 export const source = loader({
   baseUrl: '/docs',
   source: docs.toFumadocsSource(),
   plugins: [lucideIconsPlugin()],
+  i18n,
 });
 
 export function getPageImage(page: InferPageType<typeof source>) {
@@ -30,8 +32,9 @@ export const news = loader({
 });
 
 export function getAvailableYears(): string[] {
-  return source.pageTree.children
-    .filter(
+  return source
+    .getPageTree()
+    .children.filter(
       (node): node is typeof node & { name: string } =>
         node.type === 'folder' &&
         typeof node.name === 'string' &&
