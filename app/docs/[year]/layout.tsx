@@ -11,7 +11,8 @@ export default async function Layout(props: {
   params: Promise<{ year: string }>;
 }) {
   const { year } = await props.params;
-  const yearNode = source.pageTree.children.find(
+  const pageTree = source.getPageTree();
+  const yearNode = pageTree.children.find(
     (node): node is Folder => node.type === 'folder' && node.name === year
   );
 
