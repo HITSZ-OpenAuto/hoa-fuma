@@ -36,6 +36,7 @@ next-env.d.ts
 .gemini
 .agents
 .opencode
+.cursor
 
 # artifacts
 repos/
