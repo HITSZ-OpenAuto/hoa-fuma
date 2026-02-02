@@ -1,7 +1,8 @@
 import { DocsPathMemory } from '@/components/docs/docs-path-memory';
 import { SidebarBanner } from '@/components/sidebar/sidebar-banner';
 import { baseOptions } from '@/lib/layout.shared';
-import { source, getAvailableYears } from '@/lib/source';
+import { getAvailableYears } from '@/lib/docs';
+import { source } from '@/lib/source';
 import type { Folder } from 'fumadocs-core/page-tree';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { notFound } from 'next/navigation';

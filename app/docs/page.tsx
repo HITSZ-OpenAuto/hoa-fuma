@@ -1,4 +1,4 @@
-import { getAvailableYears, getFirstCourseUrl } from '@/lib/source';
+import { getAvailableYears, getFirstCourseUrl } from '@/lib/docs';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
