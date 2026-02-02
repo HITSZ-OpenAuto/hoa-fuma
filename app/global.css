@@ -139,3 +139,123 @@
     --fd-toc-width: 268px;
   }
 }
+
+/* ========================================
+   Hero home page styles
+   ======================================== */
+
+/* Grid background */
+.grid-pattern {
+  --grid-color: oklch(0.145 0 0 / 6%);
+  --grid-size: 30px;
+
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+}
+
+@media (width >= 768px) {
+  .grid-pattern {
+    --grid-size: 50px;
+  }
+}
+
+.dark .grid-pattern {
+  --grid-color: oklch(0.985 0 0 / 4%);
+  filter: drop-shadow(0 0 1px oklch(0.985 0 0 / 15%));
+}
+
+/* Radial gradient mask - center fade */
+.radial-mask {
+  background: radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    var(--background) 0%,
+    transparent 100%
+  );
+}
+
+/* Hero title glow effect (dark mode) */
+.dark .hero-title {
+  text-shadow:
+    0 0 30px oklch(0.488 0.243 264.376 / 25%),
+    0 0 60px oklch(0.488 0.243 264.376 / 15%);
+}
+
+/* Hero cards container */
+.hero-cards-container {
+  perspective: 1000px;
+}
+
+/* Hero card positioning - desktop stacked layout */
+.hero-card {
+  transform-origin: bottom center;
+  transform: translateX(var(--card-offset, 0))
+    translateY(var(--card-hover-y, 0)) rotate(var(--card-rotation, 0deg));
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    z-index 0s;
+}
+
+.hero-card:hover {
+  --card-hover-y: -0.75rem;
+}
+
+.hero-card:nth-child(1) {
+  --card-offset: 0;
+  --card-rotation: 0deg;
+  z-index: 1;
+}
+
+.hero-card:nth-child(2) {
+  --card-offset: 2.5rem;
+  --card-rotation: 8deg;
+  z-index: 2;
+}
+
+.hero-card:nth-child(3) {
+  --card-offset: 5rem;
+  --card-rotation: 16deg;
+  z-index: 3;
+}
+
+/* Sticky note label */
+.sticky-label {
+  position: absolute;
+  top: -0.625rem;
+  left: 0.5rem;
+  z-index: 10;
+  padding: 0.2rem 0.6rem;
+  background: oklch(0.98 0.025 85);
+  color: oklch(0.35 0.05 85);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow:
+    1px 2px 4px oklch(0 0 0 / 12%),
+    0 1px 2px oklch(0 0 0 / 8%);
+  transform: rotate(-3deg);
+}
+
+.dark .sticky-label {
+  background: oklch(0.85 0.015 90);
+  color: oklch(0.3 0.02 90);
+  box-shadow:
+    1px 2px 4px oklch(0 0 0 / 25%),
+    0 1px 2px oklch(0 0 0 / 15%);
+}
+
+/* Card body shadow */
+.hero-card-body {
+  box-shadow:
+    0 8px 24px -8px oklch(0 0 0 / 15%),
+    0 16px 40px -16px oklch(0 0 0 / 10%);
+}
+
+.dark .hero-card-body {
+  box-shadow:
+    0 0 24px 0 oklch(0.985 0 0 / 10%),
+    0 0 48px 0 oklch(0.985 0 0 / 5%),
+    0 4px 16px -4px oklch(0 0 0 / 50%),
+    0 8px 24px -8px oklch(0 0 0 / 30%);
+}
