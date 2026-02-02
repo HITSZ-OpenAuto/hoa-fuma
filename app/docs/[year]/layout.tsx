@@ -1,10 +1,11 @@
-import { source, getAvailableYears } from '@/lib/source';
-import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import { DocsPathMemory } from '@/components/docs/docs-path-memory';
+import { SidebarBanner } from '@/components/sidebar/sidebar-banner';
 import { baseOptions } from '@/lib/layout.shared';
+import { source, getAvailableYears } from '@/lib/source';
+import type { Folder } from 'fumadocs-core/page-tree';
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { notFound } from 'next/navigation';
 import { ReactNode } from 'react';
-import { SidebarBanner } from '@/components/sidebar/sidebar-banner';
-import type { Folder } from 'fumadocs-core/page-tree';
 
 export default async function Layout(props: {
   children: ReactNode;
@@ -33,6 +34,7 @@ export default async function Layout(props: {
         ),
       }}
     >
+      <DocsPathMemory />
       {props.children}
     </DocsLayout>
   );
