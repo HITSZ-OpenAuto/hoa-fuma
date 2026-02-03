@@ -16,7 +16,7 @@ help:
 		"  clean                   Remove node_modules, .next, .source, docs, blog and news" \
 		"  clean-docs              Remove content/docs only" \
 		"  clean-content           Remove content/blog and content/news only" \
-		"  content                 Fetch blog and news content from orphan branches" \
+		"  content                 Fetch blog and news content from external repos" \
 		"  ignore-content-changes  Tell Git to ignore local changes under content/ (run once per clone)"
 
 prepare: content
@@ -57,10 +57,16 @@ clean-content:
 	rm -rf content/blog content/news
 
 content: clean-content
-	git fetch origin blog news
+	# Blog/news content is maintained in separate repos:
+	# - https://github.com/HITSZ-OpenAuto/hoa-blog (contains blog/)
+	# - https://github.com/HITSZ-OpenAuto/hoa-news (repo root is news content)
+	rm -rf .tmp-hoa-blog .tmp-hoa-news
+	git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-blog .tmp-hoa-blog
+	git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-news .tmp-hoa-news
 	mkdir -p content/blog content/news
-	git archive origin/blog blog/ | tar -x -C content
-	git archive origin/news | tar -x -C content/news
+	git -C .tmp-hoa-blog archive HEAD blog/ | tar -x -C content
+	git -C .tmp-hoa-news archive HEAD | tar -x -C content/news
+	rm -rf .tmp-hoa-blog .tmp-hoa-news
 
 ignore-content-changes:
 	@git ls-files content/ 2>/dev/null | xargs -I {} git update-index --skip-worktree {} 2>/dev/null; echo "Done. Git will ignore local changes under content/."

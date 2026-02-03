@@ -11,7 +11,7 @@ env:
 
 on:
   push:
-    branches: [main, blog, news]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -24,13 +24,18 @@ jobs:
           repository: ${{ github.repository }}
           ref: main
 
-      - name: Fetch blog and news content from orphan branches
+      - name: Fetch blog and news content from external repos
         run: |
-          git fetch origin blog news 2>/dev/null || true
-          rm -rf content/blog content/news
+          rm -rf content/blog content/news .tmp-hoa-blog .tmp-hoa-news
           mkdir -p content/blog content/news
-          git archive origin/blog blog/ | tar -x -C content || true
-          git archive origin/news | tar -x -C content/news || true
+
+          git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-blog .tmp-hoa-blog
+          git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-news .tmp-hoa-news
+
+          git -C .tmp-hoa-blog archive HEAD blog/ | tar -x -C content
+          git -C .tmp-hoa-news archive HEAD | tar -x -C content/news
+
+          rm -rf .tmp-hoa-blog .tmp-hoa-news
 
       - name: Clone hoa-major-data
         run: git clone https://github.com/HITSZ-OpenAuto/hoa-major-data
