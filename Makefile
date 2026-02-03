@@ -57,16 +57,11 @@ clean-content:
 	rm -rf content/blog content/news
 
 content: clean-content
-	# Blog/news content is maintained in separate repos:
-	# - https://github.com/HITSZ-OpenAuto/hoa-blog (contains blog/)
-	# - https://github.com/HITSZ-OpenAuto/hoa-news (repo root is news content)
-	rm -rf .tmp-hoa-blog .tmp-hoa-news
-	git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-blog .tmp-hoa-blog
-	git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-news .tmp-hoa-news
 	mkdir -p content/blog content/news
-	git -C .tmp-hoa-blog archive HEAD blog/ | tar -x -C content
-	git -C .tmp-hoa-news archive HEAD | tar -x -C content/news
-	rm -rf .tmp-hoa-blog .tmp-hoa-news
+	git fetch --depth=1 https://github.com/HITSZ-OpenAuto/hoa-blog main
+	git archive FETCH_HEAD blog/ | tar -x -C content
+	git fetch --depth=1 https://github.com/HITSZ-OpenAuto/hoa-news main
+	git archive FETCH_HEAD | tar -x -C content/news
 
 ignore-content-changes:
 	@git ls-files content/ 2>/dev/null | xargs -I {} git update-index --skip-worktree {} 2>/dev/null; echo "Done. Git will ignore local changes under content/."

@@ -24,16 +24,14 @@ jobs:
 
       - name: Fetch blog and news content from external repos
         run: |
-          rm -rf content/blog content/news .tmp-hoa-blog .tmp-hoa-news
+          rm -rf content/blog content/news
           mkdir -p content/blog content/news
 
-          git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-blog .tmp-hoa-blog
-          git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-news .tmp-hoa-news
+          git fetch --depth=1 https://github.com/HITSZ-OpenAuto/hoa-blog main
+          git archive FETCH_HEAD blog/ | tar -x -C content
 
-          git -C .tmp-hoa-blog archive HEAD blog/ | tar -x -C content
-          git -C .tmp-hoa-news archive HEAD | tar -x -C content/news
-
-          rm -rf .tmp-hoa-blog .tmp-hoa-news
+          git fetch --depth=1 https://github.com/HITSZ-OpenAuto/hoa-news main
+          git archive FETCH_HEAD | tar -x -C content/news
 
       - name: Fetch repositories in the organization
         run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
