@@ -57,16 +57,10 @@ clean-content:
 	rm -rf content/blog content/news
 
 content: clean-content
-	@set -euo pipefail; \
-	TMP_BLOG="$$(mktemp -d -t hoa-blog.XXXXXX)"; \
-	TMP_NEWS="$$(mktemp -d -t hoa-news.XXXXXX)"; \
-	cleanup() { rm -rf "$$TMP_BLOG" "$$TMP_NEWS"; }; \
-	trap cleanup EXIT INT TERM; \
-	mkdir -p content/blog content/news; \
-	git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-blog "$$TMP_BLOG"; \
-	git -C "$$TMP_BLOG" archive HEAD blog/ | tar -x -C content; \
-	git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-news "$$TMP_NEWS"; \
-	git -C "$$TMP_NEWS" archive HEAD | tar -x -C content/news;
+	rm -rf content/blog content/news
+	mkdir -p content/blog content/news
+	curl -L https://github.com/HITSZ-OpenAuto/hoa-blog/tarball/main | tar -xz -C content/blog --strip-components=2 --wildcards "*/blog/*"
+	curl -L https://github.com/HITSZ-OpenAuto/hoa-news/tarball/main | tar -xz -C content/news --strip-components=1
 
 ignore-content-changes:
 	@git ls-files content/ 2>/dev/null | xargs -I {} git update-index --skip-worktree {} 2>/dev/null; echo "Done. Git will ignore local changes under content/."

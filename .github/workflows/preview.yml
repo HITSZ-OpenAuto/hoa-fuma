@@ -22,24 +22,12 @@ jobs:
           repository: ${{ github.repository }}
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Fetch blog and news content from external repos
-        shell: bash
+      - name: Fetch blog and news content
         run: |
-          set -euo pipefail
-
           rm -rf content/blog content/news
           mkdir -p content/blog content/news
-
-          TMP_BLOG="$(mktemp -d -t hoa-blog.XXXXXX)"
-          TMP_NEWS="$(mktemp -d -t hoa-news.XXXXXX)"
-          cleanup() { rm -rf "$TMP_BLOG" "$TMP_NEWS"; }
-          trap cleanup EXIT INT TERM
-
-          git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-blog "$TMP_BLOG"
-          git -C "$TMP_BLOG" archive HEAD blog/ | tar -x -C content
-
-          git clone --depth 1 https://github.com/HITSZ-OpenAuto/hoa-news "$TMP_NEWS"
-          git -C "$TMP_NEWS" archive HEAD | tar -x -C content/news
+          curl -L https://github.com/HITSZ-OpenAuto/hoa-blog/tarball/main | tar -xz -C content/blog --strip-components=2 --wildcards "*/blog/*"
+          curl -L https://github.com/HITSZ-OpenAuto/hoa-news/tarball/main | tar -xz -C content/news --strip-components=1
 
       - name: Fetch repositories in the organization
         run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
