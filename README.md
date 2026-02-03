@@ -6,6 +6,13 @@ The framework for building courses-sharing platform, built by [HOA](https://gith
   <img src="./public/HITSZOpenAuto-Shadow.png" width="400" alt="logo" />
 </div>
 
+## Getting Started
+
+```bash
+pnpm i
+pnpm dev
+```
+
 ## Contributing
 
 Contributions are welcome. Please read the [contributing guide](/.github/contributing.md) before submitting a pull request.

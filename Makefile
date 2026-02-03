@@ -1,27 +1,31 @@
 PM := pnpm
 
-.PHONY: help prepare sync docs dev build start clean clean-docs lint format check
+.PHONY: help prepare docs dev build start clean clean-docs clean-content lint format check content ignore-content-changes
 
 help:
 	@printf "%s\n" \
 		"Targets:" \
-		"  prepare     Install frontend deps and sync scripts venv" \
-		"  sync        Sync scripts venv from uv.lock (.python-version driven)" \
-		"  docs        Run scripts/main.py and format_mdx.py" \
-		"  dev         Launch the frontend dev server" \
-		"  build       Build the frontend" \
-		"  start       Start the built frontend (production)" \
-		"  lint        Lint frontend and scripts" \
-		"  format      Format frontend and scripts" \
-		"  check       Run lint and format" \
-		"  clean       Remove node_modules, .next, .source, and scripts/.venv" \
-		"  clean-docs  Remove content/docs/"
+		"  prepare                 Install deps, fetch blog/news content, and build docs" \
+		"  docs                    Regenerate course docs (fuma_rs --fetch)" \
+		"  dev                     Launch the frontend dev server" \
+		"  build                   Build the frontend" \
+		"  start                   Start the built frontend (production)" \
+		"  lint                    Lint frontend" \
+		"  format                  Format frontend" \
+		"  check                   Run lint and format" \
+		"  clean                   Remove node_modules, .next, .source, docs, blog and news" \
+		"  clean-docs              Remove content/docs only" \
+		"  clean-content           Remove content/blog and content/news only" \
+		"  content                 Fetch blog and news content from orphan branches" \
+		"  ignore-content-changes  Tell Git to ignore local changes under content/ (run once per clone)"
 
-prepare:
+prepare: content
 	$(PM) install
 	test -d hoa-major-data || git clone https://github.com/HITSZ-OpenAuto/hoa-major-data
 	cargo install --git https://github.com/HITSZ-OpenAuto/fuma-rs.git
 	curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
+	$(MAKE) docs
+	$(MAKE) ignore-content-changes
 
 docs:
 	fuma_rs --fetch
@@ -37,16 +41,26 @@ start:
 
 lint:
 	$(PM) run lint --fix
-	uv run --project scripts ruff check . --fix
 
 format:
 	$(PM) run format
-	uv run --project scripts ruff format .
 
 check: lint format
 
 clean:
-	rm -rf node_modules .next .source
+	rm -rf node_modules .next .source content/docs content/blog content/news
 
 clean-docs:
-	rm -rf content/docs/
+	rm -rf content/docs
+
+clean-content:
+	rm -rf content/blog content/news
+
+content: clean-content
+	git fetch origin blog news
+	mkdir -p content/blog content/news
+	git archive origin/blog blog/ | tar -x -C content
+	git archive origin/news | tar -x -C content/news
+
+ignore-content-changes:
+	@git ls-files content/ 2>/dev/null | xargs -I {} git update-index --skip-worktree {} 2>/dev/null; echo "Done. Git will ignore local changes under content/."

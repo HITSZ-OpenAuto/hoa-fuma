@@ -3,9 +3,7 @@
 
 # generated content
 .source
-content/*
-!content/blog/
-!content/news/
+content/
 
 # test & build
 /coverage

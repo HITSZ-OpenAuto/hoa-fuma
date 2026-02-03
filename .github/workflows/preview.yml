@@ -22,6 +22,14 @@ jobs:
           repository: ${{ github.repository }}
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Fetch blog and news content from orphan branches
+        run: |
+          git fetch origin blog news 2>/dev/null || true
+          rm -rf content/blog content/news
+          mkdir -p content/blog content/news
+          git archive origin/blog blog/ | tar -x -C content || true
+          git archive origin/news | tar -x -C content/news || true
+
       - name: Fetch repositories in the organization
         run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
 
