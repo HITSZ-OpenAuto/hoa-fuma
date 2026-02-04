@@ -75,9 +75,9 @@ export default function HomePage() {
       <GridBackground />
 
       {/* Hero section */}
-      <section className="relative flex min-h-svh items-center justify-center overflow-hidden px-6">
+      <section className="relative flex min-h-svh items-center justify-center overflow-hidden px-6 lg:px-16">
         <div className="mx-auto w-full max-w-6xl pb-32 lg:pt-20 lg:pb-36">
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-8">
+          <div className="grid grid-cols-1 items-center gap-4 lg:grid-cols-2 lg:gap-0">
             {/* Left: Content area */}
             <div className="order-2 text-center lg:order-1 lg:text-left">
               <HeroContent />

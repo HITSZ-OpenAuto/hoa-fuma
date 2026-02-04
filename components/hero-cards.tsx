@@ -71,7 +71,8 @@ export function HeroCards() {
         className={cn(
           'hero-cards-container relative',
           'hidden lg:block',
-          'h-80 w-96'
+          'h-80 w-96',
+          'xl:-ml-12'
         )}
       >
         {cards.map((card, index) => (
