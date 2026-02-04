@@ -1,4 +1,9 @@
-import { docs, blogPosts, newsPosts } from 'fumadocs-mdx:collections/server';
+import {
+  docs,
+  blogPosts,
+  newsPosts,
+  staticPages,
+} from 'fumadocs-mdx:collections/server';
 import { type InferPageType, loader } from 'fumadocs-core/source';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { toFumadocsSource } from 'fumadocs-mdx/runtime/server';
@@ -29,4 +34,9 @@ export const blog = loader({
 export const news = loader({
   baseUrl: '/news',
   source: toFumadocsSource(newsPosts, []),
+});
+
+export const pages = loader({
+  baseUrl: '',
+  source: toFumadocsSource(staticPages, []),
 });

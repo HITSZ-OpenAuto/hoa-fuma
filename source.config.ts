@@ -5,6 +5,8 @@ import {
   frontmatterSchema,
   metaSchema,
 } from 'fumadocs-mdx/config';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { z } from 'zod';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -80,6 +82,21 @@ export const newsPosts = defineCollections({
     description: z.string().optional(),
     date: z.iso.date().or(z.date()),
   }),
+});
+
+const pageFiles = readdirSync(join(process.cwd(), 'content'), {
+  withFileTypes: true,
+})
+  .filter((entry) => entry.isDirectory() && /^page\d+$/.test(entry.name))
+  .map((entry) => `${entry.name}/index.mdx`);
+
+export const staticPages = defineCollections({
+  type: 'doc',
+  dir: 'content',
+  schema: frontmatterSchema.extend({
+    description: z.string().optional(),
+  }),
+  files: pageFiles,
 });
 
 export default defineConfig({
