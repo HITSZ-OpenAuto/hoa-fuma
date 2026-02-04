@@ -37,22 +37,22 @@ jobs:
       - name: Fetch repositories in the organization
         run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
 
-      - name: Download and Setup fuma-rs
+      - name: Download and Setup hoa-backend
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download --repo HITSZ-OpenAuto/fuma-rs --pattern "fuma_rs-linux.tar.gz"
-          tar -xzf fuma_rs-linux.tar.gz
-          chmod +x fuma_rs
-          sudo mv fuma_rs /usr/local/bin/
+          gh release download --repo HITSZ-OpenAuto/hoa-backend --pattern "hoa-backend-linux.tar.gz"
+          tar -xzf hoa-backend-linux.tar.gz
+          chmod +x hoa-backend
+          sudo mv hoa-backend /usr/local/bin/
 
-          rm fuma_rs-linux.tar.gz
+          rm hoa-backend-linux.tar.gz
 
       - name: Build course pages
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          fuma_rs --fetch
+          hoa-backend --fetch
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
