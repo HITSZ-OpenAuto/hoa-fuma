@@ -39,18 +39,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download --repo HITSZ-OpenAuto/hoa-backend --pattern "hoa_backend-linux.tar.gz"
-          tar -xzf hoa_backend-linux.tar.gz
-          chmod +x hoa_backend
-          sudo mv hoa_backend /usr/local/bin/
+          gh release download --repo HITSZ-OpenAuto/hoa-backend --pattern "hoa-backend-linux.tar.gz"
+          tar -xzf hoa-backend-linux.tar.gz
+          chmod +x hoa-backend
+          sudo mv hoa-backend /usr/local/bin/
 
-          rm hoa_backend-linux.tar.gz
+          rm hoa-backend-linux.tar.gz
 
       - name: Build course pages
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          hoa_backend --fetch
+          hoa-backend --fetch
 
 
       - uses: pnpm/action-setup@v4

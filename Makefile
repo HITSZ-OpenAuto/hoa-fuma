@@ -6,7 +6,7 @@ help:
 	@printf "%s\n" \
 		"Targets:" \
 		"  prepare                 Install deps, fetch blog/news content, and build docs" \
-		"  docs                    Regenerate course docs (hoa_backend --fetch)" \
+		"  docs                    Regenerate course docs (hoa-backend --fetch)" \
 		"  dev                     Launch the frontend dev server" \
 		"  build                   Build the frontend" \
 		"  start                   Start the built frontend (production)" \
@@ -28,7 +28,7 @@ prepare: content
 	$(MAKE) ignore-content-changes
 
 docs:
-	hoa_backend --fetch
+	hoa-backend --fetch
 
 dev:
 	$(PM) run dev
