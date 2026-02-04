@@ -6,7 +6,7 @@ help:
 	@printf "%s\n" \
 		"Targets:" \
 		"  prepare                 Install deps, fetch blog/news content, and build docs" \
-		"  docs                    Regenerate course docs (fuma_rs --fetch)" \
+		"  docs                    Regenerate course docs (hoa_backend --fetch)" \
 		"  dev                     Launch the frontend dev server" \
 		"  build                   Build the frontend" \
 		"  start                   Start the built frontend (production)" \
@@ -16,19 +16,19 @@ help:
 		"  clean                   Remove node_modules, .next, .source, docs, blog and news" \
 		"  clean-docs              Remove content/docs only" \
 		"  clean-content           Remove content/blog and content/news only" \
-		"  content                 Fetch blog and news content from external repos" \
+		"  content                 Fetch blog and news content" \
 		"  ignore-content-changes  Tell Git to ignore local changes under content/ (run once per clone)"
 
 prepare: content
 	$(PM) install
 	test -d hoa-major-data || git clone https://github.com/HITSZ-OpenAuto/hoa-major-data
-	cargo install --git https://github.com/HITSZ-OpenAuto/fuma-rs.git
+	cargo install --git https://github.com/HITSZ-OpenAuto/hoa-backend.git
 	curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
 	$(MAKE) docs
 	$(MAKE) ignore-content-changes
 
 docs:
-	fuma_rs --fetch
+	hoa_backend --fetch
 
 dev:
 	$(PM) run dev
