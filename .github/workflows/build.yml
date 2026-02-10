@@ -65,6 +65,9 @@ jobs:
             exit 0
           fi
           git add -f content/
+          echo "=== Diff stats ==="
+          git diff --cached --stat origin/production -- content/ || true
+          echo "=================="
           if git diff --quiet --cached origin/production -- content/ 2>/dev/null; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
