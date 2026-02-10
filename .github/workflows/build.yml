@@ -50,25 +50,53 @@ jobs:
           uv run scripts/main.py
           uv run scripts/format_mdx.py
 
+      - name: Check for changes vs production
+        id: check_changes
+        run: |
+          git fetch origin production --depth=1 2>/dev/null || { echo "changed=true" >> $GITHUB_OUTPUT; exit 0; }
+          
+          # Always deploy on push (code may have changed)
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # For schedule/dispatch: skip if content unchanged
+          if git diff --quiet origin/production -- content/ 2>/dev/null; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No content changes, skipping deploy"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Changes detected:"
+            git diff --stat origin/production -- content/
+          fi
+
       - name: Install Vercel CLI
+        if: steps.check_changes.outputs.changed == 'true'
         run: npm install --global vercel@latest
       
       - uses: oven-sh/setup-bun@v2
+        if: steps.check_changes.outputs.changed == 'true'
       - run: bun install
+        if: steps.check_changes.outputs.changed == 'true'
 
       - name: Pull Vercel Environment Information
+        if: steps.check_changes.outputs.changed == 'true'
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project Artifacts
+        if: steps.check_changes.outputs.changed == 'true'
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       
       - name: Deploy Project Artifacts to Vercel
+        if: steps.check_changes.outputs.changed == 'true'
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} --archive=tgz
 
       - name: Commit and push changes to production branch
+        if: steps.check_changes.outputs.changed == 'true'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
           git add --force content/
-          git commit -m "docs: update course pages" || echo "No changes to commit"          
+          git commit -m "docs: update course pages" -m "$(git diff --cached --stat)" || echo "No changes to commit"
           git push origin HEAD:production --force
