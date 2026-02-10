@@ -137,4 +137,5 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add -f content/
           git commit -m "docs: update course pages" || echo "No changes to commit"
+          git fetch origin production --depth=1
           git push origin HEAD:production --force-with-lease
