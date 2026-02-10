@@ -50,22 +50,22 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: hoa-backend --fetch
 
-      - name: Debug diff check
+      - name: Debug source state comparison
         run: |
-          git fetch origin production --depth=1 2>/dev/null || { echo "production branch not found"; exit 0; }
-          git add -f content/
-          echo "=== Diff summary ==="
-          git diff --cached --stat origin/production -- content/ || true
-          echo ""
-          echo "=== Diff quiet check ==="
-          if git diff --quiet --cached origin/production -- content/ 2>/dev/null; then
-            echo "No changes detected"
-          else
-            echo "Changes detected!"
-            echo ""
-            echo "=== Sample of differences (first 50 lines) ==="
-            git diff --cached origin/production -- content/ | head -50 || true
-          fi
+          # Get current source SHAs
+          BLOG=$(curl -s https://api.github.com/repos/HITSZ-OpenAuto/hoa-blog/commits/main | jq -r '.sha[0:7]')
+          NEWS=$(curl -s https://api.github.com/repos/HITSZ-OpenAuto/hoa-news/commits/main | jq -r '.sha[0:7]')
+          MAJOR=$(curl -s https://api.github.com/repos/HITSZ-OpenAuto/hoa-major-data/commits/main | jq -r '.sha[0:7]')
+          REPOS=$(curl -s https://api.github.com/repos/HITSZ-OpenAuto/repos-management/commits/main | jq -r '.sha[0:7]')
+          CURRENT="blog:$BLOG news:$NEWS major:$MAJOR repos:$REPOS"
+          
+          # Get stored state from production branch
+          git fetch origin production --depth=1 2>/dev/null || { echo "No production branch"; exit 0; }
+          STORED=$(git show origin/production:.content-state 2>/dev/null || echo "none")
+          
+          echo "Current:  $CURRENT"
+          echo "Stored:   $STORED"
+          [ "$CURRENT" = "$STORED" ] && echo "Status:   UNCHANGED (skip)" || echo "Status:   CHANGED (deploy)"
 
       - uses: pnpm/action-setup@v4
         with:
