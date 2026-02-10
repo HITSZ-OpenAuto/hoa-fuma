@@ -64,8 +64,16 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
             exit 0
           fi
-          git add -f content/
-          if git diff --quiet --cached origin/production -- content/ 2>/dev/null; then
+          
+          # Calculate hash of current content (excluding placeholders)
+          CURRENT_HASH=$(find content/ -type f -not -path "*/placeholder/*" | sort | xargs sha256sum 2>/dev/null | sha256sum | cut -d' ' -f1)
+          
+          # Checkout production content to temp dir and calculate hash
+          git show origin/production:content/ >/dev/null 2>&1 || { echo "changed=true" >> $GITHUB_OUTPUT; exit 0; }
+          git archive origin/production content/ | tar -x -C /tmp/prod-content 2>/dev/null || mkdir -p /tmp/prod-content/content
+          PROD_HASH=$(find /tmp/prod-content/content/ -type f -not -path "*/placeholder/*" 2>/dev/null | sort | xargs sha256sum 2>/dev/null | sha256sum | cut -d' ' -f1 || echo "")
+          
+          if [ "$CURRENT_HASH" = "$PROD_HASH" ] && [ -n "$PROD_HASH" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
