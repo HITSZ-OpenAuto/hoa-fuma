@@ -28,6 +28,48 @@ jobs:
           repository: ${{ github.repository }}
           ref: main
 
+      - name: Get source state
+        id: source_state
+        run: |
+          # Get latest commit SHAs from source repos
+          BLOG_SHA=$(curl -sI https://api.github.com/repos/HITSZ-OpenAuto/hoa-blog/commits/main | grep -i etag | head -1 | tr -d '\r')
+          NEWS_SHA=$(curl -sI https://api.github.com/repos/HITSZ-OpenAuto/hoa-news/commits/main | grep -i etag | head -1 | tr -d '\r')
+          MAJOR_SHA=$(curl -s https://api.github.com/repos/HITSZ-OpenAuto/hoa-major-data/commits/main | jq -r '.sha' 2>/dev/null || echo "")
+          REPOS_SHA=$(curl -s https://api.github.com/repos/HITSZ-OpenAuto/repos-management/commits/main | jq -r '.sha' 2>/dev/null || echo "")
+          BACKEND_SHA=$(gh api repos/HITSZ-OpenAuto/hoa-backend/releases/latest --jq '.tag_name' 2>/dev/null || echo "")
+          
+          echo "blog=$BLOG_SHA" >> $GITHUB_OUTPUT
+          echo "news=$NEWS_SHA" >> $GITHUB_OUTPUT
+          echo "major=$MAJOR_SHA" >> $GITHUB_OUTPUT
+          echo "repos=$REPOS_SHA" >> $GITHUB_OUTPUT
+          echo "backend=$BACKEND_SHA" >> $GITHUB_OUTPUT
+          
+          CURRENT_STATE="${BLOG_SHA}-${NEWS_SHA}-${MAJOR_SHA}-${REPOS_SHA}-${BACKEND_SHA}"
+          echo "current=$CURRENT_STATE" >> $GITHUB_OUTPUT
+          echo "Current state: $CURRENT_STATE"
+
+      - name: Check for changes vs production
+        id: check_changes
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          git fetch origin production --depth=1 2>/dev/null || { echo "changed=true" >> $GITHUB_OUTPUT; exit 0; }
+          
+          # Read stored state from production branch
+          PROD_STATE=$(git show origin/production:.content-state 2>/dev/null || echo "")
+          echo "Production state: $PROD_STATE"
+          
+          if [ "${{ steps.source_state.outputs.current }}" = "$PROD_STATE" ] && [ -n "$PROD_STATE" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No source changes detected"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Source changes detected"
+          fi
+
       - name: Fetch blog and news content
         run: |
           rm -rf content/blog content/news content/docs
@@ -56,34 +98,16 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: hoa-backend --fetch
 
-      - name: Check for changes vs production
-        id: check_changes
-        run: |
-          git fetch origin production --depth=1 2>/dev/null || { echo "changed=true" >> $GITHUB_OUTPUT; exit 0; }
-          if [ "${{ github.event_name }}" = "push" ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          
-          # Calculate hash of current content (excluding placeholders)
-          CURRENT_HASH=$(find content/ -type f -not -path "*/placeholder/*" | sort | xargs sha256sum 2>/dev/null | sha256sum | cut -d' ' -f1)
-          
-          # Checkout production content to temp dir and calculate hash
-          git show origin/production:content/ >/dev/null 2>&1 || { echo "changed=true" >> $GITHUB_OUTPUT; exit 0; }
-          git archive origin/production content/ | tar -x -C /tmp/prod-content 2>/dev/null || mkdir -p /tmp/prod-content/content
-          PROD_HASH=$(find /tmp/prod-content/content/ -type f -not -path "*/placeholder/*" 2>/dev/null | sort | xargs sha256sum 2>/dev/null | sha256sum | cut -d' ' -f1 || echo "")
-          
-          if [ "$CURRENT_HASH" = "$PROD_HASH" ] && [ -n "$PROD_HASH" ]; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
+      - name: Save source state to file
+        run: echo "${{ steps.source_state.outputs.current }}" > .content-state
 
       - name: Upload content artifact
         uses: actions/upload-artifact@v4
         with:
           name: content
-          path: content/
+          path: |
+            content/
+            .content-state
           retention-days: 1
 
   deploy:
@@ -101,7 +125,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: content
-          path: content/
+          path: .
 
       - uses: pnpm/action-setup@v4
         with:
@@ -137,13 +161,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: content
-          path: content/
+          path: .
 
       - name: Commit and push to production branch
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
-          git add -f content/
+          git add -f content/ .content-state
           git commit -m "docs: update course pages" || echo "No changes to commit"
           git fetch origin production --depth=1
           git push origin HEAD:production --force-with-lease
