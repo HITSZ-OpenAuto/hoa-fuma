@@ -43,18 +43,31 @@ jobs:
           tar -xzf hoa-backend-linux.tar.gz
           chmod +x hoa-backend
           sudo mv hoa-backend /usr/local/bin/
-
           rm hoa-backend-linux.tar.gz
 
       - name: Build course pages
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          hoa-backend --fetch
+        run: hoa-backend --fetch
 
+      - name: Debug diff check
+        run: |
+          git fetch origin production --depth=1 2>/dev/null || { echo "production branch not found"; exit 0; }
+          git add -f content/
+          echo "=== Diff summary ==="
+          git diff --cached --stat origin/production -- content/ || true
+          echo ""
+          echo "=== Diff quiet check ==="
+          if git diff --quiet --cached origin/production -- content/ 2>/dev/null; then
+            echo "No changes detected"
+          else
+            echo "Changes detected!"
+            echo ""
+            echo "=== Sample of differences (first 50 lines) ==="
+            git diff --cached origin/production -- content/ | head -50 || true
+          fi
 
       - uses: pnpm/action-setup@v4
-        name: Install pnpm
         with:
           cache: true
 
