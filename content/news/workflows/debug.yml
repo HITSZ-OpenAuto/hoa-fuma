@@ -1,0 +1,62 @@
+name: "Generate News"
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - 'feat/news-and-summary'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  news:
+    runs-on: ubuntu-latest
+    env:
+      ORG_NAME: "HITSZ-OpenAuto"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_branch || github.ref_name }}
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Verify tools
+        run: |
+          go version
+          gh --version
+          jq --version
+
+      - name: Fetch public repositories in the organization
+        run: curl -L -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
+
+      - name: Parse repo list and set as env var
+        run: |
+          repos=$(jq -R -s -c 'split("\n") | map(select(length > 0))' repos_list.txt)
+          echo "repos_array=$repos" >> "$GITHUB_ENV"
+
+      - name: Generate daily report
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: go run ./cmd/main.go news
+
+      - name: Show diff in logs
+        run: |
+          if git diff --quiet -- news/daily.mdx; then
+            echo "No changes detected in news/daily.mdx"
+            exit 0
+          fi
+
+          echo "Detected changes in news/daily.mdx:"
+          git --no-pager diff -- news/daily.mdx
