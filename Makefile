@@ -1,6 +1,6 @@
 PM := pnpm
 
-.PHONY: help prepare docs dev build start clean clean-docs clean-content lint format check content ignore-content-changes
+.PHONY: help prepare docs dev build start clean lint format check content ignore-content-changes
 
 help:
 	@printf "%s\n" \
@@ -14,8 +14,6 @@ help:
 		"  format                  Format frontend" \
 		"  check                   Run lint and format" \
 		"  clean                   Remove node_modules, .next, .source, docs, blog and news" \
-		"  clean-docs              Remove content/docs only" \
-		"  clean-content           Remove content/blog and content/news only" \
 		"  content                 Fetch blog and news content" \
 		"  ignore-content-changes  Tell Git to ignore local changes under content/ (run once per clone)"
 
@@ -28,6 +26,8 @@ prepare: content
 	$(MAKE) ignore-content-changes
 
 docs:
+	rm -rf content/docs
+	mkdir -p content/docs
 	hoa-backend --fetch
 
 dev:
@@ -48,16 +48,10 @@ format:
 check: lint format
 
 clean:
-	rm -rf node_modules .next .source content/docs content/blog content/news
+	rm -rf node_modules .next .source
 
-clean-docs:
-	rm -rf content/docs
-
-clean-content:
-	rm -rf content/blog content/news
-
-content: clean-content
-	rm -rf content/blog content/news
+content:
+	rm -rf content/blog content/news content/docs
 	mkdir -p content/blog content/news
 	curl -L https://github.com/HITSZ-OpenAuto/hoa-blog/tarball/main | tar -xz -C content/blog --strip-components=2
 	curl -L https://github.com/HITSZ-OpenAuto/hoa-news/tarball/main | tar -xz -C content/news --strip-components=2
