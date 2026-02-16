@@ -22,11 +22,11 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "fflate": "^0.8.2",
-    "fumadocs-core": "^16.5.2",
+    "fumadocs-core": "^16.6.2",
     "fumadocs-mdx": "^14.2.7",
-    "fumadocs-ui": "^16.5.2",
+    "fumadocs-ui": "^16.6.2",
     "katex": "^0.16.28",
-    "lucide-react": "^0.563.0",
+    "lucide-react": "^0.564.0",
     "next": "^16.1.6",
     "next-themes": "^0.4.6",
     "react": "^19.2.4",
@@ -34,7 +34,7 @@
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "sonner": "^2.0.7",
-    "tailwind-merge": "^3.4.0",
+    "tailwind-merge": "^3.4.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -42,8 +42,8 @@
     "@commitlint/config-conventional": "^20.4.1",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/mdx": "^2.0.13",
-    "@types/node": "^25.2.2",
-    "@types/react": "^19.2.13",
+    "@types/node": "^25.2.3",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.2",
     "eslint-config-next": "16.1.6",
@@ -67,5 +67,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264"
+  "packageManager": "pnpm@10.29.3"
 }
