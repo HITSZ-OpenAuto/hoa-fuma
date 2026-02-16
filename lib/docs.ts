@@ -1,7 +1,7 @@
 import type { Folder } from 'fumadocs-core/page-tree';
 import { source } from '@/lib/source';
 
-export function isRootFolder(node: unknown): node is Folder {
+function isRootFolder(node: unknown): node is Folder {
   return (
     typeof node === 'object' &&
     node !== null &&

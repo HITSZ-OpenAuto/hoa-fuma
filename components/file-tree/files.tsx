@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { transformChildrenToData } from './utils';
 import { FileTreeTable } from './table';
 
-export interface FilesProps {
+interface FilesProps {
   children: ReactNode;
   className?: string;
   url?: string;
