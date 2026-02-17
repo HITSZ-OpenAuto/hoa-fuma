@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
-const COOKIE_NAME = 'docs-last-path';
+const HOA_LAST_PATH_COOKIE = 'hoa-last-path';
 const MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 export function DocsPathMemory() {
@@ -12,7 +12,7 @@ export function DocsPathMemory() {
   useEffect(() => {
     const segments = pathname.split('/').filter(Boolean);
     if (pathname.startsWith('/docs/') && segments.length >= 2) {
-      document.cookie = `${COOKIE_NAME}=${encodeURIComponent(pathname)}; path=/; max-age=${MAX_AGE}; SameSite=Lax`;
+      document.cookie = `${HOA_LAST_PATH_COOKIE}=${encodeURIComponent(pathname)}; path=/; max-age=${MAX_AGE}; SameSite=Lax`;
     }
   }, [pathname]);
 
