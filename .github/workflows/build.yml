@@ -19,6 +19,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      trigger_deploy: ${{ steps.check_changes.outputs.trigger_deploy }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -28,7 +30,7 @@ jobs:
 
       - name: Fetch blog and news content
         run: |
-          rm -rf content/blog content/news content/docs
+          rm -rf content/docs content/blog content/news
           mkdir -p content/blog content/news
           curl -L https://github.com/HITSZ-OpenAuto/hoa-blog/tarball/main | tar -xz -C content/blog --strip-components=2
           curl -L https://github.com/HITSZ-OpenAuto/hoa-news/tarball/main | tar -xz -C content/news --strip-components=2
@@ -47,17 +49,76 @@ jobs:
           tar -xzf hoa-backend-linux.tar.gz
           chmod +x hoa-backend
           sudo mv hoa-backend /usr/local/bin/
-
           rm hoa-backend-linux.tar.gz
 
       - name: Build course pages
         env:
           GITHUB_TOKEN: ${{ github.token }}
+        run: hoa-backend --fetch
+
+      - name: Check for changes
+        id: check_changes
         run: |
-          hoa-backend --fetch
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "trigger_deploy=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          git fetch origin production --depth=1 2>/dev/null || { echo "trigger_deploy=true" >> $GITHUB_OUTPUT; exit 0; }
+          mkdir -p /tmp/prod
+          git archive origin/production content/ | tar -x -C /tmp/prod
+          changed=false
+          while IFS= read -r -d '' file; do
+            rel_path="${file#content/}"
+            prod_file="/tmp/prod/content/$rel_path"
+            if [ ! -f "$prod_file" ] || ! diff -q "$file" "$prod_file" > /dev/null 2>&1; then
+              changed=true
+              break
+            fi
+          done < <(find content/ -type f -print0)
+          if [ "$changed" = "false" ]; then
+            while IFS= read -r -d '' file; do
+              rel_path="${file#/tmp/prod/content/}"
+              build_file="content/$rel_path"
+              if [ ! -f "$build_file" ]; then
+                changed=true
+                break
+              fi
+            done < <(find /tmp/prod/content/ -type f -print0)
+          fi
+          if [ "$changed" = "true" ]; then
+            echo "trigger_deploy=true" >> $GITHUB_OUTPUT
+          else
+            echo "trigger_deploy=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload content artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: content
+          path: content/
+          retention-days: 1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: needs.build.outputs.trigger_deploy == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          repository: ${{ github.repository }}
+          ref: main
+
+      - name: Remove placeholder content
+        run: rm -rf content/docs content/blog content/news
+
+      - name: Download content artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: content
+          path: content/
 
       - uses: pnpm/action-setup@v4
-        name: Install pnpm
         with:
           cache: true
 
@@ -76,10 +137,10 @@ jobs:
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ env.VERCEL_TOKEN }} --archive=tgz
 
-      - name: Commit and push changes to production branch
+      - name: Commit and push to production branch
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
-          git add --force content/
+          git add -f content/
           git commit -m "docs: update course pages" || echo "No changes to commit"
           git push origin HEAD:production --force
