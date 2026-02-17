@@ -34,15 +34,3 @@ export function getAvailableYears(): string[] {
     .map((node) => node.name)
     .sort((a, b) => b.localeCompare(a));
 }
-
-export function getFirstCourseUrl(year: string): string {
-  const tree = source.getPageTree();
-  const yearNode = tree.children.find(
-    (node): node is Folder =>
-      node.type === 'folder' && String(node.name) === year
-  );
-  const firstRoot = yearNode ? yearNode.children.find(isRootFolder) : null;
-  return firstRoot
-    ? (getFolderFirstUrl(firstRoot) ?? `/docs/${year}`)
-    : `/docs/${year}`;
-}

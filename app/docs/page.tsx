@@ -1,18 +1,11 @@
-import { getAvailableYears, getFirstCourseUrl } from '@/lib/docs';
 import { source } from '@/lib/source';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-const DOCS_LAST_PATH_COOKIE = 'docs-last-path';
+const HOA_LAST_PATH_COOKIE = 'hoa-last-path';
 
 export default async function Page() {
-  const years = getAvailableYears();
-
-  if (years.length === 0) {
-    redirect('/');
-  }
-
-  const lastPath = (await cookies()).get(DOCS_LAST_PATH_COOKIE)?.value;
+  const lastPath = (await cookies()).get(HOA_LAST_PATH_COOKIE)?.value;
   const pathname = lastPath ? decodeURIComponent(lastPath) : '';
   if (pathname.startsWith('/docs/')) {
     const segments = pathname.split('/').filter(Boolean).slice(1);
@@ -21,5 +14,5 @@ export default async function Page() {
     }
   }
 
-  redirect(getFirstCourseUrl(years[0]));
+  redirect('docs/2025');
 }
