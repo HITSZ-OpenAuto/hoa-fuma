@@ -63,7 +63,7 @@ jobs:
             echo "trigger_deploy=true" >> $GITHUB_OUTPUT
             exit 0
           fi
-          git fetch origin production --depth=1
+          git fetch origin production --depth=1 2>/dev/null || { echo "trigger_deploy=true" >> $GITHUB_OUTPUT; exit 0; }
           mkdir -p /tmp/prod
           git archive origin/production content/ | tar -x -C /tmp/prod
           changed=false
@@ -147,5 +147,5 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add -f content/
           git commit -m "docs: update course pages" || echo "No changes to commit"
-          git fetch origin production --depth=1
+          git fetch origin production --depth=1 2>/dev/null || true
           git push origin HEAD:production --force-with-lease
