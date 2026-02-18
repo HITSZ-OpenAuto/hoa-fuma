@@ -71,28 +71,23 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
       const newExpanded: Record<string, boolean> = {};
       const query = globalFilter.toLowerCase();
 
-      function expandMatching(nodes: FileNode[]) {
+      function checkMatch(nodes: FileNode[]): boolean {
+        let anyMatch = false;
         for (const node of nodes) {
           const matchesSelf = node.name.toLowerCase().includes(query);
-          const hasMatchingChild = node.children?.some(
-            (child) =>
-              child.name.toLowerCase().includes(query) ||
-              (child.children &&
-                flattenNodes([child]).some((n) =>
-                  n.name.toLowerCase().includes(query)
-                ))
-          );
+          const matchesChild = node.children ? checkMatch(node.children) : false;
 
-          if (node.type === 'folder' && (matchesSelf || hasMatchingChild)) {
+          if (node.type === 'folder' && (matchesSelf || matchesChild)) {
             newExpanded[node.id] = true;
           }
 
-          if (node.children) {
-            expandMatching(node.children);
+          if (matchesSelf || matchesChild) {
+            anyMatch = true;
           }
         }
+        return anyMatch;
       }
-      expandMatching(data);
+      checkMatch(data);
       setExpanded(newExpanded);
     } else if (prevFilterRef.current !== '') {
       setExpanded({});
