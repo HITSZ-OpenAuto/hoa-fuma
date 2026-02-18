@@ -190,33 +190,6 @@
 /* Hero card positioning - desktop stacked layout */
 .hero-card {
   transform-origin: bottom center;
-  transform: translateX(var(--card-offset, 0))
-    translateY(var(--card-hover-y, 0)) rotate(var(--card-rotation, 0deg));
-  transition:
-    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-    z-index 0s;
-}
-
-.hero-card:hover {
-  --card-hover-y: -0.75rem;
-}
-
-.hero-card:nth-child(1) {
-  --card-offset: 0;
-  --card-rotation: 0deg;
-  z-index: 1;
-}
-
-.hero-card:nth-child(2) {
-  --card-offset: 2.5rem;
-  --card-rotation: 8deg;
-  z-index: 2;
-}
-
-.hero-card:nth-child(3) {
-  --card-offset: 5rem;
-  --card-rotation: 16deg;
-  z-index: 3;
 }
 
 /* Sticky note label */
