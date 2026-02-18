@@ -211,6 +211,34 @@ export async function downloadSingleFile(
   triggerDownload(blob, name);
 }
 
+/**
+ * Simple concurrency limiter to prevent unbounded parallel operations.
+ */
+function pLimit(concurrency: number) {
+  const queue: (() => void)[] = [];
+  let activeCount = 0;
+
+  const next = () => {
+    activeCount--;
+    if (queue.length > 0) {
+      const resolve = queue.shift();
+      if (resolve) resolve();
+    }
+  };
+
+  return async <T,>(fn: () => Promise<T>): Promise<T> => {
+    if (activeCount >= concurrency) {
+      await new Promise<void>((resolve) => queue.push(resolve));
+    }
+    activeCount++;
+    try {
+      return await fn();
+    } finally {
+      next();
+    }
+  };
+}
+
 // Downloads multiple files as a ZIP archive with progress tracking
 export async function downloadBatchFiles(
   files: DownloadFile[],
@@ -218,30 +246,33 @@ export async function downloadBatchFiles(
 ) {
   const zippable: AsyncZippable = {};
   let completed = 0;
+  const limit = pLimit(3);
 
   await Promise.all(
-    files.map(async (file) => {
-      const response = await fetch(file.url);
-      if (!response.ok)
-        throw new Error(`Failed to fetch ${file.url}: ${response.statusText}`);
+    files.map((file) =>
+      limit(async () => {
+        const response = await fetch(file.url);
+        if (!response.ok)
+          throw new Error(`Failed to fetch ${file.url}: ${response.statusText}`);
 
-      const buffer = await response.arrayBuffer();
+        const buffer = await response.arrayBuffer();
 
-      let zipPath = file.path;
-      const urlPath = file.url.split(/[?#]/)[0];
-      const extMatch = urlPath.match(/\.[a-z0-9]+$/i);
+        let zipPath = file.path;
+        const urlPath = file.url.split(/[?#]/)[0];
+        const extMatch = urlPath.match(/\.[a-z0-9]+$/i);
 
-      if (
-        extMatch &&
-        !zipPath.toLowerCase().endsWith(extMatch[0].toLowerCase())
-      ) {
-        zipPath += extMatch[0];
-      }
+        if (
+          extMatch &&
+          !zipPath.toLowerCase().endsWith(extMatch[0].toLowerCase())
+        ) {
+          zipPath += extMatch[0];
+        }
 
-      zippable[zipPath] = new Uint8Array(buffer);
-      completed++;
-      onProgress?.(Math.round((completed / files.length) * 90));
-    })
+        zippable[zipPath] = new Uint8Array(buffer);
+        completed++;
+        onProgress?.(Math.round((completed / files.length) * 90));
+      })
+    )
   );
 
   if (Object.keys(zippable).length === 0) {
