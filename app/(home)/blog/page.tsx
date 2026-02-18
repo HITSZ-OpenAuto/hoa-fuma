@@ -70,7 +70,7 @@ export default function Page() {
       <div className="dark relative z-2 mb-4 aspect-[3.2] p-8 md:p-12">
         <Image
           src={BannerImage}
-          priority
+          loading="eager"
           alt="banner"
           className="absolute inset-0 -z-1 size-full object-cover"
         />

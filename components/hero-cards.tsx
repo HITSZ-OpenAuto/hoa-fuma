@@ -37,6 +37,7 @@ function HeroCard({ linkTo, content, imageURL, index }: HeroCardProps) {
           fill
           className="object-cover object-top"
           sizes="100vw"
+          loading="eager"
         />
       </div>
     </Link>
@@ -52,7 +53,7 @@ function MobileLogo() {
         width={280}
         height={160}
         className="h-auto w-70 dark:opacity-90 dark:brightness-110"
-        priority
+        loading="eager"
       />
     </div>
   );
