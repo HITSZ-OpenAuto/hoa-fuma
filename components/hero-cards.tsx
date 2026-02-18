@@ -36,7 +36,8 @@ function HeroCard({ linkTo, content, imageURL, index }: HeroCardProps) {
           alt={content}
           fill
           className="object-cover object-top"
-          sizes="208px"
+          sizes="100vw"
+          preload={true}
         />
       </div>
     </Link>
