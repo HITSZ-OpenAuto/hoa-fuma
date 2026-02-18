@@ -1,6 +1,9 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import * as motion from 'motion/react-client';
 
 type CardData = {
   linkTo: string;
@@ -20,27 +23,37 @@ type HeroCardProps = CardData & {
 
 function HeroCard({ linkTo, content, imageURL, index }: HeroCardProps) {
   return (
-    <Link
-      href={linkTo}
-      className={cn('hero-card group absolute', 'h-72 w-lg')}
-      style={{ '--card-index': index } as React.CSSProperties}
+    <motion.div
+      initial={{ x: 0, rotate: 0, y: 24 }}
+      animate={{ x: index * 40, rotate: index * 8, y: 0 }}
+      whileHover={{ y: -12, zIndex: 50 }}
+      transition={{
+        delay: 0.4 + index * 0.1,
+        duration: 1.2,
+        ease: [0.16, 1, 0.3, 1],
+        y: { duration: 0.4, ease: [0.34, 1.56, 0.64, 1] },
+        zIndex: { duration: 0 },
+      }}
+      className="absolute"
+      style={{ zIndex: index + 1, transformOrigin: 'bottom center' }}
     >
-      <div className="sticky-label">
-        <span>{content}</span>
-      </div>
+      <Link href={linkTo} className={cn('hero-card group', 'block h-72 w-lg')}>
+        <div className="sticky-label">
+          <span>{content}</span>
+        </div>
 
-      {/* Image content */}
-      <div className="hero-card-body relative h-full w-full overflow-hidden transition-shadow duration-300 group-hover:shadow-xl">
-        <Image
-          src={imageURL}
-          alt={content}
-          fill
-          className="object-cover object-top"
-          sizes="100vw"
-          loading="eager"
-        />
-      </div>
-    </Link>
+        <div className="hero-card-body relative h-full w-full overflow-hidden transition-shadow duration-300 group-hover:shadow-xl">
+          <Image
+            src={imageURL}
+            alt={content}
+            fill
+            className="object-cover object-top"
+            sizes="100vw"
+            loading="eager"
+          />
+        </div>
+      </Link>
+    </motion.div>
   );
 }
 
@@ -62,12 +75,10 @@ function MobileLogo() {
 export function HeroCards() {
   return (
     <>
-      {/* Mobile: show logo */}
       <div className="block lg:hidden">
         <MobileLogo />
       </div>
 
-      {/* Desktop: card layout */}
       <div
         className={cn(
           'hero-cards-container relative',
