@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import * as motion from 'motion/react-client';
+import { motion } from 'motion/react';
 
 type CardData = {
   linkTo: string;
