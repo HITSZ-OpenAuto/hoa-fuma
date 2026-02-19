@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Mail, Github } from 'lucide-react';
 import { RecentRepos } from '@/components/recent-repos';
+import { ScrollHint } from '@/components/scroll-hint';
 import { LatestPosts } from '@/components/latest-posts';
 import { GridBackground } from '@/components/grid-background';
 import { HeroCards } from '@/components/hero-cards';
@@ -88,6 +89,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+        <ScrollHint />
       </section>
 
       {/* Recent updates section */}
