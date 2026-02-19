@@ -21,18 +21,40 @@ type HeroCardProps = CardData & {
   index: number;
 };
 
+const TOP_CARD_INDEX = 2;
+const TOP_DELAY = 0.4;
+const TOP_DURATION = 1.2;
+const STAGGER = 0.1;
+const BACK_CARD_START_DELAY = TOP_DELAY + TOP_DURATION * 0.1;
+
 function HeroCard({ linkTo, content, imageURL, index }: HeroCardProps) {
+  const isTopCard = index === TOP_CARD_INDEX;
+  const delay = isTopCard
+    ? TOP_DELAY
+    : BACK_CARD_START_DELAY + (TOP_CARD_INDEX - 1 - index) * STAGGER;
+
   return (
     <motion.div
-      initial={{ x: 0, rotate: 0, y: 24 }}
-      animate={{ x: index * 40, rotate: index * 8, y: 0 }}
+      initial={{
+        x: 0,
+        rotate: 0,
+        y: 24,
+        ...(isTopCard ? {} : { opacity: 0 }),
+      }}
+      animate={{
+        x: index * 40,
+        rotate: index * 8,
+        y: 0,
+        ...(isTopCard ? {} : { opacity: 1 }),
+      }}
       whileHover={{ y: -12, zIndex: 50 }}
       transition={{
-        delay: 0.4 + index * 0.1,
-        duration: 1.2,
+        delay,
+        duration: TOP_DURATION,
         ease: [0.16, 1, 0.3, 1],
         y: { duration: 0.4, ease: [0.34, 1.56, 0.64, 1] },
         zIndex: { duration: 0 },
+        ...(isTopCard ? {} : { opacity: { duration: 0.5, ease: 'easeOut' } }),
       }}
       className="absolute"
       style={{ zIndex: index + 1, transformOrigin: 'bottom center' }}
@@ -87,9 +109,10 @@ export function HeroCards() {
           'xl:-ml-12'
         )}
       >
-        {cards.map((card, index) => (
-          <HeroCard key={card.linkTo} {...card} index={index} />
-        ))}
+        {[...cards].reverse().map((card, reversedIndex) => {
+          const index = cards.length - 1 - reversedIndex;
+          return <HeroCard key={card.linkTo} {...card} index={index} />;
+        })}
       </div>
     </>
   );
