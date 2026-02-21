@@ -1,14 +1,17 @@
-import Link from 'next/link';
 import { Mail, Github } from 'lucide-react';
 import { RecentRepos } from '@/components/recent-repos';
 import { ScrollHint } from '@/components/scroll-hint';
 import { LatestPosts } from '@/components/latest-posts';
 import { GridBackground } from '@/components/grid-background';
 import { HeroCards } from '@/components/hero-cards';
+import { HeroButtons } from '@/components/hero-buttons';
 import { Button } from '@/components/ui/button';
 import { getRecentRepos } from '@/lib/github';
+import { getYearMajorMap } from '@/lib/docs';
 
 function HeroContent() {
+  const yearMajorMap = getYearMajorMap();
+
   return (
     <div className="space-y-6">
       <h1 className="hero-title text-[clamp(3rem,8vw,6rem)] leading-none font-bold tracking-tight">
@@ -23,25 +26,7 @@ function HeroContent() {
         为你的 HITSZ 求学路提供全面的课程资料与经验分享
       </p>
 
-      {/* Button group */}
-      <div className="flex flex-wrap justify-center gap-4 pt-4 lg:justify-start">
-        <Button
-          variant="default"
-          size="lg"
-          className="rounded-full transition-transform hover:scale-105"
-          asChild
-        >
-          <Link href="/docs">查看文档</Link>
-        </Button>
-        <Button
-          variant="secondary"
-          size="lg"
-          className="rounded-full transition-transform hover:scale-105"
-          asChild
-        >
-          <Link href="/blog/contribution-guide">参与指南</Link>
-        </Button>
-      </div>
+      <HeroButtons yearMajorMap={yearMajorMap} />
     </div>
   );
 }
