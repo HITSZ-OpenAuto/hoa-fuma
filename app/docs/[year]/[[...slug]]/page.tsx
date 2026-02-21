@@ -9,7 +9,8 @@ import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
-import { cn } from '@/lib/utils';
+import { getLatestCommit } from '@/lib/github';
+import { LatestCommit } from '@/components/latest-commit';
 
 export default async function Page(props: {
   params: Promise<{ year: string; slug?: string[] }>;
@@ -21,13 +22,19 @@ export default async function Page(props: {
 
   const MDX = page.data.body;
 
+  // For course pages, extract repo name from the last slug segment
+  const repoName = page.data.course ? (params.slug?.at(-1) ?? null) : null;
+  const latestCommit = repoName ? await getLatestCommit(repoName) : null;
+
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription
-        className={cn('text-base', page.data.course ? 'mb-0' : undefined)}
-      >
-        {page.data.description}
+      <DocsDescription className="mb-0 text-base">
+        {latestCommit ? (
+          <LatestCommit commit={latestCommit} />
+        ) : (
+          page.data.description
+        )}
       </DocsDescription>
       <DocsBody>
         <MDX

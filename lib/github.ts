@@ -12,6 +12,15 @@ type RepoItem = {
   updatedAt: string;
 };
 
+export type LatestCommitInfo = {
+  authorName: string;
+  authorUrl: string;
+  authorAvatarUrl: string;
+  message: string;
+  commitUrl: string;
+  date: string;
+};
+
 /**
  * Fetch the most recently updated repos from HITSZ-OpenAuto,
  * filtered to those in repos_list.txt.
@@ -26,12 +35,7 @@ export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
       .filter(Boolean)
   );
 
-  const headers: HeadersInit = {
-    Accept: 'application/vnd.github+json',
-  };
-  if (process.env.GITHUB_TOKEN) {
-    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  }
+  const headers = githubHeaders();
 
   // Fetch repos sorted by push date (most recent first)
   const res = await fetch(
@@ -56,21 +60,14 @@ export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
     if (results.length >= count) break;
 
     const commitsRes = await fetch(
-      `https://api.github.com/repos/${ORG}/${repo.name}/commits?per_page=10`,
+      `https://api.github.com/repos/${ORG}/${repo.name}/commits?per_page=50`,
       { headers, next: { revalidate: 3600 } }
     );
     if (!commitsRes.ok) continue;
 
     const commits: { commit: { message: string } }[] = await commitsRes.json();
 
-    const commit = commits.find(
-      (c) =>
-        !c.commit.message.startsWith('ci:') &&
-        !c.commit.message.startsWith('[automated-generated-PR]') &&
-        !c.commit.message.startsWith('Update') &&
-        !c.commit.message.startsWith('Merge') &&
-        !c.commit.message.startsWith('chore:')
-    );
+    const commit = commits.find((c) => isUserCommit(c.commit.message));
     const description = commit ? commit.commit.message.split('\n')[0] : '';
 
     results.push({
@@ -83,4 +80,67 @@ export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
   }
 
   return results;
+}
+
+const IGNORED_PREFIXES = [
+  'ci:',
+  '[automated-generated-pr]',
+  'update',
+  'merge',
+  'chore:',
+  'docs:',
+];
+
+function isUserCommit(message: string): boolean {
+  const lower = message.toLowerCase();
+  return !IGNORED_PREFIXES.some((prefix) => lower.startsWith(prefix));
+}
+
+function githubHeaders(): HeadersInit {
+  const headers: HeadersInit = {
+    Accept: 'application/vnd.github+json',
+  };
+  if (process.env.GITHUB_TOKEN) {
+    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  }
+  return headers;
+}
+
+/**
+ * Fetch the latest non-ci commit for a specific repo under HITSZ-OpenAuto.
+ */
+export async function getLatestCommit(
+  repoName: string
+): Promise<LatestCommitInfo | null> {
+  const headers = githubHeaders();
+
+  const res = await fetch(
+    `https://api.github.com/repos/${ORG}/${repoName}/commits?per_page=50`,
+    { headers, next: { revalidate: 3600 } }
+  );
+
+  if (!res.ok) return null;
+
+  const commits: {
+    sha: string;
+    html_url: string;
+    commit: {
+      message: string;
+      author: { name: string; date: string };
+    };
+    author: { login: string; html_url: string; avatar_url: string } | null;
+  }[] = await res.json();
+
+  const commit = commits.find((c) => isUserCommit(c.commit.message));
+  if (!commit) return null;
+
+  return {
+    authorName: commit.author?.login ?? commit.commit.author.name,
+    authorUrl:
+      commit.author?.html_url ?? `https://github.com/${commit.author?.login}`,
+    authorAvatarUrl: commit.author?.avatar_url ?? '',
+    message: commit.commit.message.split('\n')[0],
+    commitUrl: commit.html_url,
+    date: commit.commit.author.date,
+  };
 }
