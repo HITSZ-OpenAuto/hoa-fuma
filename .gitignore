@@ -43,3 +43,7 @@ scripts/.env
 
 # local clones
 hoa-major-data/
+
+# secrets
+.env
+.env.local

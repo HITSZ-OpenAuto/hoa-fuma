@@ -6,6 +6,7 @@ import { LatestPosts } from '@/components/latest-posts';
 import { GridBackground } from '@/components/grid-background';
 import { HeroCards } from '@/components/hero-cards';
 import { Button } from '@/components/ui/button';
+import { getRecentRepos } from '@/lib/github';
 
 function HeroContent() {
   return (
@@ -45,30 +46,8 @@ function HeroContent() {
   );
 }
 
-export default function HomePage() {
-  const recentRepos = [
-    {
-      id: '1',
-      name: '凸优化与最优控制',
-      description: '上传了一份实验报告',
-      href: 'https://github.com/HITSZ-OpenAuto/hoa-fuma/',
-      updatedAt: '2026-01-29',
-    },
-    {
-      id: '2',
-      name: '大学物理实验',
-      description: '更新了期中复习笔记',
-      href: 'https://github.com/HITSZ-OpenAuto/hoa-fuma/',
-      updatedAt: '2026-01-25',
-    },
-    {
-      id: '3',
-      name: '程序设计思维与实践',
-      description: '添加了课程作业参考答案',
-      href: 'https://github.com/HITSZ-OpenAuto/hoa-fuma/',
-      updatedAt: '2026-01-18',
-    },
-  ];
+export default async function HomePage() {
+  const recentRepos = await getRecentRepos(6);
 
   return (
     <div className="bg-background text-foreground relative min-h-svh">
