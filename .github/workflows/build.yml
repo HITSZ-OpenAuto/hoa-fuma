@@ -18,7 +18,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     outputs:
       trigger_deploy: ${{ steps.check_changes.outputs.trigger_deploy }}
     steps:
@@ -99,7 +99,7 @@ jobs:
           retention-days: 1
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: build
     if: needs.build.outputs.trigger_deploy == 'true'
     steps:
