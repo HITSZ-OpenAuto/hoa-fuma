@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { GITHUB_ORG } from './constants';
 
-const ORG = 'HITSZ-OpenAuto';
 const REPOS_FILE = path.join(process.cwd(), 'repos_list.txt');
 
 type RepoItem = {
@@ -22,7 +22,7 @@ export type LatestCommitInfo = {
 };
 
 /**
- * Fetch the most recently updated repos from HITSZ-OpenAuto,
+ * Fetch the most recently updated repos,
  * filtered to those in repos_list.txt.
  * Description is the latest commit message that does not start with "ci:".
  */
@@ -39,7 +39,7 @@ export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
 
   // Fetch repos sorted by push date (most recent first)
   const res = await fetch(
-    `https://api.github.com/orgs/${ORG}/repos?sort=pushed&direction=desc&per_page=50`,
+    `https://api.github.com/orgs/${GITHUB_ORG}/repos?sort=pushed&direction=desc&per_page=50`,
     { headers, next: { revalidate: 3600 } }
   );
 
@@ -60,7 +60,7 @@ export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
     if (results.length >= count) break;
 
     const commitsRes = await fetch(
-      `https://api.github.com/repos/${ORG}/${repo.name}/commits?per_page=50`,
+      `https://api.github.com/repos/${GITHUB_ORG}/${repo.name}/commits?per_page=50`,
       { headers, next: { revalidate: 3600 } }
     );
     if (!commitsRes.ok) continue;
@@ -107,7 +107,7 @@ function githubHeaders(): HeadersInit {
 }
 
 /**
- * Fetch the latest non-ci commit for a specific repo under HITSZ-OpenAuto.
+ * Fetch the latest non-ci commit for a specific repo.
  */
 export async function getLatestCommit(
   repoName: string
@@ -115,7 +115,7 @@ export async function getLatestCommit(
   const headers = githubHeaders();
 
   const res = await fetch(
-    `https://api.github.com/repos/${ORG}/${repoName}/commits?per_page=50`,
+    `https://api.github.com/repos/${GITHUB_ORG}/${repoName}/commits?per_page=50`,
     { headers, next: { revalidate: 3600 } }
   );
 

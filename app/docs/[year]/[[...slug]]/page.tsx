@@ -11,6 +11,8 @@ import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { getLatestCommit } from '@/lib/github';
 import { LatestCommit } from '@/components/latest-commit';
+import { GITHUB_ORG } from '@/lib/constants';
+import { PageActions } from '@/components/page-actions';
 
 export default async function Page(props: {
   params: Promise<{ year: string; slug?: string[] }>;
@@ -26,6 +28,10 @@ export default async function Page(props: {
   const repoName = page.data.course ? (params.slug?.at(-1) ?? null) : null;
   const latestCommit = repoName ? await getLatestCommit(repoName) : null;
 
+  const githubUrl = repoName
+    ? `https://github.com/${GITHUB_ORG}/${repoName}`
+    : null;
+
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
@@ -37,6 +43,14 @@ export default async function Page(props: {
         )}
       </DocsDescription>
       <DocsBody>
+        {repoName && githubUrl && (
+          <div className="mb-2">
+            <PageActions
+              markdownUrl={`${page.url}.mdx`}
+              githubUrl={githubUrl}
+            />
+          </div>
+        )}
         <MDX
           components={getMDXComponents(
             {
