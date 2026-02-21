@@ -131,8 +131,11 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ env.VERCEL_TOKEN }}
 
-      - name: Fetch repositories list
-        run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
+      - name: Fetch external data
+        run: |
+          curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
+          mkdir -p hoa-major-data
+          curl -o hoa-major-data/major_mapping.json https://raw.githubusercontent.com/HITSZ-OpenAuto/hoa-major-data/main/major_mapping.json
 
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ env.VERCEL_TOKEN }}
