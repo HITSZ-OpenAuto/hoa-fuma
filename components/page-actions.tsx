@@ -183,7 +183,7 @@ export function ViewOptions({
         ),
       },
     ];
-  }, [githubUrl, markdownUrl]);
+  }, [markdownUrl]);
 
   return (
     <Popover>

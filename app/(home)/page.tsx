@@ -44,7 +44,7 @@ export default async function HomePage() {
         <div className="mx-auto w-full max-w-6xl pb-32 lg:pt-20 lg:pb-36">
           <div className="grid grid-cols-1 items-center gap-4 lg:grid-cols-2 lg:gap-0">
             {/* Left: Content area */}
-            <div className="order-2 text-center lg:order-1 lg:text-left">
+            <div className="order-2 text-center lg:order-1 lg:self-start lg:text-left">
               <HeroContent />
             </div>
             {/* Right: Cards display area */}
