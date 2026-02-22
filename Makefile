@@ -1,6 +1,6 @@
 PM := pnpm
 
-.PHONY: help prepare docs dev build start clean clean-docs clean-content lint format check content ignore-content-changes
+.PHONY: help prepare docs dev build start clean clean-docs clean-content lint format type-check check content ignore-content-changes
 
 help:
 	@printf "%s\n" \
@@ -12,7 +12,8 @@ help:
 		"  start                   Start the built frontend (production)" \
 		"  lint                    Lint frontend" \
 		"  format                  Format frontend" \
-		"  check                   Run lint and format" \
+		"  type-check              Run type checks" \
+		"  check                   Run lint, format, and type checks" \
 		"  clean                   Remove node_modules, .next, .source, docs, blog and news" \
 		"  clean-docs              Remove content/docs only" \
 		"  clean-content           Remove content/blog and content/news only" \
@@ -45,7 +46,10 @@ lint:
 format:
 	$(PM) run format
 
-check: lint format
+type-check:
+	$(PM) run types:check
+
+check: lint format type-check
 
 clean:
 	rm -rf node_modules .next .source content/docs content/blog content/news
