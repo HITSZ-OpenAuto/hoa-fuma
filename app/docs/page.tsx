@@ -1,18 +1,23 @@
-import { source } from '@/lib/source';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
-const HOA_LAST_PATH_COOKIE = 'hoa-last-path';
+const REDIRECT_SCRIPT = `(() => {
+  const match = document.cookie.match(/(?:^|; )hoa-last-path=([^;]+)/);
+  const lastPath = match ? decodeURIComponent(match[1]) : '';
+  const target = lastPath.startsWith('/docs/') ? lastPath : '/docs/2025';
+  window.location.replace(target);
+})();`;
 
-export default async function Page() {
-  const lastPath = (await cookies()).get(HOA_LAST_PATH_COOKIE)?.value;
-  const pathname = lastPath ? decodeURIComponent(lastPath) : '';
-  if (pathname.startsWith('/docs/')) {
-    const segments = pathname.split('/').filter(Boolean).slice(1);
-    if (segments.length >= 1 && source.getPage(segments)) {
-      redirect(pathname);
-    }
-  }
-
-  redirect('docs/2025');
+export default function Page() {
+  return (
+    <main className="text-fd-muted-foreground p-4 text-sm">
+      <script dangerouslySetInnerHTML={{ __html: REDIRECT_SCRIPT }} />
+      <noscript>
+        <meta content="0;url=/docs/2025" httpEquiv="refresh" />
+      </noscript>
+      正在跳转到课程目录…
+      <Link className="ml-2 underline" href="/docs/2025">
+        点此继续
+      </Link>
+    </main>
+  );
 }

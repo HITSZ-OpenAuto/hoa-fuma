@@ -2,11 +2,17 @@ import { DocsPathMemory } from '@/components/docs/docs-path-memory';
 import { SidebarBanner } from '@/components/sidebar/sidebar-banner';
 import { baseOptions } from '@/lib/layout.shared';
 import { getAvailableYears } from '@/lib/docs';
-import { source } from '@/lib/source';
+import { source } from '@/lib/docs-source';
 import type { Folder } from 'fumadocs-core/page-tree';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { notFound } from 'next/navigation';
 import { ReactNode } from 'react';
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return getAvailableYears().map((year) => ({ year }));
+}
 
 export default async function Layout(props: {
   children: ReactNode;

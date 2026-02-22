@@ -7,7 +7,7 @@ import { HeroCards } from '@/components/hero-cards';
 import { HeroButtons } from '@/components/hero-buttons';
 import { Button } from '@/components/ui/button';
 import { getRecentRepos } from '@/lib/github';
-import { getYearMajorMap } from '@/lib/docs';
+import { getYearMajorMap } from '@/lib/year-major-map';
 
 function HeroContent() {
   const yearMajorMap = getYearMajorMap();

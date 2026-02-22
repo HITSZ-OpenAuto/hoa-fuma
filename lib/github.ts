@@ -12,15 +12,6 @@ type RepoItem = {
   updatedAt: string;
 };
 
-export type LatestCommitInfo = {
-  authorName: string;
-  authorUrl: string;
-  authorAvatarUrl: string;
-  message: string;
-  commitUrl: string;
-  date: string;
-};
-
 /**
  * Fetch the most recently updated repos,
  * filtered to those in repos_list.txt.
@@ -40,7 +31,7 @@ export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
   // Fetch repos sorted by push date (most recent first)
   const res = await fetch(
     `https://api.github.com/orgs/${GITHUB_ORG}/repos?sort=pushed&direction=desc&per_page=50`,
-    { headers, next: { revalidate: 3600 } }
+    { headers }
   );
 
   if (!res.ok) {
@@ -61,7 +52,7 @@ export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
 
     const commitsRes = await fetch(
       `https://api.github.com/repos/${GITHUB_ORG}/${repo.name}/commits?per_page=50`,
-      { headers, next: { revalidate: 3600 } }
+      { headers }
     );
     if (!commitsRes.ok) continue;
 
@@ -104,43 +95,4 @@ function githubHeaders(): HeadersInit {
     headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   }
   return headers;
-}
-
-/**
- * Fetch the latest non-ci commit for a specific repo.
- */
-export async function getLatestCommit(
-  repoName: string
-): Promise<LatestCommitInfo | null> {
-  const headers = githubHeaders();
-
-  const res = await fetch(
-    `https://api.github.com/repos/${GITHUB_ORG}/${repoName}/commits?per_page=50`,
-    { headers, next: { revalidate: 3600 } }
-  );
-
-  if (!res.ok) return null;
-
-  const commits: {
-    sha: string;
-    html_url: string;
-    commit: {
-      message: string;
-      author: { name: string; date: string };
-    };
-    author: { login: string; html_url: string; avatar_url: string } | null;
-  }[] = await res.json();
-
-  const commit = commits.find((c) => isUserCommit(c.commit.message));
-  if (!commit) return null;
-
-  return {
-    authorName: commit.author?.login ?? commit.commit.author.name,
-    authorUrl:
-      commit.author?.html_url ?? `https://github.com/${commit.author?.login}`,
-    authorAvatarUrl: commit.author?.avatar_url ?? '',
-    message: commit.commit.message.split('\n')[0],
-    commitUrl: commit.html_url,
-    date: commit.commit.author.date,
-  };
 }

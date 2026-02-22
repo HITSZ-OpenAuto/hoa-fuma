@@ -1,4 +1,4 @@
-import { blog } from '@/lib/source';
+import { blog } from '@/lib/blog-source';
 import { Cards, Card } from 'fumadocs-ui/components/card';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { formatDate } from '@/lib/utils';

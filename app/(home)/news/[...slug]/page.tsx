@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc';
 import Image from 'next/image';
 import Link from 'next/link';
-import { news } from '@/lib/source';
+import { news } from '@/lib/news-source';
 import { getMDXComponents } from '@/mdx-components';
 import { formatDate } from '@/lib/utils';
 

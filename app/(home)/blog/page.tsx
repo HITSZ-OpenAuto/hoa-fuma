@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { blog } from '@/lib/source';
+import { blog } from '@/lib/blog-source';
 import BannerImage from './hoa-banner.png';
 import Image from 'next/image';
 import { formatDate } from '@/lib/utils';
