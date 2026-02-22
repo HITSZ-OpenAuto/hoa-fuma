@@ -137,6 +137,12 @@ jobs:
           mkdir -p hoa-major-data
           curl -o hoa-major-data/major_mapping.json https://raw.githubusercontent.com/HITSZ-OpenAuto/hoa-major-data/main/major_mapping.json
 
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ env.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ env.VERCEL_TOKEN }} --archive=tgz
+
       - name: Commit and push to production branch
         run: |
           git config --local user.email "action@github.com"
