@@ -10,7 +10,7 @@ import { ButtonGroup, ButtonGroupSeparator } from './ui/button-group';
 
 const cache = new Map<string, string>();
 
-export function LLMCopyButton({
+function LLMCopyButton({
   /**
    * A URL to fetch the raw Markdown/MDX content of page
    */
@@ -60,7 +60,7 @@ export function LLMCopyButton({
   );
 }
 
-export function GitHubButton({
+function GitHubButton({
   href,
   className,
 }: {
@@ -92,7 +92,7 @@ const optionVariants = cva(
   'text-sm p-2 rounded-lg inline-flex items-center gap-2 hover:text-fd-accent-foreground hover:bg-fd-accent [&_svg]:size-4'
 );
 
-export function ViewOptions({
+function ViewOptions({
   markdownUrl,
   githubUrl,
   className,

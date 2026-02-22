@@ -1,2 +1,3 @@
 pnpx lint-staged
 pnpm run types:check
+pnpm knip

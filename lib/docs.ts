@@ -2,15 +2,6 @@ import type { Folder } from 'fumadocs-core/page-tree';
 import { source } from '@/lib/source';
 import majorMapping from '@/hoa-major-data/major_mapping.json';
 
-export function isRootFolder(node: unknown): node is Folder {
-  return (
-    typeof node === 'object' &&
-    node !== null &&
-    (node as Folder).type === 'folder' &&
-    (node as Folder).root === true
-  );
-}
-
 function getFolderFirstUrl(folder: Folder): string | undefined {
   if (folder.index?.url) return folder.index.url;
   for (const child of folder.children) {
