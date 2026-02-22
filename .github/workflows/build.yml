@@ -45,7 +45,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download --repo HITSZ-OpenAuto/hoa-backend --pattern "hoa-backend-linux.tar.gz"
+          gh release download v1.9 --repo HITSZ-OpenAuto/hoa-backend --pattern "hoa-backend-linux.tar.gz"
           tar -xzf hoa-backend-linux.tar.gz
           chmod +x hoa-backend
           sudo mv hoa-backend /usr/local/bin/
