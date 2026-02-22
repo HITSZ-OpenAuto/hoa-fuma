@@ -1,0 +1,17 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "fresh-summer",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "junior-autumn",
+    "junior-spring",
+    "senior-autumn",
+    "senior-spring"
+  ],
+  "root": true,
+  "title": "自动化"
+}
