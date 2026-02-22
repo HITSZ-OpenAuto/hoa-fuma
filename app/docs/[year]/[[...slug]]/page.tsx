@@ -45,10 +45,7 @@ export default async function Page(props: {
       <DocsBody>
         {repoName && githubUrl && (
           <div className="mb-2">
-            <PageActions
-              markdownUrl={`${page.url}.mdx`}
-              githubUrl={githubUrl}
-            />
+            <PageActions githubUrl={githubUrl} />
           </div>
         )}
         <MDX
