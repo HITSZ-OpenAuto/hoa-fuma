@@ -40,7 +40,7 @@ export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
   // Fetch repos sorted by push date (most recent first)
   const res = await fetch(
     `https://api.github.com/orgs/${GITHUB_ORG}/repos?sort=pushed&direction=desc&per_page=50`,
-    { headers, next: { revalidate: 3600 } }
+    { headers }
   );
 
   if (!res.ok) {
@@ -61,7 +61,7 @@ export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
 
     const commitsRes = await fetch(
       `https://api.github.com/repos/${GITHUB_ORG}/${repo.name}/commits?per_page=50`,
-      { headers, next: { revalidate: 3600 } }
+      { headers }
     );
     if (!commitsRes.ok) continue;
 
