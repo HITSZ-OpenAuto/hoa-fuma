@@ -9,8 +9,6 @@ import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
-import { getLatestCommit } from '@/lib/github';
-import { LatestCommit } from '@/components/latest-commit';
 import { GITHUB_ORG } from '@/lib/constants';
 import { PageActions } from '@/components/page-actions';
 
@@ -26,7 +24,6 @@ export default async function Page(props: {
 
   // For course pages, extract repo name from the last slug segment
   const repoName = page.data.course ? (params.slug?.at(-1) ?? null) : null;
-  const latestCommit = repoName ? await getLatestCommit(repoName) : null;
 
   const githubUrl = repoName
     ? `https://github.com/${GITHUB_ORG}/${repoName}`
@@ -36,11 +33,7 @@ export default async function Page(props: {
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription className="mb-0 text-base">
-        {latestCommit ? (
-          <LatestCommit commit={latestCommit} />
-        ) : (
-          page.data.description
-        )}
+        {page.data.description}
       </DocsDescription>
       <DocsBody>
         {repoName && githubUrl && (
