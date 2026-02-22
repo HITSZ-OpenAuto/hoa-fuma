@@ -8,6 +8,12 @@ import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { notFound } from 'next/navigation';
 import { ReactNode } from 'react';
 
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return getAvailableYears().map((year) => ({ year }));
+}
+
 export default async function Layout(props: {
   children: ReactNode;
   params: Promise<{ year: string }>;

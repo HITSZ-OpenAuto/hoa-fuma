@@ -12,6 +12,8 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { GITHUB_ORG } from '@/lib/constants';
 import { PageActions } from '@/components/page-actions';
 
+export const dynamicParams = false;
+
 export default async function Page(props: {
   params: Promise<{ year: string; slug?: string[] }>;
 }) {
