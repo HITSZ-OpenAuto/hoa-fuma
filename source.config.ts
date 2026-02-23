@@ -38,7 +38,7 @@ export const docs = defineDocs({
       course: courseInfoSchema.optional(),
     }),
     postprocess: {
-      includeProcessedMarkdown: true,
+      includeProcessedMarkdown: false,
     },
   },
   meta: {
