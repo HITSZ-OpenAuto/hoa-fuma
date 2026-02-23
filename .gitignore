@@ -20,6 +20,7 @@ content/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+skills-lock.json
 
 # others
 .env*.local
@@ -33,6 +34,7 @@ next-env.d.ts
 .codex
 .gemini
 .agents
+.agent
 .opencode
 .cursor
 
