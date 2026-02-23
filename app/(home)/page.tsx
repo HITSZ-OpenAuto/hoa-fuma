@@ -32,7 +32,7 @@ function HeroContent() {
 }
 
 export default async function HomePage() {
-  const recentRepos = await getRecentRepos(6);
+  const recentRepos = await getRecentRepos(3);
 
   return (
     <div className="bg-background text-foreground relative min-h-svh">

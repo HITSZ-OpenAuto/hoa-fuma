@@ -26,7 +26,7 @@ export type LatestCommitInfo = {
  * filtered to those in repos_list.txt.
  * Description is the latest commit message that does not start with "ci:".
  */
-export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
+export async function getRecentRepos(count = 3): Promise<RepoItem[]> {
   const allowedRepos = new Set(
     fs
       .readFileSync(REPOS_FILE, 'utf-8')
@@ -56,30 +56,34 @@ export async function getRecentRepos(count = 6): Promise<RepoItem[]> {
 
   // For each repo, fetch the latest non-ci commit message
   const results: RepoItem[] = [];
-  for (const repo of filtered) {
-    if (results.length >= count) break;
-
+  for (const repo of filtered.slice(0, count * 2)) {
     const commitsRes = await fetch(
-      `https://api.github.com/repos/${GITHUB_ORG}/${repo.name}/commits?per_page=50`,
+      `https://api.github.com/repos/${GITHUB_ORG}/${repo.name}/commits?per_page=30`,
       { headers, next: { revalidate: 3600 } }
     );
     if (!commitsRes.ok) continue;
 
-    const commits: { commit: { message: string } }[] = await commitsRes.json();
+    const commits: { commit: { message: string; author: { date: string } } }[] =
+      await commitsRes.json();
 
     const commit = commits.find((c) => isUserCommit(c.commit.message));
-    const description = commit ? commit.commit.message.split('\n')[0] : '';
+    if (!commit) continue;
 
     results.push({
       id: repo.name,
       name: repo.name,
-      description,
+      description: commit.commit.message.split('\n')[0],
       href: repo.html_url,
-      updatedAt: repo.pushed_at,
+      updatedAt: commit.commit.author.date,
     });
   }
 
-  return results;
+  return results
+    .sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    )
+    .slice(0, count);
 }
 
 const IGNORED_PREFIXES = [
