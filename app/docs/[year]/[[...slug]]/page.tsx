@@ -65,11 +65,25 @@ export default async function Page(props: {
 }
 
 export async function generateStaticParams() {
-  const params = await source.generateParams();
-  return params.map((param) => {
-    const [year, ...slug] = param.slug;
-    return { year, slug };
-  });
+  const allParams = await source.generateParams();
+
+  const years = allParams
+    .map((p) => parseInt(p.slug[0]))
+    .filter((y) => !isNaN(y));
+
+  if (years.length === 0) return [];
+  const maxYear = Math.max(...years);
+
+  // Only pre-render last 4 years
+  return allParams
+    .filter((p) => {
+      const yearNum = parseInt(p.slug[0]);
+      return !isNaN(yearNum) && yearNum >= maxYear - 3;
+    })
+    .map((param) => {
+      const [year, ...slug] = param.slug;
+      return { year, slug };
+    });
 }
 
 export async function generateMetadata(props: {
