@@ -14,5 +14,5 @@ export default async function Page() {
     }
   }
 
-  redirect('docs/2025');
+  redirect('/docs/2025');
 }

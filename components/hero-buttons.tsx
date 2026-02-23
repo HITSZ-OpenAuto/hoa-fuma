@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Sidebar } from 'lucide-react';
@@ -20,10 +20,14 @@ interface HeroButtonsProps {
   yearMajorMap: Record<string, { id: string; name: string }[]>;
 }
 
-function hasCookie(): boolean {
-  return document.cookie
-    .split(';')
-    .some((c) => c.trim().startsWith(`${HOA_LAST_PATH_COOKIE}=`));
+function getCookie(name: string): string | undefined {
+  if (typeof document === 'undefined') return undefined;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length !== 2) return undefined;
+
+  const cookieValue = parts.pop()?.split(';').shift();
+  return cookieValue ? decodeURIComponent(cookieValue) : undefined;
 }
 
 export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
@@ -31,24 +35,44 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
   const [selecting, setSelecting] = useState(false);
   const [year, setYear] = useState<string>('');
 
-  const years = Object.keys(yearMajorMap).sort((a, b) => b.localeCompare(a));
-  const majors = year ? (yearMajorMap[year] ?? []) : [];
+  const years = useMemo(
+    () => Object.keys(yearMajorMap).sort((a, b) => b.localeCompare(a)),
+    [yearMajorMap]
+  );
 
-  function handleDocsClick() {
-    if (hasCookie()) {
-      router.push('/docs');
-    } else {
-      setSelecting(true);
+  const majors = useMemo(
+    () => (year ? (yearMajorMap[year] ?? []) : []),
+    [yearMajorMap, year]
+  );
+
+  useEffect(() => {
+    const lastPath = getCookie(HOA_LAST_PATH_COOKIE);
+    if (lastPath?.startsWith('/docs')) {
+      router.prefetch(lastPath);
     }
-  }
+  }, [router]);
 
-  function handleYearChange(value: string) {
+  const handleDocsClick = useCallback(() => {
+    const lastPath = getCookie(HOA_LAST_PATH_COOKIE);
+    if (lastPath?.startsWith('/docs')) {
+      router.push(lastPath);
+    } else if (lastPath === undefined) {
+      setSelecting(true);
+    } else {
+      router.push('/docs');
+    }
+  }, [router]);
+
+  const handleYearChange = useCallback((value: string) => {
     setYear(value);
-  }
+  }, []);
 
-  function handleMajorChange(value: string) {
-    router.push(`/docs/${year}/${value}`);
-  }
+  const handleMajorChange = useCallback(
+    (value: string) => {
+      router.push(`/docs/${year}/${value}`);
+    },
+    [router, year]
+  );
 
   const rowClasses =
     'flex flex-wrap justify-center gap-4 pt-4 lg:justify-start min-h-10 items-center';
