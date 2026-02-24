@@ -67,24 +67,28 @@ jobs:
           mkdir -p /tmp/prod
           git archive origin/production content/ | tar -x -C /tmp/prod
           changed=false
+          echo "Checking for changes in content/..."
           while IFS= read -r -d '' file; do
             rel_path="${file#content/}"
             prod_file="/tmp/prod/content/$rel_path"
-            if [ ! -f "$prod_file" ] || ! diff -q "$file" "$prod_file" > /dev/null 2>&1; then
+            if [ ! -f "$prod_file" ]; then
+              echo "Added: content/$rel_path"
               changed=true
-              break
+            elif ! diff -q "$file" "$prod_file" > /dev/null 2>&1; then
+              echo "Modified: content/$rel_path"
+              changed=true
             fi
-          done < <(find content/ -type f -print0)
-          if [ "$changed" = "false" ]; then
-            while IFS= read -r -d '' file; do
-              rel_path="${file#/tmp/prod/content/}"
-              build_file="content/$rel_path"
-              if [ ! -f "$build_file" ]; then
-                changed=true
-                break
-              fi
-            done < <(find /tmp/prod/content/ -type f -print0)
-          fi
+          done < <(find content/ -type f -print0 2>/dev/null)
+
+          while IFS= read -r -d '' file; do
+            rel_path="${file#/tmp/prod/content/}"
+            build_file="content/$rel_path"
+            if [ ! -f "$build_file" ]; then
+              echo "Deleted: content/$rel_path"
+              changed=true
+            fi
+          done < <(find /tmp/prod/content/ -type f -print0 2>/dev/null)
+
           if [ "$changed" = "true" ]; then
             echo "trigger_deploy=true" >> $GITHUB_OUTPUT
           else
