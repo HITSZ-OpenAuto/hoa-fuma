@@ -9,8 +9,8 @@ The framework for building courses-sharing platform, built by [HOA](https://gith
 ## Getting Started
 
 ```bash
-pnpm i
-pnpm dev
+make prepare
+make content
 ```
 
 ## Contributing
@@ -19,6 +19,12 @@ Contributions are welcome. Please read the [contributing guide](/.github/contrib
 
 ## License
 
-The documentation and blog posts are licensed under [CC BY-NC-SA 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en).
+- Documentation: [CC BY-NC-SA 4.0 License](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en).
 
-The source code is licensed under [MIT License](LICENSE).
+- Code: [MIT License](LICENSE).
+
+## Credits
+
+- All the core members and contributors to [HOA](https://github.com/HITSZ-OpenAuto).
+- [Petrica](https://github.com/PetricaT) designed the wonderful [logo](./public/HITSZOpenAuto-Shadow.png).
+- [Fumadocs](https://github.com/fuma-nama/fumadocs).
