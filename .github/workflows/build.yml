@@ -74,8 +74,11 @@ jobs:
             if [ ! -f "$prod_file" ]; then
               echo "Added: content/$rel_path"
               changed=true
-            elif ! diff -q "$file" "$prod_file" > /dev/null 2>&1; then
+            elif ! diff -u "$prod_file" "$file" > /tmp/diff_output.txt 2>&1; then
               echo "Modified: content/$rel_path"
+              echo "--- Diff ---"
+              cat /tmp/diff_output.txt
+              echo "------------"
               changed=true
             fi
           done < <(find content/ -type f -print0 2>/dev/null)
