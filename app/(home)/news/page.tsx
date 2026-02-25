@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { news } from '@/lib/source';
-import BannerImage from '../blog/hoa-banner.png';
 import Image from 'next/image';
 import { formatDate } from '@/lib/utils';
 
@@ -69,7 +68,7 @@ export default function Page() {
     <main className="max-w-page mx-auto w-full px-4 pb-12 md:py-12">
       <div className="dark relative z-2 mb-4 aspect-[3.2] p-8 md:p-12">
         <Image
-          src={BannerImage}
+          src="/images/hoa-banner.png"
           loading="eager"
           alt="banner"
           className="absolute inset-0 -z-1 size-full object-cover"
