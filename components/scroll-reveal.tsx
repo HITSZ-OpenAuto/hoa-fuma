@@ -1,9 +1,12 @@
 'use client';
 
+import type { ComponentProps } from 'react';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 
-type ScrollRevealProps = React.HTMLAttributes<HTMLDivElement> & {
+type MotionDivProps = ComponentProps<typeof motion.div>;
+
+type ScrollRevealProps = MotionDivProps & {
   delay?: number;
 };
 
@@ -11,11 +14,6 @@ export function ScrollReveal({
   delay = 0,
   className,
   children,
-  onDrag,
-  onDragStart,
-  onDragEnd,
-  onAnimationStart,
-  onAnimationEnd,
   ...props
 }: ScrollRevealProps) {
   return (

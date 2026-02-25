@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation';
-import { InlineTOC } from 'fumadocs-ui/components/inline-toc';
 import Image from 'next/image';
 import Link from 'next/link';
 import { news } from '@/lib/source';
@@ -26,7 +25,6 @@ export default async function Page(props: {
         )
     : [];
   const Mdx = page.data.body;
-  const toc = page.data.toc;
 
   if (isSeriesIndex && seriesPosts.length > 0) {
     return (
