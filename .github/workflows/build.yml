@@ -30,10 +30,12 @@ jobs:
 
       - name: Fetch blog and news content
         run: |
-          rm -rf content/docs content/blog content/news
-          mkdir -p content/blog content/news
-          curl -L https://github.com/HITSZ-OpenAuto/hoa-blog/tarball/main | tar -xz -C content/blog --strip-components=2
-          curl -L https://github.com/HITSZ-OpenAuto/hoa-news/tarball/main | tar -xz -C content/news --strip-components=2
+          rm -rf content/blog content/news
+          for type in blog news; do
+            git clone --depth 1 --filter=blob:none https://github.com/HITSZ-OpenAuto/hoa-$type temp
+            mv temp/$type content/$type
+            rm -rf temp
+          done
 
       - name: Clone hoa-major-data
         run: git clone https://github.com/HITSZ-OpenAuto/hoa-major-data
