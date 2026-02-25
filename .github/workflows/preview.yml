@@ -52,14 +52,16 @@ jobs:
         run: |
           hoa-backend --fetch
 
-
       - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           cache: true
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Check format
+        run: pnpm run fmt:check
 
       - name: Install Vercel CLI
         run: pnpm i -g vercel@latest

@@ -47,7 +47,7 @@ lint:
 	$(PM) run lint --fix
 
 format:
-	$(PM) run format
+	$(PM) run fmt
 
 type-check:
 	$(PM) run types:check
