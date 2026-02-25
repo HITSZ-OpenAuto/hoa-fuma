@@ -62,9 +62,11 @@ clean:
 
 content:
 	rm -rf content/blog content/news content/docs
-	mkdir -p content/blog content/news
-	curl -L https://github.com/HITSZ-OpenAuto/hoa-blog/tarball/main | tar -xz -C content/blog --strip-components=2
-	curl -L https://github.com/HITSZ-OpenAuto/hoa-news/tarball/main | tar -xz -C content/news --strip-components=2
+	for type in blog news; do \
+		git clone --depth 1 --filter=blob:none https://github.com/HITSZ-OpenAuto/hoa-$$type temp; \
+		mv temp/$$type content/$$type; \
+		rm -rf temp; \
+	done
 	hoa-backend --fetch
 	$(MAKE) ignore-content-changes
 
