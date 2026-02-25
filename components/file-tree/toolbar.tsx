@@ -54,8 +54,9 @@ export function Toolbar({
         </div>
       </div>
 
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={0} // oxlint-disable-line jsx-a11y/prefer-tag-over-role
         className={cn(
           'flex h-8 cursor-pointer items-center gap-2 rounded-md border px-2.5 transition-all select-none sm:order-1',
           isAccelerated
@@ -63,6 +64,12 @@ export function Toolbar({
             : 'border-input text-muted-foreground bg-muted/50 hover:bg-background'
         )}
         onClick={() => setIsAccelerated(!isAccelerated)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsAccelerated(!isAccelerated);
+          }
+        }}
       >
         <ZapIcon className="size-4" />
         <span className="text-sm whitespace-nowrap">校园网加速</span>
@@ -72,7 +79,7 @@ export function Toolbar({
           className="scale-75"
           onClick={(e) => e.stopPropagation()}
         />
-      </button>
+      </div>
 
       <div className="flex flex-wrap items-center gap-2 sm:order-3">
         <Button variant="outline" size="sm" className="h-8 px-2 sm:px-3">
