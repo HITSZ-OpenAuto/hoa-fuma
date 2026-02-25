@@ -61,7 +61,7 @@ clean:
 	rm -rf node_modules .next .source
 
 content:
-	rm -rf content/blog content/news
+	rm -rf content/blog content/news content/docs
 	mkdir -p content/blog content/news
 	curl -L https://github.com/HITSZ-OpenAuto/hoa-blog/tarball/main | tar -xz -C content/blog --strip-components=2
 	curl -L https://github.com/HITSZ-OpenAuto/hoa-news/tarball/main | tar -xz -C content/news --strip-components=2
