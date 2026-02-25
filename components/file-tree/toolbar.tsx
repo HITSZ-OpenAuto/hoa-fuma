@@ -56,7 +56,7 @@ export function Toolbar({
 
       <div
         role="button"
-        tabIndex={0} // oxlint-disable-line jsx-a11y/prefer-tag-over-role
+        tabIndex={0}
         className={cn(
           'flex h-8 cursor-pointer items-center gap-2 rounded-md border px-2.5 transition-all select-none sm:order-1',
           isAccelerated
