@@ -1,18 +1,5 @@
-import type { Folder } from 'fumadocs-core/page-tree';
 import { source } from '@/lib/source';
 import majorMapping from '@/hoa-major-data/major_mapping.json';
-
-function getFolderFirstUrl(folder: Folder): string | undefined {
-  if (folder.index?.url) return folder.index.url;
-  for (const child of folder.children) {
-    if (child.type === 'page' && !child.external) return child.url;
-    if (child.type === 'folder') {
-      const url = getFolderFirstUrl(child);
-      if (url) return url;
-    }
-  }
-  return undefined;
-}
 
 export function getAvailableYears(): string[] {
   return source

@@ -18,8 +18,6 @@ export function GradingBar({ scheme }: { scheme: CourseGradingScheme }) {
     );
   }
 
-  const total = scheme.reduce((sum, item) => sum + item.percent, 0);
-
   return (
     <div className="flex w-full flex-row flex-wrap gap-1">
       {scheme.map((item, index) => {

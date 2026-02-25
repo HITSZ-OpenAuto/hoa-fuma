@@ -54,7 +54,8 @@ export function Toolbar({
         </div>
       </div>
 
-      <div
+      <button
+        type="button"
         className={cn(
           'flex h-8 cursor-pointer items-center gap-2 rounded-md border px-2.5 transition-all select-none sm:order-1',
           isAccelerated
@@ -71,7 +72,7 @@ export function Toolbar({
           className="scale-75"
           onClick={(e) => e.stopPropagation()}
         />
-      </div>
+      </button>
 
       <div className="flex flex-wrap items-center gap-2 sm:order-3">
         <Button variant="outline" size="sm" className="h-8 px-2 sm:px-3">
