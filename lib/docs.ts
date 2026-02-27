@@ -2,16 +2,17 @@ import { source } from '@/lib/source';
 import majorMapping from '@/hoa-major-data/major_mapping.json';
 
 export function getAvailableYears(): string[] {
-  return source
-    .getPageTree()
-    .children.filter(
-      (node): node is typeof node & { name: string } =>
-        node.type === 'folder' &&
-        typeof node.name === 'string' &&
-        /^\d{4}$/.test(node.name)
-    )
-    .map((node) => node.name)
-    .sort((a, b) => b.localeCompare(a));
+  const years: string[] = [];
+  for (const node of source.getPageTree().children) {
+    if (
+      node.type === 'folder' &&
+      typeof node.name === 'string' &&
+      /^\d{4}$/.test(node.name)
+    ) {
+      years.push(node.name);
+    }
+  }
+  return years.sort((a, b) => b.localeCompare(a));
 }
 
 type MajorEntry = {
