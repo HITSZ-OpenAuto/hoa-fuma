@@ -3,7 +3,7 @@ export type MajorEntry = {
   majors?: { name: string; major_ID: string }[];
 };
 
-export function resolveMajorName(
+function resolveMajorName(
   yearData: Record<string, MajorEntry> | undefined,
   id: string
 ): string {

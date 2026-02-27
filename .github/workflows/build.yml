@@ -142,6 +142,9 @@ jobs:
       - name: Check format
         run: pnpm run fmt:check
 
+      - name: Run knip
+        run: pnpm run knip
+
       - name: Install Vercel CLI
         run: pnpm i -g vercel@latest
 
