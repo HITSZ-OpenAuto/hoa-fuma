@@ -1,9 +1,0 @@
-$ next start
-▲ Next.js 16.1.6
-- Local:         http://localhost:3000
-- Network:       http://192.168.0.2:3000
-
-✓ Starting...
-[MDX] generated files in 18.60015599999997ms
-⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
-✓ Ready in 683ms
