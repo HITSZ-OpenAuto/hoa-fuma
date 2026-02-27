@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { motion } from 'motion/react';
+import { LazyMotion, domAnimation, m } from 'motion/react';
 
 type CardData = {
   linkTo: string;
@@ -34,7 +34,7 @@ function HeroCard({ linkTo, content, imageURL, index }: HeroCardProps) {
     : BACK_CARD_START_DELAY + (TOP_CARD_INDEX - 1 - index) * STAGGER;
 
   return (
-    <motion.div
+    <m.div
       initial={{
         x: 0,
         rotate: 0,
@@ -75,7 +75,7 @@ function HeroCard({ linkTo, content, imageURL, index }: HeroCardProps) {
           />
         </div>
       </Link>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -96,7 +96,7 @@ function MobileLogo() {
 
 export function HeroCards() {
   return (
-    <>
+    <LazyMotion features={domAnimation}>
       <div className="block lg:hidden">
         <MobileLogo />
       </div>
@@ -114,6 +114,6 @@ export function HeroCards() {
           return <HeroCard key={card.linkTo} {...card} index={index} />;
         })}
       </div>
-    </>
+    </LazyMotion>
   );
 }
