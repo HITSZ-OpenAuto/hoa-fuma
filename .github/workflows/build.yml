@@ -56,7 +56,9 @@ jobs:
       - name: Build course pages
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: hoa-backend --fetch
+        run: |
+          rm -rf content/docs
+          hoa-backend --fetch
 
       - name: Check for changes
         id: check_changes
