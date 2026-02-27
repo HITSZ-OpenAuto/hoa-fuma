@@ -55,28 +55,31 @@ export async function getRecentRepos(count = 3): Promise<RepoItem[]> {
   const filtered = repos.filter((r) => allowedRepos.has(r.name));
 
   // For each repo, fetch the latest non-ci commit message
-  const results: RepoItem[] = [];
-  for (const repo of filtered.slice(0, count * 2)) {
+  const promises = filtered.slice(0, count * 2).map(async (repo) => {
     const commitsRes = await fetch(
       `https://api.github.com/repos/${GITHUB_ORG}/${repo.name}/commits?per_page=30`,
       { headers, next: { revalidate: 3600 } }
     );
-    if (!commitsRes.ok) continue;
+    if (!commitsRes.ok) return null;
 
     const commits: { commit: { message: string; author: { date: string } } }[] =
       await commitsRes.json();
 
     const commit = commits.find((c) => isUserCommit(c.commit.message));
-    if (!commit) continue;
+    if (!commit) return null;
 
-    results.push({
+    return {
       id: repo.name,
       name: repo.name,
       description: commit.commit.message.split('\n')[0],
       href: repo.html_url,
       updatedAt: commit.commit.author.date,
-    });
-  }
+    };
+  });
+
+  const results = (await Promise.all(promises)).filter(
+    (item): item is RepoItem => item !== null
+  );
 
   return results
     .sort(
