@@ -20,8 +20,8 @@ export default function Page() {
     // Use existing object if available, otherwise create new
     let series = seriesMap.get(seriesSlug);
     if (!series) {
-        series = { posts: [] };
-        seriesMap.set(seriesSlug, series);
+      series = { posts: [] };
+      seriesMap.set(seriesSlug, series);
     }
 
     if (page.slugs.length === 1) {
@@ -40,45 +40,45 @@ export default function Page() {
   }[] = [];
 
   const postItems: {
-      type: 'post';
-      slug: string;
-      title: string;
-      description: string;
-      date: Date;
-      url: string;
+    type: 'post';
+    slug: string;
+    title: string;
+    description: string;
+    date: Date;
+    url: string;
   }[] = [];
 
   for (const [slug, entry] of seriesMap) {
-      if (entry.posts.length > 0) {
-        // It's a series
-        const dates = [
-            entry.index?.data.date,
-            ...entry.posts.map((post) => post.data.date),
-        ]
+    if (entry.posts.length > 0) {
+      // It's a series
+      const dates = [
+        entry.index?.data.date,
+        ...entry.posts.map((post) => post.data.date),
+      ]
         .filter(Boolean)
         .map((date) => new Date(date as string | Date).getTime());
 
-        const latestDate = dates.length > 0 ? Math.max(...dates) : null;
+      const latestDate = dates.length > 0 ? Math.max(...dates) : null;
 
-        seriesItems.push({
-            type: 'series',
-            slug,
-            title: entry.index?.data.title ?? slug,
-            description: entry.index?.data.description ?? '',
-            date: latestDate,
-        });
-      } else if (entry.index) {
-          // It's a standalone post
-          const post = entry.index;
-          postItems.push({
-            type: 'post',
-            slug: post.slugs[0],
-            title: post.data.title,
-            description: post.data.description ?? '',
-            date: new Date(post.data.date),
-            url: post.url,
-          });
-      }
+      seriesItems.push({
+        type: 'series',
+        slug,
+        title: entry.index?.data.title ?? slug,
+        description: entry.index?.data.description ?? '',
+        date: latestDate,
+      });
+    } else if (entry.index) {
+      // It's a standalone post
+      const post = entry.index;
+      postItems.push({
+        type: 'post',
+        slug: post.slugs[0],
+        title: post.data.title,
+        description: post.data.description ?? '',
+        date: new Date(post.data.date),
+        url: post.url,
+      });
+    }
   }
 
   const items = [...seriesItems, ...postItems].sort((a, b) => {

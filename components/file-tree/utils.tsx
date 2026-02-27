@@ -253,7 +253,9 @@ export async function downloadBatchFiles(
       limit(async () => {
         const response = await fetch(file.url);
         if (!response.ok)
-          throw new Error(`Failed to fetch ${file.url}: ${response.statusText}`);
+          throw new Error(
+            `Failed to fetch ${file.url}: ${response.statusText}`
+          );
 
         const buffer = await response.arrayBuffer();
 
