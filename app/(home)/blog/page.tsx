@@ -16,52 +16,78 @@ export default function Page() {
   for (const page of pages) {
     const seriesSlug = page.slugs[0];
     if (!seriesSlug) continue;
-    const series = seriesMap.get(seriesSlug) ?? { posts: [] };
+
+    // Use existing object if available, otherwise create new
+    let series = seriesMap.get(seriesSlug);
+    if (!series) {
+      series = { posts: [] };
+      seriesMap.set(seriesSlug, series);
+    }
+
     if (page.slugs.length === 1) {
       series.index = page;
     } else {
       series.posts.push(page);
     }
-    seriesMap.set(seriesSlug, series);
   }
 
-  const seriesItems = [...seriesMap.entries()]
-    .filter(([, entry]) => entry.posts.length > 0)
-    .map(([slug, entry]) => {
+  const seriesItems: {
+    type: 'series';
+    slug: string;
+    title: string;
+    description: string;
+    date: number | null;
+  }[] = [];
+
+  const postItems: {
+    type: 'post';
+    slug: string;
+    title: string;
+    description: string;
+    date: Date;
+    url: string;
+  }[] = [];
+
+  for (const [slug, entry] of seriesMap) {
+    if (entry.posts.length > 0) {
+      // It's a series
       const dates = [
         entry.index?.data.date,
         ...entry.posts.map((post) => post.data.date),
       ]
         .filter(Boolean)
         .map((date) => new Date(date as string | Date).getTime());
-      const latestDate = dates.length > 0 ? new Date(Math.max(...dates)) : null;
-      return {
-        type: 'series' as const,
+
+      const latestDate = dates.length > 0 ? Math.max(...dates) : null;
+
+      seriesItems.push({
+        type: 'series',
         slug,
         title: entry.index?.data.title ?? slug,
         description: entry.index?.data.description ?? '',
         date: latestDate,
-      };
-    });
-
-  const seriesSlugs = new Set(seriesItems.map((item) => item.slug));
-  const postItems = pages
-    .filter(
-      (page) => page.slugs.length === 1 && !seriesSlugs.has(page.slugs[0])
-    )
-    .map((post) => ({
-      type: 'post' as const,
-      slug: post.slugs[0],
-      title: post.data.title,
-      description: post.data.description,
-      date: new Date(post.data.date),
-      url: post.url,
-    }));
+      });
+    } else if (entry.index) {
+      // It's a standalone post
+      const post = entry.index;
+      postItems.push({
+        type: 'post',
+        slug: post.slugs[0],
+        title: post.data.title,
+        description: post.data.description ?? '',
+        date: new Date(post.data.date),
+        url: post.url,
+      });
+    }
+  }
 
   const items = [...seriesItems, ...postItems].sort((a, b) => {
-    const aDate = a.date?.getTime() ?? 0;
-    const bDate = b.date?.getTime() ?? 0;
-    return bDate - aDate;
+    // Determine sort date for a
+    const aDateVal = a.type === 'series' ? (a.date ?? 0) : a.date.getTime();
+    // Determine sort date for b
+    const bDateVal = b.type === 'series' ? (b.date ?? 0) : b.date.getTime();
+
+    return bDateVal - aDateVal;
   });
 
   return (
@@ -94,7 +120,7 @@ export default function Page() {
 
             {item.date && (
               <p className="text-brand mt-auto pt-4 text-xs">
-                {formatDate(item.date)}
+                {formatDate(new Date(item.date))}
               </p>
             )}
           </Link>
