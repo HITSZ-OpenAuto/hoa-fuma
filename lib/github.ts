@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 import { GITHUB_ORG } from './constants';
 
@@ -27,9 +27,9 @@ export type LatestCommitInfo = {
  * Description is the latest commit message that does not start with "ci:".
  */
 export async function getRecentRepos(count = 3): Promise<RepoItem[]> {
+  const content = await fs.readFile(REPOS_FILE, 'utf-8');
   const allowedRepos = new Set(
-    fs
-      .readFileSync(REPOS_FILE, 'utf-8')
+    content
       .split('\n')
       .map((l) => l.trim())
       .filter(Boolean)
