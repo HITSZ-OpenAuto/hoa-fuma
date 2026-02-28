@@ -22,7 +22,11 @@ export default async function Page(props: {
   const page = source.getPage([params.year, ...(params.slug ?? [])]);
   if (!page) notFound();
 
-  const MDX = page.data.body;
+  const pageData =
+    'load' in page.data
+      ? { ...page.data, ...(await page.data.load()) }
+      : page.data;
+  const MDX = pageData.body;
 
   // For course pages, extract repo name from the last slug segment
   const repoName = page.data.course ? (params.slug?.at(-1) ?? null) : null;
@@ -33,13 +37,13 @@ export default async function Page(props: {
     : null;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
+    <DocsPage toc={pageData.toc} full={pageData.full}>
+      <DocsTitle>{pageData.title}</DocsTitle>
       <DocsDescription className="mb-0 text-base">
         {latestCommit ? (
           <LatestCommit commit={latestCommit} />
         ) : (
-          page.data.description
+          pageData.description
         )}
       </DocsDescription>
       <DocsBody>
@@ -55,7 +59,7 @@ export default async function Page(props: {
               a: createRelativeLink(source, page),
             },
             {
-              course: page.data.course,
+              course: pageData.course,
             }
           )}
         />
@@ -65,25 +69,11 @@ export default async function Page(props: {
 }
 
 export async function generateStaticParams() {
-  const allParams = await source.generateParams();
-
-  const years = allParams
-    .map((p) => parseInt(p.slug[0]))
-    .filter((y) => !isNaN(y));
-
-  if (years.length === 0) return [];
-  const maxYear = Math.max(...years);
-
-  // Only pre-render last 4 years
-  return allParams
-    .filter((p) => {
-      const yearNum = parseInt(p.slug[0]);
-      return !isNaN(yearNum) && yearNum >= maxYear - 3;
-    })
-    .map((param) => {
-      const [year, ...slug] = param.slug;
-      return { year, slug };
-    });
+  const params = await source.generateParams();
+  return params.map((param) => {
+    const [year, ...slug] = param.slug;
+    return { year, slug };
+  });
 }
 
 export async function generateMetadata(props: {
