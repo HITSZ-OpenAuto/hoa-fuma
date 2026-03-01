@@ -1,4 +1,4 @@
-import { getPageImage, source } from '@/lib/source';
+import { courseBodySource, getPageImage, source } from '@/lib/source';
 import {
   DocsBody,
   DocsDescription,
@@ -13,6 +13,32 @@ import { getLatestCommit } from '@/lib/github';
 import { LatestCommit } from '@/components/latest-commit';
 import { GITHUB_ORG } from '@/lib/constants';
 import { PageActions } from '@/components/page-actions';
+import { cache, type ComponentType } from 'react';
+
+type ResolvedDocData = {
+  body?: ComponentType<{
+    components: ReturnType<typeof getMDXComponents>;
+  }>;
+  toc?: unknown;
+} & Record<string, unknown>;
+
+async function resolveDocData(data: object): Promise<ResolvedDocData> {
+  const value = data as ResolvedDocData & {
+    load?: () => Promise<Record<string, unknown>>;
+  };
+
+  if (typeof value.load === 'function') {
+    return { ...value, ...(await value.load()) };
+  }
+
+  return value;
+}
+
+const getCanonicalCourseData = cache(async (courseCode: string) => {
+  const canonicalPage = courseBodySource.getPage([courseCode]);
+  if (!canonicalPage) return null;
+  return resolveDocData(canonicalPage.data);
+});
 
 export default async function Page(props: {
   params: Promise<{ year: string; slug?: string[] }>;
@@ -22,14 +48,24 @@ export default async function Page(props: {
   const page = source.getPage([params.year, ...(params.slug ?? [])]);
   if (!page) notFound();
 
-  const pageData =
-    'load' in page.data
-      ? { ...page.data, ...(await page.data.load()) }
-      : page.data;
-  const MDX = pageData.body;
-
   // For course pages, extract repo name from the last slug segment
   const repoName = page.data.course ? (params.slug?.at(-1) ?? null) : null;
+  const isCoursePage = Boolean(page.data.course && repoName);
+
+  const routeData = page.data;
+  let contentData: ResolvedDocData;
+
+  if (isCoursePage && repoName) {
+    const canonicalData = await getCanonicalCourseData(repoName);
+    contentData = canonicalData ?? (await resolveDocData(routeData));
+  } else {
+    contentData = await resolveDocData(routeData);
+  }
+
+  const MDX = contentData.body;
+  const toc = contentData.toc as any;
+  if (!MDX) notFound();
+
   const latestCommit = repoName ? await getLatestCommit(repoName) : null;
 
   const githubUrl = repoName
@@ -37,13 +73,13 @@ export default async function Page(props: {
     : null;
 
   return (
-    <DocsPage toc={pageData.toc} full={pageData.full}>
-      <DocsTitle>{pageData.title}</DocsTitle>
+    <DocsPage toc={toc} full={routeData.full}>
+      <DocsTitle>{routeData.title}</DocsTitle>
       <DocsDescription className="mb-0 text-base">
         {latestCommit ? (
           <LatestCommit commit={latestCommit} />
         ) : (
-          pageData.description
+          routeData.description
         )}
       </DocsDescription>
       <DocsBody>
@@ -59,7 +95,7 @@ export default async function Page(props: {
               a: createRelativeLink(source, page),
             },
             {
-              course: pageData.course,
+              course: routeData.course,
             }
           )}
         />
