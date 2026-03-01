@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "prepare:course-bodies": "node scripts/sync-course-bodies.mjs",
+    "dev": "pnpm run prepare:course-bodies && next dev",
+    "build": "pnpm run prepare:course-bodies && next build",
     "start": "next start",
-    "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
-    "postinstall": "fumadocs-mdx",
+    "types:check": "pnpm run prepare:course-bodies && fumadocs-mdx && next typegen && tsc --noEmit",
+    "postinstall": "pnpm run prepare:course-bodies && fumadocs-mdx",
     "lint": "oxlint .",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
@@ -15,6 +16,7 @@
     "knip": "knip"
   },
   "dependencies": {
+    "@fumadocs/mdx-remote": "^1.4.5",
     "@orama/tokenizers": "^3.1.18",
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-slot": "^1.2.4",

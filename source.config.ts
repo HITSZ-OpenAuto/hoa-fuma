@@ -32,7 +32,7 @@ const courseInfoSchema = z.object({
 });
 
 export const docs = defineDocs({
-  dir: 'content/docs',
+  dir: 'content/docs-runtime',
   docs: {
     schema: frontmatterSchema.extend({
       course: courseInfoSchema.optional(),
@@ -62,6 +62,18 @@ export const blogPosts = defineCollections({
     description: z.string().optional(),
     date: z.iso.date().or(z.date()),
   }),
+});
+
+export const courseBodies = defineCollections({
+  type: 'doc',
+  dir: 'content/course-bodies',
+  async: true,
+  schema: frontmatterSchema.extend({
+    course: courseInfoSchema.optional(),
+  }),
+  postprocess: {
+    includeProcessedMarkdown: false,
+  },
 });
 
 export const newsPosts = defineCollections({
