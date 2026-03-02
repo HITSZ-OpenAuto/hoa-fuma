@@ -61,6 +61,7 @@ export const blogPosts = defineCollections({
       .optional(),
     description: z.string().optional(),
     date: z.iso.date().or(z.date()),
+    weight: z.number().optional(),
   }),
 });
 
@@ -79,6 +80,7 @@ export const newsPosts = defineCollections({
       .optional(),
     description: z.string().optional(),
     date: z.iso.date().or(z.date()),
+    weight: z.number().optional(),
   }),
 });
 
