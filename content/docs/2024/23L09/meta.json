@@ -1,0 +1,15 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "junior-autumn",
+    "cross-specialty",
+    "general-knowledge"
+  ],
+  "root": true,
+  "title": "化学"
+}

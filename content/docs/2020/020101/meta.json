@@ -1,0 +1,16 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "sophomore-summer",
+    "junior-autumn",
+    "cross-specialty",
+    "general-knowledge"
+  ],
+  "root": true,
+  "title": "通信工程"
+}

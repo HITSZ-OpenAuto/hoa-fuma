@@ -1,0 +1,14 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "junior-autumn",
+    "junior-spring",
+    "cross-specialty",
+    "general-knowledge"
+  ],
+  "root": true,
+  "title": "人工智能班"
+}

@@ -1,0 +1,16 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "fresh-summer",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "sophomore-summer",
+    "cross-specialty",
+    "general-knowledge"
+  ],
+  "root": true,
+  "title": "电气工程及其自动化"
+}
