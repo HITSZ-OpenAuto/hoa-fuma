@@ -71,6 +71,7 @@ export default function Page() {
           src="/images/hoa-banner.png"
           loading="eager"
           alt="banner"
+          fill
           className="absolute inset-0 -z-1 size-full object-cover"
         />
         <h1 className="text-landing-foreground mb-4 font-mono text-3xl font-medium">

@@ -28,7 +28,7 @@ export default async function Page(props: {
 
   if (isSeriesIndex && seriesPosts.length > 0) {
     return (
-      <main className="max-w-page mx-auto w-full px-4 pb-12 md:py-12">
+      <main className="max-w-page mx-auto w-full px-4 py-12">
         <div className="mb-6">
           <h1 className="mb-4 text-3xl font-semibold">{page.data.title}</h1>
           <p className="text-fd-muted-foreground">{page.data.description}</p>
