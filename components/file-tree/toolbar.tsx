@@ -82,10 +82,10 @@ export function Toolbar({
       </div>
 
       <div className="flex flex-wrap items-center gap-2 sm:order-3">
-        <Button variant="outline" size="sm" className="h-8 px-2 sm:px-3">
+        {/* <Button variant="outline" size="sm" className="h-8 px-2 sm:px-3">
           <UploadCloudIcon className="text-muted-foreground size-4" />
           <span className="hidden sm:inline">上传文件</span>
-        </Button>
+        </Button> */}
 
         <Button
           variant="outline"
