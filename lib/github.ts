@@ -21,19 +21,28 @@ export type LatestCommitInfo = {
   date: string;
 };
 
+let allowedReposCache: Set<string> | null = null;
+
+async function getAllowedRepos(): Promise<Set<string>> {
+  if (!allowedReposCache) {
+    const content = await fs.readFile(REPOS_FILE, 'utf-8');
+    allowedReposCache = new Set(
+      content
+        .split('\n')
+        .map((l) => l.trim())
+        .filter(Boolean)
+    );
+  }
+  return allowedReposCache;
+}
+
 /**
  * Fetch the most recently updated repos,
  * filtered to those in repos_list.txt.
  * Description is the latest commit message that does not start with "ci:".
  */
 export async function getRecentRepos(count = 3): Promise<RepoItem[]> {
-  const content = await fs.readFile(REPOS_FILE, 'utf-8');
-  const allowedRepos = new Set(
-    content
-      .split('\n')
-      .map((l) => l.trim())
-      .filter(Boolean)
-  );
+  const allowedRepos = await getAllowedRepos();
 
   const headers = githubHeaders();
 
