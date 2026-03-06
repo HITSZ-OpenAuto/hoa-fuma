@@ -25,40 +25,64 @@ export default function Page() {
     seriesMap.set(seriesSlug, series);
   }
 
-  const seriesItems = [...seriesMap.entries()]
-    .filter(([, entry]) => entry.posts.length > 0)
-    .map(([slug, entry]) => {
-      const dates = [
-        entry.index?.data.date,
-        ...entry.posts.map((post) => post.data.date),
-      ]
-        .filter(Boolean)
-        .map((date) => new Date(date as string | Date).getTime());
-      const latestDate = dates.length > 0 ? new Date(Math.max(...dates)) : null;
-      return {
+  const items: (
+    | {
+        type: 'series';
+        slug: string;
+        title: string;
+        description: string;
+        date: Date | null;
+      }
+    | {
+        type: 'post';
+        slug: string;
+        title: string;
+        description: string;
+        date: Date;
+        url: string;
+      }
+  )[] = [];
+  for (const [slug, entry] of seriesMap) {
+    if (entry.posts.length > 0) {
+      let maxTime = -Infinity;
+      let latestDate: Date | null = null;
+
+      const idxDate = entry.index?.data.date;
+      if (idxDate) {
+        latestDate = new Date(idxDate as string | Date);
+        maxTime = latestDate.getTime();
+      }
+
+      for (const p of entry.posts) {
+        if (p.data.date) {
+          const t = new Date(p.data.date as string | Date).getTime();
+          if (t > maxTime) {
+            maxTime = t;
+            latestDate = new Date(t);
+          }
+        }
+      }
+
+      items.push({
         type: 'series' as const,
         slug,
         title: entry.index?.data.title ?? slug,
         description: entry.index?.data.description ?? '',
         date: latestDate,
-      };
-    });
+      });
+    } else if (entry.index) {
+      items.push({
+        type: 'post' as const,
+        slug: entry.index.slugs[0],
+        title: entry.index.data.title,
+        description: entry.index.data.description ?? '',
+        date: new Date(entry.index.data.date as string | Date),
+        url: entry.index.url,
+      });
+    }
+  }
 
-  const seriesSlugs = new Set(seriesItems.map((item) => item.slug));
-  const postItems = pages
-    .filter(
-      (page) => page.slugs.length === 1 && !seriesSlugs.has(page.slugs[0])
-    )
-    .map((post) => ({
-      type: 'post' as const,
-      slug: post.slugs[0],
-      title: post.data.title,
-      description: post.data.description,
-      date: new Date(post.data.date),
-      url: post.url,
-    }));
-
-  const items = [...seriesItems, ...postItems].sort((a, b) => {
+  items.sort((a, b) => {
     const aDate = a.date?.getTime() ?? 0;
     const bDate = b.date?.getTime() ?? 0;
     return bDate - aDate;
