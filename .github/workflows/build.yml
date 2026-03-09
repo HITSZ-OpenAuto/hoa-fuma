@@ -1,23 +1,22 @@
-name: Build
+name: CI
 
 permissions:
   contents: write
+  packages: write
 
 env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   NEXT_TELEMETRY_DISABLED: 1
+  IMAGE_NAME: ghcr.io/hitsz-openauto/hoa-fuma
 
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '0 */3 * * *'
+  # schedule:
+  #  - cron: '5 */3 * * *'
   workflow_dispatch:
 
 jobs:
-  build:
+  prepare:
     runs-on: blacksmith-4vcpu-ubuntu-2404
     outputs:
       trigger_deploy: ${{ steps.check_changes.outputs.trigger_deploy }}
@@ -109,10 +108,10 @@ jobs:
           path: content/
           retention-days: 1
 
-  deploy:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    needs: build
-    if: needs.build.outputs.trigger_deploy == 'true'
+  build:
+    runs-on: blacksmith-16vcpu-ubuntu-2404
+    needs: prepare
+    if: needs.prepare.outputs.trigger_deploy == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -145,23 +144,38 @@ jobs:
       - name: Run knip
         run: pnpm run knip
 
-      - name: Install Vercel CLI
-        run: pnpm i -g vercel@latest
-
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ env.VERCEL_TOKEN }}
-
       - name: Fetch external data
         run: |
           curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
           mkdir -p hoa-major-data
           curl -o hoa-major-data/major_mapping.json https://raw.githubusercontent.com/HITSZ-OpenAuto/hoa-major-data/main/major_mapping.json
 
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ env.VERCEL_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
 
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ env.VERCEL_TOKEN }} --archive=tgz
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Commit and push to production branch
         run: |
@@ -170,3 +184,30 @@ jobs:
           git add -f content/
           git commit -m "docs: update course pages" || echo "No changes to commit"
           git push origin HEAD:production --force
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy container on VPS
+        uses: appleboy/ssh-action@v1
+        env:
+          GHCR_TOKEN: ${{ github.token }}
+          FUMA_GITHUB_API_TOKEN: ${{ secrets.FUMA_GITHUB_API_TOKEN }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          port: ${{ secrets.VPS_PORT }}
+          envs: GHCR_TOKEN,FUMA_GITHUB_API_TOKEN
+          script: |
+            set -euo pipefail
+            image_ref='${{ env.IMAGE_NAME }}:latest'
+            container='hoa-fuma'
+            port='${{ secrets.VPS_APP_PORT }}'
+
+            echo "${GHCR_TOKEN}" | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
+            docker pull "${image_ref}"
+            docker rm -f "${container}" 2>/dev/null || true
+            docker run -d --name "${container}" --restart unless-stopped -p "${port}:3000" -e GITHUB_TOKEN="${FUMA_GITHUB_API_TOKEN}" -e NODE_OPTIONS="--max-old-space-size=6144" "${image_ref}"
