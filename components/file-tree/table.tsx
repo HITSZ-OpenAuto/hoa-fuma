@@ -43,17 +43,20 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [expanded, setExpanded] = useState<ExpandedState>(() => {
     const initialExpanded: Record<string, boolean> = {};
-    function initExpanded(nodes: FileNode[]) {
-      for (const node of nodes) {
+    const stack: FileNode[][] = [data];
+
+    while (stack.length > 0) {
+      const currentNodes = stack.pop()!;
+      for (let i = 0; i < currentNodes.length; i++) {
+        const node = currentNodes[i];
         if (node.type === 'folder' && node.defaultOpen) {
           initialExpanded[node.id] = true;
         }
         if (node.children) {
-          initExpanded(node.children);
+          stack.push(node.children);
         }
       }
     }
-    initExpanded(data);
     return initialExpanded;
   });
   const [isAccelerated, setIsAccelerated] = useState(false);

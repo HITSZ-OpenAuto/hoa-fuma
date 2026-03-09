@@ -1,4 +1,4 @@
-name: Build
+name: CI
 
 permissions:
   contents: write
@@ -11,8 +11,8 @@ env:
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '0 */3 * * *'
+  # schedule:
+  #  - cron: '5 */3 * * *'
   workflow_dispatch:
 
 jobs:
@@ -109,9 +109,9 @@ jobs:
           retention-days: 1
 
   build:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
-    needs: prepare
-    if: needs.prepare.outputs.trigger_deploy == 'true'
+    runs-on: blacksmith-16vcpu-ubuntu-2404
+    needs: build
+    if: needs.build.outputs.trigger_deploy == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v6
