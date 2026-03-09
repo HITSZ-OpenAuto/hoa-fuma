@@ -210,4 +210,4 @@ jobs:
             echo "${GHCR_TOKEN}" | docker login ghcr.io -u '${{ github.actor }}' --password-stdin
             docker pull "${image_ref}"
             docker rm -f "${container}" 2>/dev/null || true
-            docker run -d --name "${container}" --restart unless-stopped -p "${port}:3000" -e GITHUB_TOKEN="${FUMA_GITHUB_API_TOKEN}" -e NODE_OPTIONS="--max-old-space-size=6144" "${image_ref}"
+            docker run -d --name "${container}" --network proxy --restart unless-stopped -p "${port}:3000" -e GITHUB_TOKEN="${FUMA_GITHUB_API_TOKEN}" -e NODE_OPTIONS="--max-old-space-size=6144" "${image_ref}"
