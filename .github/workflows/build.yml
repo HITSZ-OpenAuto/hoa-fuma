@@ -11,8 +11,8 @@ env:
 on:
   push:
     branches: [main]
-  # schedule:
-  #  - cron: '5 */3 * * *'
+  schedule:
+    - cron: '5 */3 * * *'
   workflow_dispatch:
 
 jobs:
