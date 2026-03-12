@@ -28,13 +28,20 @@ export default function Page() {
   const seriesItems = [...seriesMap.entries()]
     .filter(([, entry]) => entry.posts.length > 0)
     .map(([slug, entry]) => {
-      const dates = [
-        entry.index?.data.date,
-        ...entry.posts.map((post) => post.data.date),
-      ]
-        .filter(Boolean)
-        .map((date) => new Date(date as string | Date).getTime());
-      const latestDate = dates.length > 0 ? new Date(Math.max(...dates)) : null;
+      let maxTime = entry.posts.reduce((max, post) => {
+        if (!post.data.date) return max;
+        const time = new Date(post.data.date).getTime();
+        return time > max ? time : max;
+      }, -Infinity);
+
+      if (entry.index?.data.date) {
+        const indexTime = new Date(entry.index.data.date).getTime();
+        if (indexTime > maxTime) {
+          maxTime = indexTime;
+        }
+      }
+
+      const latestDate = maxTime > -Infinity ? new Date(maxTime) : null;
       return {
         type: 'series' as const,
         slug,
