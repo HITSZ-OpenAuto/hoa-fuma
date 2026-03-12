@@ -89,3 +89,4 @@ jobs:
       - name: Deploy Preview to Vercel
         if: ${{ env.VERCEL_TOKEN != '' }}
         run: vercel deploy --prebuilt --token=${{ env.VERCEL_TOKEN }} --archive=tgz
+        continue-on-error: true
