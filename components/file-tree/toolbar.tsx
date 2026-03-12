@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  SearchIcon,
-  UploadCloudIcon,
-  DownloadIcon,
-  ZapIcon,
-  HardDrive,
-} from 'lucide-react';
+import { SearchIcon, DownloadIcon, ZapIcon, HardDrive } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { CircularProgress } from '@/components/ui/circular-progress';
