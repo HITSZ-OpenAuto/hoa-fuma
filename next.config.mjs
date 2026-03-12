@@ -11,6 +11,11 @@ const config = {
     remotePatterns: [
       {
         protocol: 'https',
+        hostname: 'static.hoa.moe',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'github.com',
         pathname: '/**',
       },

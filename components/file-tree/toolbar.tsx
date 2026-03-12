@@ -2,7 +2,7 @@
 
 import {
   SearchIcon,
-  UploadCloudIcon,
+
   DownloadIcon,
   ZapIcon,
   HardDrive,
