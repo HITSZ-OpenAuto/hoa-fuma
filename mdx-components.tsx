@@ -4,7 +4,7 @@ import type { MDXComponents } from 'mdx/types';
 import { CourseInfo } from '@/components/course-info';
 import type { CourseInfoData } from '@/lib/types';
 import { Files, Folder, File } from '@/components/file-tree';
-import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+import { Accordion, Accordions } from '@/components/ui/accordion';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import {
   Select,
