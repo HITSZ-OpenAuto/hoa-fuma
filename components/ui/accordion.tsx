@@ -9,7 +9,7 @@ import Link from 'fumadocs-core/link';
 
 function parseMarkdownLinks(text: string): ReactNode[] {
   const parts: ReactNode[] = [];
-  const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const regex = /\[([^\]]+)\]\(([^)]*(?:\([^)]*\)[^)]*)*)\)/g;
   let lastIndex = 0;
   let match;
 
