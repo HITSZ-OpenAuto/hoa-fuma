@@ -109,7 +109,7 @@ jobs:
           retention-days: 1
 
   build:
-    runs-on: blacksmith-16vcpu-ubuntu-2404
+    runs-on: blacksmith-8vcpu-ubuntu-2404
     needs: prepare
     if: needs.prepare.outputs.trigger_deploy == 'true'
     steps:
