@@ -1,3 +1,5 @@
+'use client';
+
 import type { ComponentProps, ReactNode } from 'react';
 import {
   Accordion as FumaAccordion,
@@ -20,6 +22,7 @@ function parseMarkdownLinks(text: string): ReactNode[] {
         key={match.index}
         href={match[2]}
         className="font-medium underline decoration-fd-primary underline-offset-[3.5px] decoration-[1.5px] hover:opacity-80 transition-opacity"
+        onClick={(e) => e.stopPropagation()}
       >
         {match[1]}
       </Link>,
