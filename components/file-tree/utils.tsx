@@ -138,21 +138,14 @@ export function transformChildrenToData(
   return result;
 }
 
-/**
- * Flattens the hierarchical FileNode tree into a single array.
- */
-export function flattenNodes(nodes: FileNode[]): FileNode[] {
+function flattenNodes(nodes: FileNode[]): FileNode[] {
   const result: FileNode[] = [];
-
   function traverse(items: FileNode[]) {
     for (const node of items) {
       result.push(node);
-      if (node.children) {
-        traverse(node.children);
-      }
+      if (node.children) traverse(node.children);
     }
   }
-
   traverse(nodes);
   return result;
 }
