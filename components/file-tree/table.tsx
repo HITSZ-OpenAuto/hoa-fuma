@@ -22,12 +22,7 @@ import {
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import type { FileNode } from '@/lib/types';
-import {
-  getFileNodes,
-  flattenNodes,
-  getAcceleratedUrl,
-  downloadBatchFiles,
-} from './utils';
+import { getFileNodes, getAcceleratedUrl, downloadBatchFiles } from './utils';
 import { createColumns } from './columns';
 import { Toolbar } from './toolbar';
 
@@ -74,26 +69,21 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
       const newExpanded: Record<string, boolean> = {};
       const query = globalFilter.toLowerCase();
 
-      function expandMatching(nodes: FileNode[]) {
+      function expandMatching(nodes: FileNode[]): boolean {
+        let subtreeHasMatch = false;
         for (const node of nodes) {
           const matchesSelf = node.name.toLowerCase().includes(query);
-          const hasMatchingChild = node.children?.some(
-            (child) =>
-              child.name.toLowerCase().includes(query) ||
-              (child.children &&
-                flattenNodes([child]).some((n) =>
-                  n.name.toLowerCase().includes(query)
-                ))
-          );
+          const childrenMatch = node.children
+            ? expandMatching(node.children)
+            : false;
 
-          if (node.type === 'folder' && (matchesSelf || hasMatchingChild)) {
+          const anyMatch = matchesSelf || childrenMatch;
+          if (node.type === 'folder' && anyMatch) {
             newExpanded[node.id] = true;
           }
-
-          if (node.children) {
-            expandMatching(node.children);
-          }
+          if (anyMatch) subtreeHasMatch = true;
         }
+        return subtreeHasMatch;
       }
       expandMatching(data);
       setExpanded(newExpanded);
