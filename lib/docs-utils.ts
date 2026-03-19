@@ -3,19 +3,6 @@ export type MajorEntry = {
   majors?: { name: string; major_ID: string }[];
 };
 
-function resolveMajorName(
-  yearData: Record<string, MajorEntry> | undefined,
-  id: string
-): string {
-  if (!yearData) return id;
-  if (yearData[id]) return yearData[id].name;
-  for (const entry of Object.values(yearData)) {
-    const nested = entry.majors?.find((m) => m.major_ID === id);
-    if (nested) return nested.name;
-  }
-  return id;
-}
-
 export function computeYearMajorMap(
   pages: { slugs: string[] }[],
   mapping: Record<string, Record<string, MajorEntry>>
@@ -35,9 +22,25 @@ export function computeYearMajorMap(
 
   for (const [year, majors] of yearMajorSet) {
     const yearData = mapping[year];
+
+    let fastLookup: Map<string, string> | undefined;
+    if (yearData) {
+      fastLookup = new Map<string, string>();
+      for (const entry of Object.values(yearData)) {
+        if (entry.majors) {
+          for (const m of entry.majors) {
+            fastLookup.set(m.major_ID, m.name);
+          }
+        }
+      }
+      for (const [id, entry] of Object.entries(yearData)) {
+        fastLookup.set(id, entry.name);
+      }
+    }
+
     result[year] = Array.from(majors).map((id) => ({
       id,
-      name: resolveMajorName(yearData, id),
+      name: fastLookup ? (fastLookup.get(id) ?? id) : id,
     }));
   }
 
