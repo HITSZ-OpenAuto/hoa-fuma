@@ -205,7 +205,6 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.VPS_PORT }}
           envs: GHCR_TOKEN,FUMA_GITHUB_API_TOKEN
           script: |
