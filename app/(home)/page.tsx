@@ -1,4 +1,5 @@
-import { Mail, Github } from 'lucide-react';
+import { Mail } from 'lucide-react';
+import { siGithub } from 'simple-icons';
 import { RecentRepos } from '@/components/recent-repos';
 import { ScrollHint } from '@/components/scroll-hint';
 import { LatestPosts } from '@/components/latest-posts';
@@ -89,7 +90,14 @@ export default async function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Github className="h-4 w-4" />
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="h-4 w-4"
+                  aria-hidden="true"
+                >
+                  <path d={siGithub.path} />
+                </svg>
                 GitHub
               </a>
             </Button>
