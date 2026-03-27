@@ -70,7 +70,7 @@ function HeroCard({ linkTo, content, imageURL, index }: HeroCardProps) {
             alt={content}
             fill
             className="object-cover object-top"
-            sizes="100vw"
+            sizes="512px"
             loading="eager"
           />
         </div>
