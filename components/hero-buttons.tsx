@@ -128,7 +128,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               className="rounded-full transition-transform hover:scale-105"
               asChild
             >
-              <Link href="/blog/contribution-guide">参与指南</Link>
+              <Link href="https://wiki.hoa.moe">参与指南</Link>
             </Button>
           </>
         )}
