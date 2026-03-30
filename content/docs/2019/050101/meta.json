@@ -1,0 +1,16 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "fresh-summer",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "sophomore-summer",
+    "cross-specialty",
+    "general-knowledge"
+  ],
+  "root": true,
+  "title": "材料科学与工程"
+}

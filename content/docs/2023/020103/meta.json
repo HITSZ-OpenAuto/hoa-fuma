@@ -1,0 +1,16 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "junior-autumn",
+    "junior-spring",
+    "cross-specialty",
+    "general-knowledge"
+  ],
+  "root": true,
+  "title": "光电信息科学与工程"
+}

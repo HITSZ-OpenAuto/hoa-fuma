@@ -1,0 +1,19 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "sophomore-summer",
+    "junior-autumn",
+    "junior-spring",
+    "junior-summer",
+    "senior-autumn",
+    "cross-specialty",
+    "general-knowledge"
+  ],
+  "root": true,
+  "title": "计算机科学与技术"
+}

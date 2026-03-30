@@ -1,0 +1,14 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "cross-specialty",
+    "general-knowledge"
+  ],
+  "root": true,
+  "title": "机器人与智能装备"
+}
