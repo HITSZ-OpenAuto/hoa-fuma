@@ -1,5 +1,4 @@
 import { DocsPathMemory } from '@/components/docs/docs-path-memory';
-import { FeedbackBanner } from '@/components/feedback-banner';
 import { SidebarBanner } from '@/components/sidebar/sidebar-banner';
 import { baseOptions } from '@/lib/layout.shared';
 import { getAvailableYears } from '@/lib/docs';
@@ -26,21 +25,18 @@ export default async function Layout(props: {
   const years = getAvailableYears();
 
   return (
-    <>
-      <FeedbackBanner />
-      <DocsLayout
-        tree={yearNode}
-        {...baseOptions()}
-        sidebar={{
-          tabs: false,
-          banner: (
-            <SidebarBanner years={years} currentYear={year} tree={yearNode} />
-          ),
-        }}
-      >
-        <DocsPathMemory />
-        {props.children}
-      </DocsLayout>
-    </>
+    <DocsLayout
+      tree={yearNode}
+      {...baseOptions()}
+      sidebar={{
+        tabs: false,
+        banner: (
+          <SidebarBanner years={years} currentYear={year} tree={yearNode} />
+        ),
+      }}
+    >
+      <DocsPathMemory />
+      {props.children}
+    </DocsLayout>
   );
 }
