@@ -54,6 +54,11 @@ const config = {
         hostname: 'www.criwits.top',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'uptime.kuma.pet',
+        pathname: '/**',
+      },
     ],
   },
 };
