@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Cards, Card } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
 
 // SVG icon from icons.yaml for umami
 const UmamiIcon = () => (
@@ -285,6 +286,31 @@ export default function Page() {
           />
         </Cards>
       </section>
+      <Callout type="info" title="提交友链">
+        <p>我们会收录的链接包括但不限于：</p>
+        <ul className="mt-2 list-inside list-disc">
+          <li>校内社群</li>
+          <li>校内/友校类似项目</li>
+          <li>个人博客</li>
+        </ul>
+        <p className="mt-4">
+          你可以通过在{' '}
+          <a
+            href="https://github.com/HITSZ-OpenAuto/hoa-fuma/issues"
+            className="text-fd-primary font-medium underline"
+          >
+            本项目仓库提 issues
+          </a>{' '}
+          ｜ 发送邮件至{' '}
+          <a
+            href="mailto:hi@hoa.moe"
+            className="text-fd-primary font-medium underline"
+          >
+            📮 hi@hoa.moe
+          </a>{' '}
+          的方式与我们交换友链
+        </p>
+      </Callout>
     </main>
   );
 }
