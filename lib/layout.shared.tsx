@@ -24,6 +24,11 @@ export function baseOptions(): BaseLayoutProps {
         url: '/news',
         active: 'nested-url',
       },
+      {
+        text: '友链',
+        url: '/links',
+        active: 'nested-url',
+      },
     ],
     githubUrl: 'https://github.com/hitsz-openauto',
   };
