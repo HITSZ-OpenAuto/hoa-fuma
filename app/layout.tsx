@@ -3,6 +3,7 @@ import 'katex/dist/katex.css';
 import './global.css';
 import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
+import Script from 'next/script';
 import type { Metadata } from 'next';
 
 const inter = Inter({
@@ -23,6 +24,11 @@ export default function Layout({ children }: LayoutProps<'/'>) {
           {children}
           <Toaster />
         </RootProvider>
+        <Script
+          src="https://stats.hoa.moe/script.js"
+          data-website-id="300d85bd-f997-42d4-9bcf-b26666daa293"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );
