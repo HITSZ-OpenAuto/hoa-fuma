@@ -64,6 +64,26 @@ const config = {
         hostname: 'scuteee.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'penjc.github.io',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.nuaastore.app',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'blog.longlin.tech',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'longbin.tech',
+        pathname: '/**',
+      },
     ],
   },
 };

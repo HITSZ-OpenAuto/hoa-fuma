@@ -273,7 +273,7 @@ export default function Page() {
           <Card
             href="https://scuteee.com/"
             title="SCUTEEE"
-            description="华南理工大学课程攻略共享计划"
+            description="华南理工电力电子类专业知识库"
             icon={
               <Image
                 src="https://scuteee.com/favicon-32x32.png"
@@ -283,6 +283,87 @@ export default function Page() {
                 className="size-4"
               />
             }
+          />
+          <Card
+            href="https://penjc.github.io/CityU/"
+            title="CityU GuideBook"
+            description="A comprehensive platform for CityUHK students"
+            icon={
+              <Image
+                src="https://penjc.github.io/CityU/img/favicon.ico"
+                alt="CityU"
+                width={24}
+                height={24}
+                className="size-4"
+              />
+            }
+          />
+          <Card
+            href="https://www.nuaastore.app/"
+            title="NUAA 分享"
+            description=""
+            icon={
+              <Image
+                src="https://www.nuaastore.app/logo-dark.png"
+                alt="NUAA"
+                width={24}
+                height={24}
+                className="size-4"
+              />
+            }
+          />
+          <Card
+            href="https://yigebande.github.io/SYSU-SAA-Survival-Manual/"
+            title="SYSU SAA Survival Manual"
+            description="中山大学航空航天学院生存手册"
+            icon={
+              <Image
+                src="/logos/SYSU-SAA-Survival-Manual.png"
+                alt="SYSU SAA"
+                width={24}
+                height={24}
+                className="size-4"
+              />
+            }
+          />
+        </Cards>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="mb-4 text-xl font-semibold">个人博客</h2>
+        <Cards>
+          <Card
+            href="https://blog.longlin.tech/"
+            title="longlin 的个人小站"
+            description="Simple is Complex"
+            icon={
+              <Image
+                src="https://blog.longlin.tech/favicon.svg"
+                alt="longlin"
+                width={24}
+                height={24}
+                className="size-4"
+              />
+            }
+          />
+          <Card
+            href="https://longbin.tech"
+            title="Longbin's Blog"
+            description="个人技术博客，记录所学的一切知识"
+            icon={
+              <Image
+                src="https://longbin.tech/favicon.ico"
+                alt="Longbin"
+                width={24}
+                height={24}
+                className="size-4"
+              />
+            }
+          />
+          <Card
+            href="https://oliverwu.top"
+            title="吴俊达的个人主页"
+            description="Please stay tuned!"
           />
         </Cards>
       </section>
