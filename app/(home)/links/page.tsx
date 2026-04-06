@@ -35,7 +35,7 @@ export default function Page() {
 
       <section className="mb-10">
         <h2 className="mb-4 text-xl font-semibold">HITSZ OpenAuto 站点</h2>
-        <Cards>
+        <Cards className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Card
             href="https://stats.hoa.moe/share/LhA8O8CHnNCO39nh/hoa.moe"
             title="HOA 网站访问数据"
@@ -59,7 +59,7 @@ export default function Page() {
 
       <section className="mb-10">
         <h2 className="mb-4 text-xl font-semibold">校内社群</h2>
-        <Cards>
+        <Cards className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Card
             href="https://osa.moe/"
             title="HITSZ 开源技术协会"
@@ -107,7 +107,7 @@ export default function Page() {
 
       <section className="mb-10">
         <h2 className="mb-4 text-xl font-semibold">校内站点</h2>
-        <Cards>
+        <Cards className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Card
             href="https://open.osa.moe/"
             title="OSA Alist 网盘"
@@ -160,7 +160,7 @@ export default function Page() {
 
       <section className="mb-10">
         <h2 className="mb-4 text-xl font-semibold">校内项目</h2>
-        <Cards>
+        <Cards className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Card
             href="https://github.com/HITSZ-OpenCS/HITSZ-OpenCS"
             title="HITSZ-OpenCS"
@@ -255,7 +255,7 @@ export default function Page() {
 
       <section className="mb-10">
         <h2 className="mb-4 text-xl font-semibold">友校项目</h2>
-        <Cards>
+        <Cards className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Card
             href="https://man.naosi.org/"
             title="大工生存手册"
@@ -331,7 +331,7 @@ export default function Page() {
 
       <section className="mb-10">
         <h2 className="mb-4 text-xl font-semibold">个人博客</h2>
-        <Cards>
+        <Cards className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Card
             href="https://blog.longlin.tech/"
             title="longlin 的个人小站"
