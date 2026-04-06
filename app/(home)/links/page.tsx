@@ -273,6 +273,15 @@ export default function Page() {
             href="https://scuteee.com/"
             title="SCUTEEE"
             description="华南理工大学课程攻略共享计划"
+            icon={
+              <Image
+                src="https://scuteee.com/favicon-32x32.png"
+                alt="SCUTEEE"
+                width={24}
+                height={24}
+                className="size-4"
+              />
+            }
           />
         </Cards>
       </section>

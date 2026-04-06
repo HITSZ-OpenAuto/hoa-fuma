@@ -59,6 +59,11 @@ const config = {
         hostname: 'uptime.kuma.pet',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'scuteee.com',
+        pathname: '/**',
+      },
     ],
   },
 };
