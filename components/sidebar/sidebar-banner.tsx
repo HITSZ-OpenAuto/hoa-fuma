@@ -13,7 +13,7 @@ export function SidebarBanner({
 }: {
   years: string[];
   currentYear: string;
-  tree: PageTree.Folder;
+  tree: PageTree.Root;
 }) {
   const tabs = useMemo(() => {
     const sidebarTabs = getSidebarTabs(tree);
