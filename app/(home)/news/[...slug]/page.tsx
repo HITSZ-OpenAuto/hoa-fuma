@@ -24,7 +24,7 @@ export default async function Page(props: {
           const wb = b.data.weight ?? Infinity;
           if (wa !== wb) return wa - wb;
           return (
-            new Date(a.data.date).getTime() - new Date(b.data.date).getTime()
+            new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
           );
         })
     : [];
