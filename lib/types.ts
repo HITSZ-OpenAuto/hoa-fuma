@@ -37,7 +37,7 @@ export interface DownloadFile {
 }
 
 // Course info types
-export type CourseHourDistribution = {
+type CourseHourDistribution = {
   theory: number;
   lab: number;
   practice: number;
