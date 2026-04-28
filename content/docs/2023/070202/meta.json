@@ -1,0 +1,18 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "sophomore-summer",
+    "junior-autumn",
+    "junior-spring",
+    "junior-summer",
+    "cross-specialty",
+    "general-knowledge"
+  ],
+  "root": true,
+  "title": "会计学（大数据会计方向）"
+}
