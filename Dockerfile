@@ -13,7 +13,7 @@ FROM node:${NODE_VERSION} AS dependencies
 WORKDIR /app
 
 # Copy package-related files first to leverage Docker's caching mechanism
-COPY package.json pnpm-lock.yaml* .npmrc* source.config.ts next.config.* ./
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* .npmrc* source.config.ts next.config.* ./
 
 # Install project dependencies with frozen lockfile for reproducible builds
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
