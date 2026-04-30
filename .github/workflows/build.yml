@@ -128,7 +128,7 @@ jobs:
           name: content
           path: content/
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           cache: true
 
