@@ -49,7 +49,12 @@ export default async function Layout(props: {
       sidebar={{
         tabs: false,
         banner: (
-          <SidebarBanner years={years} currentYear={year} tree={treeAsRoot} />
+          <SidebarBanner
+            key="sidebar-banner"
+            years={years}
+            currentYear={year}
+            tree={treeAsRoot}
+          />
         ),
       }}
     >
