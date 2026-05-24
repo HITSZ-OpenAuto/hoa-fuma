@@ -13,8 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
-const HOA_LAST_PATH_COOKIE = 'hoa-last-path';
+import { HOA_LAST_PATH_COOKIE } from '@/lib/constants';
 
 interface HeroButtonsProps {
   yearMajorMap: Record<string, { id: string; name: string }[]>;

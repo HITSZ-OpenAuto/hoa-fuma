@@ -2,8 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { HOA_LAST_PATH_COOKIE } from '@/lib/constants';
 
-const HOA_LAST_PATH_COOKIE = 'hoa-last-path';
 const MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
 export function DocsPathMemory() {
