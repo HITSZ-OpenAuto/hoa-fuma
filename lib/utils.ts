@@ -11,5 +11,5 @@ export function formatDate(date: string | Date) {
 }
 
 export function isYear(segment: string): boolean {
-  return /^\d{4}/.test(segment);
+  return /^\d{4}$/.test(segment);
 }
