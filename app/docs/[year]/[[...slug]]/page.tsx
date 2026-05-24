@@ -5,7 +5,7 @@ import {
   DocsPage,
   DocsTitle,
 } from 'fumadocs-ui/layouts/docs/page';
-import { notFound, permanentRedirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
@@ -28,7 +28,7 @@ export default async function Page(props: {
     const lastPath = cookieStore.get(HOA_LAST_PATH_COOKIE)?.value;
     const target = findRedirect(segments, lastPath);
     if (target) {
-      permanentRedirect(target);
+      redirect(target);
     }
     notFound();
   }
