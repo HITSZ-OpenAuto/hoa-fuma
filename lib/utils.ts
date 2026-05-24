@@ -9,3 +9,7 @@ export function formatDate(date: string | Date) {
   const d = new Date(date);
   return `${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日`;
 }
+
+export function isYear(segment: string): boolean {
+  return /^\d{4}$/.test(segment);
+}
