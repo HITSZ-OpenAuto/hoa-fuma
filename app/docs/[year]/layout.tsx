@@ -19,7 +19,7 @@ export default async function Layout(props: {
     return (
       <DocsLayout
         tree={source.getPageTree()}
-        {...baseOptions}
+        {...baseOptions()}
         sidebar={{
           tabs: false,
         }}
