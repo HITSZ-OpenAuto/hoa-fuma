@@ -17,7 +17,7 @@ function parseCookiePath(cookiePath: string): {
   try {
     const segments = cookiePath.split('/').filter(Boolean);
     const yearIdx = segments.findIndex((s) => isYear(s));
-    if (yearIdx == -1) return {};
+    if (yearIdx === -1) return {};
 
     const year = segments[yearIdx];
     const major = segments[yearIdx + 1] ?? undefined;
@@ -31,7 +31,7 @@ export function findRedirect(
   segments: string[],
   cookiePath?: string
 ): string | null {
-  if (segments.length == 0 || segments.length > 2) return null;
+  if (segments.length === 0 || segments.length > 2) return null;
 
   let courseCode: string;
   let semester: string | undefined;
@@ -58,7 +58,7 @@ export function findRedirect(
 
     matches.push(page);
   }
-  if (matches.length == 0) return null;
+  if (matches.length === 0) return null;
 
   if (cookiePath) {
     const { year: prefYear, major: prefMajor } = parseCookiePath(cookiePath);
