@@ -9,8 +9,9 @@ The framework for building courses-sharing platform, built by [HOA](https://gith
 ## Getting Started
 
 ```bash
-make prepare
-make content
+make prepare # minimal frontend setup
+make content # fetch full HOA content
+make dev # start dev
 ```
 
 ## Contributing
