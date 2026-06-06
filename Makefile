@@ -47,7 +47,7 @@ knip:
 check: lint format type-check knip
 
 clean:
-	rm -rf node_modules .next .source .tools
+	rm -rf node_modules .next .source .tools lib/data
 
 content:
 	./scripts/fetch-data.sh

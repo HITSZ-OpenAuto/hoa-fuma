@@ -5,7 +5,12 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
 tools_dir="${HOA_TOOLS_DIR:-.tools/bin}"
+hoa_backend="$tools_dir/hoa-backend"
 mkdir -p "$tools_dir"
+
+if [ -x "$hoa_backend" ]; then
+  exit 0
+fi
 
 case "$(uname -s)-$(uname -m)" in
   Darwin-arm64)
@@ -22,4 +27,4 @@ case "$(uname -s)-$(uname -m)" in
 esac
 
 curl -fsSL "$archive_url" | tar -xz -C "$tools_dir"
-chmod +x "$tools_dir/hoa-backend"
+chmod +x "$hoa_backend"
