@@ -22,37 +22,10 @@ jobs:
           repository: ${{ github.repository }}
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Fetch blog and news content
-        run: |
-          rm -rf content/blog content/news
-          for type in blog news; do
-            git clone --depth 1 --filter=blob:none https://github.com/HITSZ-OpenAuto/hoa-$type temp
-            mv temp/$type content/$type
-            rm -rf temp
-          done
-
-      - name: Fetch repositories in the organization
-        run: curl -o repos_list.txt https://raw.githubusercontent.com/HITSZ-OpenAuto/repos-management/refs/heads/main/repos_list.txt
-
-      - name: Clone hoa-major-data
-        run: git clone https://github.com/HITSZ-OpenAuto/hoa-major-data
-
-      - name: Download and Setup hoa-backend
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release download --repo HITSZ-OpenAuto/hoa-backend --pattern "hoa-backend-linux.tar.gz"
-          tar -xzf hoa-backend-linux.tar.gz
-          chmod +x hoa-backend
-          sudo mv hoa-backend /usr/local/bin/
-
-          rm hoa-backend-linux.tar.gz
-
-      - name: Build course pages
+      - name: Build content
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          hoa-backend --fetch
+        run: make content
 
       - uses: pnpm/action-setup@v6
         name: Install pnpm

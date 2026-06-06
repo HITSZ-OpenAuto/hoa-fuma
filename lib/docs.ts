@@ -1,5 +1,5 @@
 import { source } from '@/lib/source';
-import majorMapping from '@/hoa-major-data/major_mapping.json';
+import majorMapping from '@/lib/data/major_mapping.json';
 import { cache } from 'react';
 import { computeYearMajorMap, MajorEntry } from './docs-utils';
 

@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { GITHUB_ORG } from './constants';
 
-const REPOS_FILE = path.join(process.cwd(), 'repos_list.txt');
+const REPOS_FILE = path.join(process.cwd(), 'lib/data/repos_list.txt');
 
 type RepoItem = {
   id: string;

@@ -41,11 +41,9 @@ next-env.d.ts
 
 # artifacts
 repos/
-repos_list.txt
+lib/data/
+.tools/
 scripts/.env
-
-# local clones
-hoa-major-data/
 
 # secrets
 .env
