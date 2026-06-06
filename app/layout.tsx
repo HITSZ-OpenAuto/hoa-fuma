@@ -24,11 +24,14 @@ export default function Layout({ children }: LayoutProps<'/'>) {
           {children}
           <Toaster />
         </RootProvider>
-        <Script
-          src="https://stats.hoa.moe/script.js"
-          data-website-id="300d85bd-f997-42d4-9bcf-b26666daa293"
-          strategy="lazyOnload"
-        />
+        {process.env.NEXT_PUBLIC_UMAMI_SRC &&
+          process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
+            <Script
+              src={process.env.NEXT_PUBLIC_UMAMI_SRC}
+              data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+              strategy="lazyOnload"
+            />
+          )}
       </body>
     </html>
   );
