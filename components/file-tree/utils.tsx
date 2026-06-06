@@ -234,6 +234,7 @@ function pLimit(concurrency: number) {
 
 function deriveZipName(files: DownloadFile[]): string {
   if (files.length === 0) return 'download';
+  if (files.length === 1) return files[0].name.replace(/\.[^.]+$/, '');
 
   const segments = files.map((f) => f.path.split('/'));
   const minLen = Math.min(...segments.map((s) => s.length));
@@ -250,9 +251,6 @@ function deriveZipName(files: DownloadFile[]): string {
 
   if (commonPrefixLen > 0) {
     return segments[0].slice(0, commonPrefixLen).join('-');
-  }
-  if (files.length === 1) {
-    return files[0].name.replace(/\.[^.]+$/, '');
   }
   return 'hoa-files';
 }
