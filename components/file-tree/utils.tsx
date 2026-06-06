@@ -232,6 +232,29 @@ function pLimit(concurrency: number) {
   };
 }
 
+function deriveZipName(files: DownloadFile[]): string {
+  if (files.length === 0) return 'download';
+  if (files.length === 1) return files[0].name.replace(/\.[^.]+$/, '');
+
+  const segments = files.map((f) => f.path.split('/'));
+  const minLen = Math.min(...segments.map((s) => s.length));
+
+  let commonPrefixLen = 0;
+  for (let i = 0; i < minLen; i++) {
+    const segment = segments[0][i];
+    if (segments.every((s) => s[i] === segment)) {
+      commonPrefixLen++;
+    } else {
+      break;
+    }
+  }
+
+  if (commonPrefixLen > 0) {
+    return segments[0].slice(0, commonPrefixLen).join('-');
+  }
+  return 'hoa-files';
+}
+
 // Downloads multiple files as a ZIP archive with progress tracking
 export async function downloadBatchFiles(
   files: DownloadFile[],
@@ -285,5 +308,6 @@ export async function downloadBatchFiles(
 
   onProgress?.(100);
   const blob = new Blob([content as BlobPart], { type: 'application/zip' });
-  triggerDownload(blob, `batch-download-${Date.now()}.zip`);
+  const zipName = `${deriveZipName(files)}.zip`;
+  triggerDownload(blob, zipName);
 }
