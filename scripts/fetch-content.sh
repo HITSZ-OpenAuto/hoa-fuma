@@ -16,6 +16,7 @@ if [ ! -r "$repos_list" ]; then
 fi
 
 rm -rf content/blog content/news content/docs
+mkdir -p content
 for type in blog news; do
   rm -rf temp
   git clone --depth 1 --filter=blob:none "https://github.com/HITSZ-OpenAuto/hoa-${type}" temp
