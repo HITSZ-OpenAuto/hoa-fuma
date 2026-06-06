@@ -47,7 +47,7 @@ knip:
 check: lint format type-check knip
 
 clean:
-	rm -rf node_modules .next .source .tools lib/data
+	rm -rf node_modules .pnpm-store .next .source out build coverage .tools lib/data content repos *.tsbuildinfo
 
 content:
 	./scripts/fetch-data.sh
