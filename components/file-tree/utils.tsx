@@ -308,12 +308,6 @@ export async function downloadBatchFiles(
 
   onProgress?.(100);
   const blob = new Blob([content as BlobPart], { type: 'application/zip' });
-  const now = new Date();
-  const stamp = [
-    now.getFullYear(),
-    String(now.getMonth() + 1).padStart(2, '0'),
-    String(now.getDate()).padStart(2, '0'),
-  ].join('');
-  const zipName = `${deriveZipName(files)}-${stamp}.zip`;
+  const zipName = `${deriveZipName(files)}.zip`;
   triggerDownload(blob, zipName);
 }
