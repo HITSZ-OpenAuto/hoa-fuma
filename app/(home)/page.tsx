@@ -1,4 +1,5 @@
 import { Mail } from 'lucide-react';
+import { Zalando_Sans_Expanded } from 'next/font/google';
 import { siGithub } from 'simple-icons';
 import { RecentRepos } from '@/components/recent-repos';
 import { ScrollHint } from '@/components/scroll-hint';
@@ -9,6 +10,11 @@ import { HeroButtons } from '@/components/hero-buttons';
 import { Button } from '@/components/ui/button';
 import { getRecentRepos } from '@/lib/github';
 import { getYearMajorMap } from '@/lib/docs';
+
+const wordmark = Zalando_Sans_Expanded({
+  subsets: ['latin'],
+  weight: '500',
+});
 
 function HeroContent() {
   const yearMajorMap = getYearMajorMap();
@@ -63,10 +69,8 @@ export default async function HomePage() {
         <LatestPosts />
       </div>
 
-      {/* Footer */}
-      <footer className="relative px-6 py-16">
-        <div className="mx-auto max-w-5xl space-y-8 text-center">
-          {/* Contact buttons */}
+      <footer className="relative py-16">
+        <div className="mx-auto max-w-5xl px-6 text-center">
           <div className="flex flex-wrap justify-center gap-4">
             <Button
               variant="outline"
@@ -102,15 +106,18 @@ export default async function HomePage() {
               </a>
             </Button>
           </div>
+        </div>
 
-          {/* Brand text */}
-          <div className="py-8">
-            <span className="text-muted-foreground/20 text-[clamp(4rem,15vw,10rem)] font-bold tracking-tighter select-none">
-              OpenAuto
-            </span>
-          </div>
+        <div className="mt-18 mb-6 w-full overflow-hidden px-6 lg:px-16">
+          <span
+            className={`${wordmark.className} block text-center leading-none font-medium tracking-tighter whitespace-nowrap text-black select-none dark:text-white`}
+            style={{ fontSize: '14vw' }}
+          >
+            openauto
+          </span>
+        </div>
 
-          {/* Copyright */}
+        <div className="mx-auto max-w-5xl px-6 text-center">
           <p className="text-muted-foreground text-xs">© 2026 HITSZ OpenAuto</p>
         </div>
       </footer>
