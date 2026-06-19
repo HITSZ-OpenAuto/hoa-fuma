@@ -24,6 +24,7 @@ export default async function Layout(props: {
         {...baseOptions()}
         sidebar={{
           tabs: false,
+          prefetch: false,
         }}
       >
         <DocsPathMemory />
@@ -45,6 +46,7 @@ export default async function Layout(props: {
       {...baseOptions()}
       sidebar={{
         tabs: false,
+        prefetch: false,
         banner: (
           <SidebarBanner
             key="sidebar-banner"

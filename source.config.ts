@@ -4,6 +4,7 @@ import {
   defineDocs,
   frontmatterSchema,
   metaSchema,
+  applyMdxPreset,
 } from 'fumadocs-mdx/config';
 import z from 'zod';
 import remarkMath from 'remark-math';
@@ -39,6 +40,14 @@ export const docs = defineDocs({
     schema: frontmatterSchema.extend({
       course: courseInfoSchema.optional(),
     }),
+    mdxOptions: (environment) =>
+      applyMdxPreset({
+        remarkImageOptions: {
+          external: false,
+        },
+        remarkPlugins: [remarkMath, remarkAlert],
+        rehypePlugins: (plugins) => [rehypeKatex, ...plugins],
+      })(environment),
     postprocess: {
       includeProcessedMarkdown: false,
     },

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getMDXComponents } from '@/components/mdx';
 import { news } from '@/lib/source/posts';
 import { formatDate } from '@/lib/utils';
+import { getPostSummaries, getSeriesPosts } from '@/lib/posts-summary';
 
 export default async function Page(props: {
   params: Promise<{ slug: string[] }>;
@@ -14,19 +15,7 @@ export default async function Page(props: {
   if (!page) notFound();
   const isSeriesIndex = page.slugs.length === 1;
   const seriesPosts = isSeriesIndex
-    ? news
-        .getPages()
-        .filter(
-          (post) => post.slugs.length > 1 && post.slugs[0] === page.slugs[0]
-        )
-        .sort((a, b) => {
-          const wa = a.data.weight ?? Infinity;
-          const wb = b.data.weight ?? Infinity;
-          if (wa !== wb) return wa - wb;
-          return (
-            new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-          );
-        })
+    ? getSeriesPosts('news', page.slugs[0])
     : [];
   const Mdx = page.data.body;
 
@@ -44,12 +33,12 @@ export default async function Page(props: {
               href={post.url}
               className="bg-fd-card hover:bg-fd-accent hover:text-fd-accent-foreground flex flex-col rounded-2xl border p-4 shadow-sm transition-colors"
             >
-              <p className="font-medium">{post.data.title}</p>
+              <p className="font-medium">{post.title}</p>
               <p className="text-fd-muted-foreground text-sm">
-                {post.data.description}
+                {post.description}
               </p>
               <p className="text-brand mt-auto pt-4 text-xs">
-                {formatDate(post.data.date)}
+                {formatDate(post.date)}
               </p>
             </Link>
           ))}
@@ -121,7 +110,7 @@ export default async function Page(props: {
 }
 
 export function generateStaticParams(): { slug: string[] }[] {
-  return news.getPages().map((page) => ({
+  return getPostSummaries('news').map((page) => ({
     slug: page.slugs,
   }));
 }

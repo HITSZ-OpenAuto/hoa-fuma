@@ -1,14 +1,9 @@
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import 'katex/dist/katex.css';
 import './global.css';
-import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import Script from 'next/script';
 import type { Metadata } from 'next';
-
-const inter = Inter({
-  subsets: ['latin'],
-});
 
 export const metadata: Metadata = {
   title: 'HITSZ 课程攻略共享计划',
@@ -31,7 +26,7 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={inter.className} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
         <RootProvider>
           {children}

@@ -15,7 +15,7 @@ import { PageActions } from '@/components/page-actions';
 import { cookies } from 'next/headers';
 import { findRedirect } from '@/lib/redirect';
 import { isYear } from '@/lib/utils';
-import { getMDXComponents } from '@/components/mdx';
+import { getMDXComponents, NoPrefetchLink } from '@/components/mdx';
 
 export default async function Page(props: {
   params: Promise<{ year: string; slug?: string[] }>;
@@ -66,7 +66,7 @@ export default async function Page(props: {
         <MDX
           components={getMDXComponents(
             {
-              a: createRelativeLink(source, page),
+              a: createRelativeLink(source, page, NoPrefetchLink),
             },
             {
               course: page.data.course,
