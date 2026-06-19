@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { news } from '@/lib/source';
+import { news } from '@/lib/source/posts';
 import Image from 'next/image';
 import { formatDate } from '@/lib/utils';
 

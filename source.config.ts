@@ -35,6 +35,7 @@ const courseInfoSchema = z.object({
 export const docs = defineDocs({
   dir: 'content/docs',
   docs: {
+    dynamic: true,
     schema: frontmatterSchema.extend({
       course: courseInfoSchema.optional(),
     }),

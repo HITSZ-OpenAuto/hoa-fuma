@@ -1,4 +1,4 @@
-import { getPageImage, source } from '@/lib/source';
+import { getPageImage, source } from '@/lib/source/docs';
 import {
   DocsBody,
   DocsDescription,
@@ -36,7 +36,8 @@ export default async function Page(props: {
   const page = source.getPage([params.year, ...(params.slug ?? [])]);
   if (!page) notFound();
 
-  const MDX = page.data.body;
+  const pageBody = await page.data.load();
+  const MDX = pageBody.body;
 
   // For course pages, extract repo name from the last slug segment
   const repoName = page.data.course ? (params.slug?.at(-1) ?? null) : null;
@@ -47,7 +48,7 @@ export default async function Page(props: {
     : null;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
+    <DocsPage toc={pageBody.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription className="mb-0 text-base">
         {latestCommit ? (

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getMDXComponents } from '@/components/mdx';
-import { news } from '@/lib/source';
+import { news } from '@/lib/source/posts';
 import { formatDate } from '@/lib/utils';
 
 export default async function Page(props: {

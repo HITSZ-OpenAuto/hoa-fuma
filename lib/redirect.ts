@@ -1,4 +1,4 @@
-import { source } from '@/lib/source';
+import { source } from '@/lib/source/docs';
 import { SEMESTER_NAMES, COURSE_CODE_RE } from '@/lib/constants';
 import { isYear } from '@/lib/utils';
 

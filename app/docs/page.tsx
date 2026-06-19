@@ -1,4 +1,4 @@
-import { source } from '@/lib/source';
+import { source } from '@/lib/source/docs';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { HOA_LAST_PATH_COOKIE } from '@/lib/constants';

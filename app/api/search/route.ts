@@ -1,4 +1,4 @@
-import { source } from '@/lib/source';
+import { source } from '@/lib/source/docs';
 import { createFromSource } from 'fumadocs-core/search/server';
 import { createTokenizer } from '@orama/tokenizers/mandarin';
 

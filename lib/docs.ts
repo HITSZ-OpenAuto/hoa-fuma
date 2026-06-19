@@ -1,11 +1,14 @@
-import { source } from '@/lib/source';
+import { source } from '@/lib/source/docs';
 import majorMapping from '@/lib/data/major_mapping.json';
 import { cache } from 'react';
+import type { Folder, Root } from 'fumadocs-core/page-tree';
 import { computeYearMajorMap, MajorEntry } from './docs-utils';
 
-export function getAvailableYears(): string[] {
+export const getDocsPageTree = cache(() => source.getPageTree());
+
+export const getAvailableYears = cache((): string[] => {
   const years: string[] = [];
-  for (const node of source.getPageTree().children) {
+  for (const node of getDocsPageTree().children) {
     if (
       node.type === 'folder' &&
       typeof node.name === 'string' &&
@@ -15,7 +18,16 @@ export function getAvailableYears(): string[] {
     }
   }
   return years.sort((a, b) => b.localeCompare(a));
-}
+});
+
+export const getYearPageTree = cache((year: string): Root | undefined => {
+  const yearNode = getDocsPageTree().children.find(
+    (node): node is Folder => node.type === 'folder' && node.name === year
+  );
+
+  if (!yearNode) return undefined;
+  return { ...yearNode, type: 'root' };
+});
 
 export const getYearMajorMap = cache(() => {
   const pages = source.getPages();

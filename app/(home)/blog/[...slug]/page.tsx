@@ -3,7 +3,7 @@ import { InlineTOC } from 'fumadocs-ui/components/inline-toc';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getMDXComponents } from '@/components/mdx';
-import { blog } from '@/lib/source';
+import { blog } from '@/lib/source/posts';
 import { formatDate } from '@/lib/utils';
 
 export default async function Page(props: {
