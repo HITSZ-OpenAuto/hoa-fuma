@@ -182,6 +182,19 @@
     0 0 60px oklch(0.488 0.243 264.376 / 15%);
 }
 
+.home-card-hover:hover {
+  background-color: oklch(0.97 0 0);
+  color: var(--foreground);
+}
+
+.home-card-hover:hover * {
+  color: var(--foreground) !important;
+}
+
+.dark .home-card-hover:hover {
+  background-color: oklch(0.269 0 0);
+}
+
 /* Hero cards container */
 .hero-cards-container {
   perspective: 1000px;

@@ -41,7 +41,7 @@ export function RecentRepos({
                 <span className="line-clamp-1">{repo.description}</span>
               }
               href={repo.href}
-              className="bg-fd-card hover:bg-fd-accent hover:text-fd-accent-foreground [&>div:last-child]:text-brand flex h-full flex-col rounded-2xl border p-4 text-left shadow-sm transition-colors [&>div:last-child]:mt-auto [&>div:last-child]:pt-4 [&>div:last-child]:text-xs"
+              className="home-card-hover bg-fd-card [&>div:last-child]:text-brand flex h-full flex-col rounded-2xl border p-4 text-left shadow-sm transition-colors [&>div:last-child]:mt-auto [&>div:last-child]:pt-4 [&>div:last-child]:text-xs"
             >
               {repo.updatedAt ? formatDate(repo.updatedAt) : null}
             </Card>
