@@ -13,6 +13,7 @@ import { getYearMajorMap } from '@/lib/docs';
 const wordmark = Zalando_Sans_Expanded({
   subsets: ['latin'],
   weight: '500',
+  adjustFontFallback: false,
 });
 
 function HeroContent() {
