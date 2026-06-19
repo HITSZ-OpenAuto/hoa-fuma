@@ -14,6 +14,19 @@ export const metadata: Metadata = {
   title: 'HITSZ 课程攻略共享计划',
   description: '为你的 HITSZ 求学路提供全面的课程资料与经验分享',
   metadataBase: new URL('https://hoa.moe'),
+  icons: {
+    icon: [
+      {
+        url: '/icons/favicon-light.png',
+        media: '(prefers-color-scheme: light)',
+      },
+      {
+        url: '/icons/favicon-dark.png',
+        media: '(prefers-color-scheme: dark)',
+      },
+    ],
+    apple: '/apple-icon.png',
+  },
 };
 
 export default function Layout({ children }: LayoutProps<'/'>) {
