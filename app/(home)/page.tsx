@@ -1,5 +1,5 @@
 import { Mail } from 'lucide-react';
-import { Zalando_Sans_Expanded } from 'next/font/google';
+import localFont from 'next/font/local';
 import { siGithub } from 'simple-icons';
 import { RecentRepos } from '@/components/recent-repos';
 import { ScrollHint } from '@/components/scroll-hint';
@@ -10,9 +10,8 @@ import { Button } from '@/components/ui/button';
 import { getRecentRepos } from '@/lib/github';
 import { getYearMajorMap } from '@/lib/docs';
 
-const wordmark = Zalando_Sans_Expanded({
-  subsets: ['latin'],
-  weight: '500',
+const wordmark = localFont({
+  src: '../../public/fonts/zalando-sans-expanded-latin-500.woff2',
   adjustFontFallback: false,
 });
 
