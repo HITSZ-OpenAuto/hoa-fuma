@@ -87,6 +87,7 @@ export const newsPosts = defineCollections({
 
 export default defineConfig({
   mdxOptions: {
+    providerImportSource: '@/components/mdx',
     remarkPlugins: [remarkMath, remarkAlert],
     rehypePlugins: (plugins) => [rehypeKatex, ...plugins],
   },

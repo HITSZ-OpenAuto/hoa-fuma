@@ -22,7 +22,7 @@ type MdxContext = {
 export function getMDXComponents(
   components?: MDXComponents,
   context?: MdxContext
-): MDXComponents {
+) {
   return {
     ...defaultMdxComponents,
     Files,
@@ -42,5 +42,11 @@ export function getMDXComponents(
     SelectTrigger,
     SelectValue,
     ...components,
-  };
+  } satisfies MDXComponents;
+}
+
+export const useMDXComponents = getMDXComponents;
+
+declare global {
+  type MDXProvidedComponents = ReturnType<typeof getMDXComponents>;
 }

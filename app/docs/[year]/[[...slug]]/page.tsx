@@ -6,7 +6,6 @@ import {
   DocsTitle,
 } from 'fumadocs-ui/layouts/docs/page';
 import { notFound, redirect } from 'next/navigation';
-import { getMDXComponents } from '@/mdx-components';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { getLatestCommit } from '@/lib/github';
@@ -16,6 +15,7 @@ import { PageActions } from '@/components/page-actions';
 import { cookies } from 'next/headers';
 import { findRedirect } from '@/lib/redirect';
 import { isYear } from '@/lib/utils';
+import { getMDXComponents } from '@/components/mdx';
 
 export default async function Page(props: {
   params: Promise<{ year: string; slug?: string[] }>;
@@ -65,7 +65,6 @@ export default async function Page(props: {
         <MDX
           components={getMDXComponents(
             {
-              // this allows you to link to other pages with relative file paths
               a: createRelativeLink(source, page),
             },
             {

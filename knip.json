@@ -3,5 +3,8 @@
   "tags": ["-lintignore"],
   "entry": ["source.config.ts"],
   "ignore": ["components/ui/**", "commitlint.config.mjs"],
+  "ignoreIssues": {
+    "components/mdx.tsx": ["exports", "duplicates"]
+  },
   "ignoreDependencies": ["@commitlint/config-conventional"]
 }
