@@ -27,16 +27,16 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: make content
 
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+        with:
+          cache: true
+
       - uses: actions/setup-node@v6.4.0
         name: Set up Node
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
-
-      - uses: pnpm/action-setup@v6
-        name: Install pnpm
-        with:
-          cache: true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

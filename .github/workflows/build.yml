@@ -101,14 +101,14 @@ jobs:
           name: content
           path: content/
 
+      - uses: pnpm/action-setup@v6
+        with:
+          cache: true
+
       - uses: actions/setup-node@v6.4.0
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
-
-      - uses: pnpm/action-setup@v6
-        with:
-          cache: true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
