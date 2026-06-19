@@ -4,7 +4,6 @@ import { siGithub } from 'simple-icons';
 import { RecentRepos } from '@/components/recent-repos';
 import { ScrollHint } from '@/components/scroll-hint';
 import { LatestPosts } from '@/components/latest-posts';
-import { GridBackground } from '@/components/grid-background';
 import { HeroCards } from '@/components/hero-cards';
 import { HeroButtons } from '@/components/hero-buttons';
 import { Button } from '@/components/ui/button';
@@ -43,9 +42,6 @@ export default async function HomePage() {
 
   return (
     <div className="bg-background text-foreground relative min-h-svh">
-      {/* Grid background */}
-      <GridBackground />
-
       {/* Hero section */}
       <section className="relative flex min-h-svh items-center justify-center overflow-hidden px-6 lg:px-16">
         <div className="mx-auto w-full max-w-6xl pb-32 lg:pt-20 lg:pb-36">
