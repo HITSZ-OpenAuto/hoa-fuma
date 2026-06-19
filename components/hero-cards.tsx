@@ -88,6 +88,7 @@ function MobileLogo() {
         width={280}
         height={160}
         className="h-auto w-70 dark:opacity-90 dark:brightness-110"
+        style={{ height: 'auto' }}
         loading="eager"
       />
     </div>
