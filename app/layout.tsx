@@ -4,6 +4,7 @@ import './global.css';
 import { Toaster } from '@/components/ui/sonner';
 import Script from 'next/script';
 import type { Metadata } from 'next';
+import { SearchDialog } from '@/components/search-dialog';
 
 export const metadata: Metadata = {
   title: 'HITSZ 课程攻略共享计划',
@@ -28,7 +29,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
-        <RootProvider>
+        <RootProvider search={{ SearchDialog }}>
           {children}
           <Toaster />
         </RootProvider>
