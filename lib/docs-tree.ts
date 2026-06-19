@@ -2,18 +2,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import type { Folder, Item, Node, Root } from 'fumadocs-core/page-tree';
 import { frontmatter } from 'fumadocs-core/content/md/frontmatter';
-
-const docsDirs = {
-  '2019': join(process.cwd(), 'content/docs/2019'),
-  '2020': join(process.cwd(), 'content/docs/2020'),
-  '2021': join(process.cwd(), 'content/docs/2021'),
-  '2022': join(process.cwd(), 'content/docs/2022'),
-  '2023': join(process.cwd(), 'content/docs/2023'),
-  '2024': join(process.cwd(), 'content/docs/2024'),
-  '2025': join(process.cwd(), 'content/docs/2025'),
-} as const;
-
-type Year = keyof typeof docsDirs;
+import { docsDirs, type DocsYear } from '@/lib/docs-content';
 
 type Meta = {
   title?: string;
@@ -259,7 +248,7 @@ export function getYearPageTree(year: string): Root | undefined {
   const cached = yearPageTrees.get(year);
   if (cached) return cached;
 
-  const folder = buildFolder(docsDirs[year as Year], [year]);
+  const folder = buildFolder(docsDirs[year as DocsYear], [year]);
   const tree: Root = {
     type: 'root',
     name: folder.name,

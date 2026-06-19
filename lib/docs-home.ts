@@ -1,17 +1,7 @@
 import { readdirSync } from 'node:fs';
-import { join } from 'node:path';
 import majorMapping from '@/lib/data/major_mapping.json';
 import { computeYearMajorMap, type MajorEntry } from '@/lib/docs-utils';
-
-const docsDirs = {
-  '2019': join(process.cwd(), 'content/docs/2019'),
-  '2020': join(process.cwd(), 'content/docs/2020'),
-  '2021': join(process.cwd(), 'content/docs/2021'),
-  '2022': join(process.cwd(), 'content/docs/2022'),
-  '2023': join(process.cwd(), 'content/docs/2023'),
-  '2024': join(process.cwd(), 'content/docs/2024'),
-  '2025': join(process.cwd(), 'content/docs/2025'),
-} as const;
+import { docsDirs } from '@/lib/docs-content';
 
 let yearMajorMap: Record<string, { id: string; name: string }[]> | undefined;
 
