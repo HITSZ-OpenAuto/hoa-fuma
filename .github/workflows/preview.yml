@@ -2,6 +2,8 @@ name: Preview
 
 permissions:
   contents: read
+  issues: write
+  pull-requests: write
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -59,12 +61,80 @@ jobs:
 
       - name: Build Project Artifacts
         if: ${{ env.VERCEL_TOKEN != '' }}
-        run: vercel build --token=${{ env.VERCEL_TOKEN }}
+        run: vercel build --target=preview --token=${{ env.VERCEL_TOKEN }}
 
       - name: Build Project Artifacts (no Vercel token)
         if: ${{ env.VERCEL_TOKEN == '' }}
         run: pnpm run build
 
       - name: Deploy Preview to Vercel
+        id: deploy
         if: ${{ env.VERCEL_TOKEN != '' }}
-        run: vercel deploy --prebuilt --token=${{ env.VERCEL_TOKEN }} --archive=tgz
+        run: |
+          set -o pipefail
+          vercel deploy --prebuilt --target=preview --token=${{ env.VERCEL_TOKEN }} --archive=tgz 2>&1 | tee deployment.log
+          node --input-type=module <<'JS' >> "$GITHUB_OUTPUT"
+          import { readFileSync } from 'node:fs';
+
+          const log = readFileSync('deployment.log', 'utf8').replace(/\u001b\[[0-9;?]*[ -/]*[@-~]/g, '');
+          const inspectUrl = [...log.matchAll(/https:\/\/vercel\.com\/\S+/g)].at(-1)?.[0];
+          const previewUrl = [...log.matchAll(/https:\/\/[^\s)]+\.vercel\.app/g)].at(-1)?.[0];
+          if (!inspectUrl || !previewUrl) {
+            throw new Error(`Unable to extract Vercel URLs. inspect=${inspectUrl ?? '<missing>'} preview=${previewUrl ?? '<missing>'}`);
+          }
+          console.log(`inspect_url=${inspectUrl}`);
+          console.log(`preview_url=${previewUrl}`);
+          JS
+
+      - name: Comment Preview URL
+        if: ${{ env.VERCEL_TOKEN != '' && steps.deploy.outputs.preview_url != '' }}
+        env:
+          INSPECT_URL: ${{ steps.deploy.outputs.inspect_url }}
+          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
+          COMMENT_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs';
+
+          const marker = '<!-- hoa-fuma-vercel-preview -->';
+          const updated = new Date().toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' UTC');
+          const body = [
+            marker,
+            'The latest updates on your projects.',
+            '',
+            '| Project | Deployment | Actions | Updated (UTC) |',
+            '| --- | --- | --- | --- |',
+            `| hoa-fuma | Ready | [Preview](${process.env.PREVIEW_URL}), [Inspect](${process.env.INSPECT_URL}) | ${updated} |`,
+          ].join('\n');
+          const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+          const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+          const issueNumber = event.pull_request.number;
+          const headers = {
+            Authorization: `Bearer ${process.env.COMMENT_TOKEN}`,
+            Accept: 'application/vnd.github+json',
+            'Content-Type': 'application/json',
+            'X-GitHub-Api-Version': '2022-11-28',
+          };
+          const api = 'https://api.github.com';
+          const commentsUrl = `${api}/repos/${owner}/${repo}/issues/${issueNumber}/comments`;
+          const request = async (url, options = {}) => {
+            const response = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
+            if (!response.ok) {
+              throw new Error(`${options.method ?? 'GET'} ${url} failed with ${response.status}: ${await response.text()}`);
+            }
+            return response.status === 204 ? null : response.json();
+          };
+          const comments = await request(`${commentsUrl}?per_page=100`);
+          const comment = comments.find((item) => item.body.includes(marker));
+          if (comment) {
+            await request(`${api}/repos/${owner}/${repo}/issues/comments/${comment.id}`, {
+              method: 'PATCH',
+              body: JSON.stringify({ body }),
+            });
+          } else {
+            await request(commentsUrl, {
+              method: 'POST',
+              body: JSON.stringify({ body }),
+            });
+          }
+          JS
