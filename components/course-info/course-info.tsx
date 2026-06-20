@@ -32,6 +32,8 @@ export function CourseInfo({ data, className }: CourseInfoProps) {
     );
   }
 
+  const hasGradingScheme = data.gradingScheme.length > 0;
+
   return (
     <section
       className={cn(
@@ -81,8 +83,18 @@ export function CourseInfo({ data, className }: CourseInfoProps) {
           </dl>
         </div>
 
-        <div className="border-t pt-4">
-          <div className="mb-3 flex items-center gap-2">
+        <div
+          className={cn(
+            'border-t pt-4',
+            !hasGradingScheme && 'flex flex-wrap items-center gap-4'
+          )}
+        >
+          <div
+            className={cn(
+              'flex items-center gap-2',
+              hasGradingScheme && 'mb-3'
+            )}
+          >
             <h4 className="flex items-center gap-2 text-sm font-semibold">
               <Award className="size-4 text-yellow-500" />
               成绩构成
