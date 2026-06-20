@@ -21,6 +21,8 @@ export function RecentRepos({
   title = '最近更新的仓库',
   repos,
 }: RecentReposProps) {
+  if (repos.length === 0) return null;
+
   return (
     <section className="mx-auto w-full max-w-5xl pb-6 text-left">
       <Link

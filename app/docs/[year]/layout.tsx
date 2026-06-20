@@ -1,9 +1,11 @@
 import { DocsPathMemory } from '@/components/docs/docs-path-memory';
 import { SidebarBanner } from '@/components/sidebar/sidebar-banner';
 import { baseOptions } from '@/lib/layout.shared';
-import { getAvailableYears } from '@/lib/docs';
-import { source } from '@/lib/source';
-import type { Folder, Root } from 'fumadocs-core/page-tree';
+import {
+  getAvailableYears,
+  getDocsPageTree,
+  getYearPageTree,
+} from '@/lib/docs';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { notFound } from 'next/navigation';
 import { ReactNode } from 'react';
@@ -18,10 +20,11 @@ export default async function Layout(props: {
   if (!isYear(year)) {
     return (
       <DocsLayout
-        tree={source.getPageTree()}
+        tree={getDocsPageTree()}
         {...baseOptions()}
         sidebar={{
           tabs: false,
+          prefetch: false,
         }}
       >
         <DocsPathMemory />
@@ -30,17 +33,12 @@ export default async function Layout(props: {
     );
   }
 
-  const pageTree = source.getPageTree();
-  const yearNode = pageTree.children.find(
-    (node): node is Folder => node.type === 'folder' && node.name === year
-  );
-
-  if (!yearNode) {
+  const treeAsRoot = getYearPageTree(year);
+  if (!treeAsRoot) {
     return notFound();
   }
 
   const years = getAvailableYears();
-  const treeAsRoot: Root = { ...yearNode, type: 'root' };
 
   return (
     <DocsLayout
@@ -48,6 +46,7 @@ export default async function Layout(props: {
       {...baseOptions()}
       sidebar={{
         tabs: false,
+        prefetch: false,
         banner: (
           <SidebarBanner
             key="sidebar-banner"

@@ -1,4 +1,6 @@
-import type { ComponentProps } from 'react';
+import type { ComponentProps, JSX } from 'react';
+import Link, { type LinkProps } from 'fumadocs-core/link';
+import { Card as FumadocsCard } from 'fumadocs-ui/components/card';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
 import { CourseInfo } from '@/components/course-info';
@@ -19,6 +21,19 @@ type MdxContext = {
   course?: CourseInfoData;
 };
 
+type CardProps = ComponentProps<typeof FumadocsCard> & {
+  prefetch?: boolean;
+};
+const Card = FumadocsCard as (props: CardProps) => JSX.Element;
+
+export function NoPrefetchLink(props: LinkProps) {
+  return <Link {...props} prefetch={false} />;
+}
+
+function NoPrefetchCard(props: CardProps) {
+  return <Card {...props} prefetch={false} />;
+}
+
 export function getMDXComponents(
   components?: MDXComponents,
   context?: MdxContext
@@ -32,6 +47,7 @@ export function getMDXComponents(
     Accordions,
     Step,
     Steps,
+    Card: NoPrefetchCard,
     CourseInfo: (props: ComponentProps<typeof CourseInfo>) => (
       <CourseInfo {...props} data={props.data ?? context?.course} />
     ),

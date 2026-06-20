@@ -22,6 +22,16 @@ export type LatestCommitInfo = {
 };
 
 let allowedReposCache: Set<string> | null = null;
+const GITHUB_FETCH_TIMEOUT_MS = 800;
+const GITHUB_CACHE_TTL_MS = 5 * 60 * 1000;
+const recentReposCache = new Map<
+  number,
+  { expiresAt: number; items: RepoItem[] }
+>();
+const latestCommitCache = new Map<
+  string,
+  { expiresAt: number; item: LatestCommitInfo | null }
+>();
 
 async function getAllowedRepos(): Promise<Set<string>> {
   if (!allowedReposCache) {
@@ -42,60 +52,77 @@ async function getAllowedRepos(): Promise<Set<string>> {
  * Description is the latest commit message that does not start with "ci:".
  */
 export async function getRecentRepos(count = 3): Promise<RepoItem[]> {
+  const cached = recentReposCache.get(count);
+  if (cached && cached.expiresAt > Date.now()) return cached.items;
+
   const allowedRepos = await getAllowedRepos();
 
   const headers = githubHeaders();
 
-  // Fetch repos sorted by push date (most recent first)
-  const res = await fetch(
-    `https://api.github.com/orgs/${GITHUB_ORG}/repos?sort=pushed&direction=desc&per_page=50`,
-    { headers, next: { revalidate: 3600 } }
-  );
+  try {
+    const res = await fetch(
+      `https://api.github.com/orgs/${GITHUB_ORG}/repos?sort=pushed&direction=desc&per_page=50`,
+      githubFetchOptions(headers)
+    );
 
-  if (!res.ok) {
-    console.error('GitHub API error:', res.status, await res.text());
+    if (!res.ok) {
+      console.error('GitHub API error:', res.status, await res.text());
+      return [];
+    }
+
+    const repos: { name: string; pushed_at: string; html_url: string }[] =
+      await res.json();
+
+    const filtered = repos.filter((r) => allowedRepos.has(r.name));
+
+    const promises = filtered.slice(0, count * 2).map(async (repo) => {
+      const commitsRes = await fetch(
+        `https://api.github.com/repos/${GITHUB_ORG}/${repo.name}/commits?per_page=30`,
+        githubFetchOptions(headers)
+      );
+      if (!commitsRes.ok) return null;
+
+      const commits: {
+        commit: { message: string; author: { date: string } };
+      }[] = await commitsRes.json();
+
+      const commit = commits.find((c) => isUserCommit(c.commit.message));
+      if (!commit) return null;
+
+      return {
+        id: repo.name,
+        name: repo.name,
+        description: commit.commit.message.split('\n')[0],
+        href: repo.html_url,
+        updatedAt: commit.commit.author.date,
+      };
+    });
+
+    const results = (await Promise.all(promises)).filter(
+      (item): item is RepoItem => item !== null
+    );
+
+    const items = results
+      .sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      )
+      .slice(0, count);
+
+    recentReposCache.set(count, {
+      expiresAt: Date.now() + GITHUB_CACHE_TTL_MS,
+      items,
+    });
+
+    return items;
+  } catch {
+    recentReposCache.set(count, {
+      expiresAt: Date.now() + GITHUB_CACHE_TTL_MS,
+      items: [],
+    });
+
     return [];
   }
-
-  const repos: { name: string; pushed_at: string; html_url: string }[] =
-    await res.json();
-
-  // Filter to allowed repos and take enough candidates
-  const filtered = repos.filter((r) => allowedRepos.has(r.name));
-
-  // For each repo, fetch the latest non-ci commit message
-  const promises = filtered.slice(0, count * 2).map(async (repo) => {
-    const commitsRes = await fetch(
-      `https://api.github.com/repos/${GITHUB_ORG}/${repo.name}/commits?per_page=30`,
-      { headers, next: { revalidate: 3600 } }
-    );
-    if (!commitsRes.ok) return null;
-
-    const commits: { commit: { message: string; author: { date: string } } }[] =
-      await commitsRes.json();
-
-    const commit = commits.find((c) => isUserCommit(c.commit.message));
-    if (!commit) return null;
-
-    return {
-      id: repo.name,
-      name: repo.name,
-      description: commit.commit.message.split('\n')[0],
-      href: repo.html_url,
-      updatedAt: commit.commit.author.date,
-    };
-  });
-
-  const results = (await Promise.all(promises)).filter(
-    (item): item is RepoItem => item !== null
-  );
-
-  return results
-    .sort(
-      (a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-    )
-    .slice(0, count);
 }
 
 const IGNORED_PREFIXES = [
@@ -122,41 +149,74 @@ function githubHeaders(): HeadersInit {
   return headers;
 }
 
+function githubFetchOptions(headers: HeadersInit) {
+  return {
+    headers,
+    next: { revalidate: 3600 },
+    signal: AbortSignal.timeout(GITHUB_FETCH_TIMEOUT_MS),
+  };
+}
+
 /**
  * Fetch the latest non-ci commit for a specific repo.
  */
 export async function getLatestCommit(
   repoName: string
 ): Promise<LatestCommitInfo | null> {
+  const cached = latestCommitCache.get(repoName);
+  if (cached && cached.expiresAt > Date.now()) return cached.item;
+
   const headers = githubHeaders();
 
-  const res = await fetch(
-    `https://api.github.com/repos/${GITHUB_ORG}/${repoName}/commits?per_page=50`,
-    { headers, next: { revalidate: 3600 } }
-  );
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${GITHUB_ORG}/${repoName}/commits?per_page=50`,
+      githubFetchOptions(headers)
+    );
 
-  if (!res.ok) return null;
+    if (!res.ok) return null;
 
-  const commits: {
-    sha: string;
-    html_url: string;
-    commit: {
-      message: string;
-      author: { name: string; date: string };
+    const commits: {
+      sha: string;
+      html_url: string;
+      commit: {
+        message: string;
+        author: { name: string; date: string };
+      };
+      author: { login: string; html_url: string; avatar_url: string } | null;
+    }[] = await res.json();
+
+    const commit = commits.find((c) => isUserCommit(c.commit.message));
+    if (!commit) {
+      latestCommitCache.set(repoName, {
+        expiresAt: Date.now() + GITHUB_CACHE_TTL_MS,
+        item: null,
+      });
+      return null;
+    }
+
+    const item = {
+      authorName: commit.author?.login ?? commit.commit.author.name,
+      authorUrl:
+        commit.author?.html_url ?? `https://github.com/${commit.author?.login}`,
+      authorAvatarUrl: commit.author?.avatar_url ?? '',
+      message: commit.commit.message.split('\n')[0],
+      commitUrl: commit.html_url,
+      date: commit.commit.author.date,
     };
-    author: { login: string; html_url: string; avatar_url: string } | null;
-  }[] = await res.json();
 
-  const commit = commits.find((c) => isUserCommit(c.commit.message));
-  if (!commit) return null;
+    latestCommitCache.set(repoName, {
+      expiresAt: Date.now() + GITHUB_CACHE_TTL_MS,
+      item,
+    });
 
-  return {
-    authorName: commit.author?.login ?? commit.commit.author.name,
-    authorUrl:
-      commit.author?.html_url ?? `https://github.com/${commit.author?.login}`,
-    authorAvatarUrl: commit.author?.avatar_url ?? '',
-    message: commit.commit.message.split('\n')[0],
-    commitUrl: commit.html_url,
-    date: commit.commit.author.date,
-  };
+    return item;
+  } catch {
+    latestCommitCache.set(repoName, {
+      expiresAt: Date.now() + GITHUB_CACHE_TTL_MS,
+      item: null,
+    });
+
+    return null;
+  }
 }

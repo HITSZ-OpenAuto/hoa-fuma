@@ -1,54 +1,30 @@
-import { blog } from '@/lib/source';
 import { Cards, Card } from 'fumadocs-ui/components/card';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { formatDate } from '@/lib/utils';
-import type { InferPageType } from 'fumadocs-core/source';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import {
+  getLatestStandaloneBlogPosts,
+  type PostSummary,
+} from '@/lib/posts-summary';
 
-type Post = InferPageType<typeof blog>;
-
-function PostCard({ post, index }: { post: Post; index: number }) {
+function PostCard({ post, index }: { post: PostSummary; index: number }) {
   return (
     <ScrollReveal delay={index * 120} className="h-full">
       <Card
-        title={post.data.title}
-        description={
-          <span className="line-clamp-1">{post.data.description}</span>
-        }
+        title={post.title}
+        description={<span className="line-clamp-1">{post.description}</span>}
         href={post.url}
         className="home-card-hover bg-fd-card [&>div:last-child]:text-brand flex h-full flex-col rounded-2xl border p-4 text-left shadow-sm transition-colors [&>div:last-child]:mt-auto [&>div:last-child]:pt-4 [&>div:last-child]:text-xs"
       >
-        {formatDate(post.data.date)}
+        {formatDate(post.date)}
       </Card>
     </ScrollReveal>
   );
 }
 
 export function LatestPosts() {
-  const pages = blog.getPages();
-  if (pages.length === 0) return null;
-
-  const seriesSlugs = new Set<string>();
-  for (const page of pages) {
-    if (page.slugs.length > 1 && page.slugs[0]) {
-      seriesSlugs.add(page.slugs[0]);
-    }
-  }
-
-  const latestPosts = pages
-    .filter((page) => {
-      return (
-        page.slugs.length === 1 &&
-        page.data?.date &&
-        !seriesSlugs.has(page.slugs[0])
-      );
-    })
-    .sort(
-      (a, b) =>
-        new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-    )
-    .slice(0, 3);
+  const latestPosts = getLatestStandaloneBlogPosts(3);
 
   if (latestPosts.length === 0) return null;
 
