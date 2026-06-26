@@ -1,0 +1,17 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "fresh-summer",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "sophomore-summer",
+    "junior-spring",
+    "cross-specialty",
+    "general-knowledge"
+  ],
+  "root": true,
+  "title": "机械类"
+}
