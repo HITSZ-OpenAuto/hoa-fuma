@@ -1,9 +1,13 @@
 import { readFileSync } from 'node:fs';
-import { relative, sep } from 'node:path';
 import type { SortedResult } from 'fumadocs-core/search';
 import { createContentHighlighter } from 'fumadocs-core/search';
 import { frontmatter } from 'fumadocs-core/content/md/frontmatter';
-import { docsDirs, getMarkdownFiles, type DocsYear } from '@/lib/docs-content';
+import {
+  docsDirs,
+  fileToSlugs,
+  getMarkdownFiles,
+  type DocsYear,
+} from '@/lib/docs-content';
 
 type DocsFrontmatter = {
   title?: string;
@@ -25,17 +29,6 @@ function pathToName(name: string): string {
     .split('-')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
-}
-
-function fileToSlugs(year: DocsYear, file: string): string[] {
-  const withoutExt = relative(docsDirs[year], file).replace(/\.mdx?$/, '');
-  const slugs = [year, ...withoutExt.split(sep)];
-
-  if (slugs.at(-1) === 'index') {
-    slugs.pop();
-  }
-
-  return slugs;
 }
 
 function cleanMarkdown(value: string): string {

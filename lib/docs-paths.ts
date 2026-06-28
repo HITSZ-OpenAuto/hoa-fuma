@@ -1,6 +1,6 @@
-import { relative, sep } from 'node:path';
 import {
   docsDirs,
+  fileToSlugs,
   getDocsYearDir,
   getMarkdownFiles,
   isSafePathSegment,
@@ -13,17 +13,6 @@ export type DocsPathEntry = {
 
 let docsPathEntries: DocsPathEntry[] | undefined;
 let docsPathSet: Set<string> | undefined;
-
-function fileToSlugs(year: DocsYear, file: string): string[] {
-  const withoutExt = relative(docsDirs[year], file).replace(/\.mdx?$/, '');
-  const slugs = [year, ...withoutExt.split(sep)];
-
-  if (slugs.at(-1) === 'index') {
-    slugs.pop();
-  }
-
-  return slugs;
-}
 
 export function getDocsPathEntries(): DocsPathEntry[] {
   if (docsPathEntries) return docsPathEntries;

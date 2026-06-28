@@ -1,5 +1,5 @@
 import { readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative, sep } from 'node:path';
 import { isYear } from '@/lib/utils';
 
 const docsRoot = join(process.cwd(), 'content/docs');
@@ -16,6 +16,17 @@ export type DocsYear = string;
 export function getDocsYearDir(year: string): string | undefined {
   if (!isYear(year)) return undefined;
   return docsDirs[year];
+}
+
+export function fileToSlugs(year: DocsYear, file: string): string[] {
+  const withoutExt = relative(docsDirs[year], file).replace(/\.mdx?$/, '');
+  const slugs = [year, ...withoutExt.split(sep)];
+
+  if (slugs.at(-1) === 'index') {
+    slugs.pop();
+  }
+
+  return slugs;
 }
 
 export function isSafePathSegment(segment: string): boolean {
