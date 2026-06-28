@@ -13,13 +13,14 @@ export function GET(request: Request) {
   if (!query || (locale && locale !== 'cn')) {
     return Response.json([]);
   }
+  const resultLimit =
+    typeof limit === 'number' && Number.isInteger(limit) && limit > 0
+      ? limit
+      : 60;
 
-  return Response.json(
-    searchDocs(query, Number.isInteger(limit) ? limit : 60),
-    {
-      headers: {
-        'Cache-Control': 'no-store',
-      },
-    }
-  );
+  return Response.json(searchDocs(query, resultLimit), {
+    headers: {
+      'Cache-Control': 'no-store',
+    },
+  });
 }
