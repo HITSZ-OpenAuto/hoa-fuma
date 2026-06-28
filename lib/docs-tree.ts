@@ -50,10 +50,21 @@ function readIndexInfo(dir: string): {
 
   const content = readFileSync(file, 'utf8');
   const cardTitles = new Map<string, string>();
-  const cardRe = /<Card\s+title="([^"]+)"\s+href="([^"]+)"/g;
+  const cardRe = /<Card\b([^>]*)>/g;
+  const attrRe = /\b(title|href)="([^"]*)"/g;
 
   for (const match of content.matchAll(cardRe)) {
-    cardTitles.set(match[2], match[1]);
+    let title: string | undefined;
+    let href: string | undefined;
+
+    for (const attr of match[1].matchAll(attrRe)) {
+      if (attr[1] === 'title') title = attr[2];
+      if (attr[1] === 'href') href = attr[2];
+    }
+
+    if (title && href) {
+      cardTitles.set(href, title);
+    }
   }
 
   return {
