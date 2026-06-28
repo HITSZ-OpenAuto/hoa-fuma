@@ -7,7 +7,7 @@ const docsRoot = join(process.cwd(), 'content/docs');
 export const docsDirs: Record<string, string> = Object.fromEntries(
   readdirSync(docsRoot, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && isYear(entry.name))
-    .map((entry) => [entry.name, join(docsRoot, entry.name)])
+    .map((entry) => [entry.name, `${docsRoot}/${entry.name}`])
     .sort(([a], [b]) => a.localeCompare(b))
 );
 
