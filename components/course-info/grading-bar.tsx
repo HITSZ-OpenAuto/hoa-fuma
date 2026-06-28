@@ -14,7 +14,19 @@ const COLOR_CLASSES = [
 export function GradingBar({ scheme }: { scheme: CourseGradingScheme }) {
   if (!scheme || scheme.length === 0) {
     return (
-      <div className="text-muted-foreground text-sm">暂无成绩构成信息</div>
+      <div className="text-muted-foreground text-sm">
+        暂无成绩构成信息，请到{' '}
+        <a
+          className="text-fd-primary underline underline-offset-4"
+          href="https://wiki.hoa.moe/contribution-guide/grades"
+          target="_blank"
+          rel="noopener"
+          referrerPolicy="origin"
+        >
+          HOA Wiki
+        </a>{' '}
+        查看如何帮我们补充
+      </div>
     );
   }
 
