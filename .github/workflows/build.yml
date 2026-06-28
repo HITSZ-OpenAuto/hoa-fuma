@@ -22,7 +22,7 @@ jobs:
       trigger_deploy: ${{ steps.check_changes.outputs.trigger_deploy }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7.0.0
         with:
           repository: ${{ github.repository }}
           ref: main
@@ -75,7 +75,7 @@ jobs:
           fi
 
       - name: Upload content artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: content
           path: content/
@@ -87,7 +87,7 @@ jobs:
     if: needs.prepare.outputs.trigger_deploy == 'true'
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7.0.0
         with:
           repository: ${{ github.repository }}
           ref: main
@@ -96,12 +96,12 @@ jobs:
         run: rm -rf content/docs content/blog content/news
 
       - name: Download content artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v8.0.1
         with:
           name: content
           path: content/
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.0.9
         with:
           cache: true
 
@@ -126,10 +126,10 @@ jobs:
         run: ./scripts/fetch-data.sh
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@v4.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -137,7 +137,7 @@ jobs:
 
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
@@ -145,7 +145,7 @@ jobs:
             type=sha,format=short
 
       - name: Build and push image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@v7.2.0
         with:
           context: .
           build-args: |
@@ -168,14 +168,14 @@ jobs:
     needs: build
     steps:
       - name: Tailscale
-        uses: tailscale/github-action@v4
+        uses: tailscale/github-action@v4.1.2
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
       - name: Deploy container on VPS
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1.2.5
         env:
           GHCR_TOKEN: ${{ github.token }}
           FUMA_GITHUB_API_TOKEN: ${{ secrets.FUMA_GITHUB_API_TOKEN }}
