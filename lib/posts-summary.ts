@@ -131,10 +131,9 @@ export function getPostListItems(kind: PostKind) {
   const seriesItems = [...seriesMap.entries()]
     .filter(([, entry]) => entry.posts.length > 0)
     .map(([slug, entry]) => {
-      const dates = [
-        entry.index?.date,
-        ...entry.posts.map((post) => post.date),
-      ].map((date) => new Date(date as string | Date).getTime());
+      const dates = [entry.index?.date, ...entry.posts.map((post) => post.date)]
+        .filter((date): date is string | Date => Boolean(date))
+        .map((date) => new Date(date).getTime());
       const latestDate = dates.length > 0 ? new Date(Math.max(...dates)) : null;
       return {
         type: 'series' as const,
