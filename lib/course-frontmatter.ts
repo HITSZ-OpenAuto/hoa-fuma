@@ -56,7 +56,8 @@ export function getDocsCourse(segments: string[]): CourseInfoData | undefined {
   const data = frontmatter(readFileSync(file, 'utf8')).data as {
     course?: unknown;
   };
-  const course = courseInfoSchema.optional().parse(data.course);
+  const result = courseInfoSchema.optional().safeParse(data.course);
+  const course = result.success ? result.data : undefined;
   cache.set(cacheKey, course);
   return course;
 }
