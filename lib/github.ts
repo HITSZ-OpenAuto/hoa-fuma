@@ -22,7 +22,7 @@ export type LatestCommitInfo = {
 };
 
 let allowedReposCache: Set<string> | null = null;
-const GITHUB_FETCH_TIMEOUT_MS = 800;
+const GITHUB_FETCH_TIMEOUT_MS = 3000;
 const GITHUB_CACHE_TTL_MS = 5 * 60 * 1000;
 const recentReposCache = new Map<
   number,
@@ -116,11 +116,6 @@ export async function getRecentRepos(count = 3): Promise<RepoItem[]> {
 
     return items;
   } catch {
-    recentReposCache.set(count, {
-      expiresAt: Date.now() + GITHUB_CACHE_TTL_MS,
-      items: [],
-    });
-
     return [];
   }
 }
