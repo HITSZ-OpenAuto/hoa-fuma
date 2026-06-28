@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Sidebar } from 'lucide-react';
@@ -19,14 +19,11 @@ interface HeroButtonsProps {
   yearMajorMap: Record<string, { id: string; name: string }[]>;
 }
 
-function getCookie(name: string): string | undefined {
-  if (typeof document === 'undefined') return undefined;
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length !== 2) return undefined;
-
-  const cookieValue = parts.pop()?.split(';').shift();
-  return cookieValue ? decodeURIComponent(cookieValue) : undefined;
+function hasCookie(name: string): boolean {
+  if (typeof document === 'undefined') return false;
+  return document.cookie
+    .split(';')
+    .some((cookie) => cookie.trim().startsWith(`${name}=`));
 }
 
 export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
@@ -44,21 +41,11 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
     [yearMajorMap, year]
   );
 
-  useEffect(() => {
-    const lastPath = getCookie(HOA_LAST_PATH_COOKIE);
-    if (lastPath?.startsWith('/docs')) {
-      router.prefetch(lastPath);
-    }
-  }, [router]);
-
   const handleDocsClick = useCallback(() => {
-    const lastPath = getCookie(HOA_LAST_PATH_COOKIE);
-    if (lastPath?.startsWith('/docs')) {
-      router.push(lastPath);
-    } else if (lastPath === undefined) {
-      setSelecting(true);
-    } else {
+    if (hasCookie(HOA_LAST_PATH_COOKIE)) {
       router.push('/docs');
+    } else {
+      setSelecting(true);
     }
   }, [router]);
 
