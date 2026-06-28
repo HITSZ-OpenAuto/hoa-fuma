@@ -1,6 +1,6 @@
-import { source } from '@/lib/source';
 import { SEMESTER_NAMES, COURSE_CODE_RE } from '@/lib/constants';
 import { isYear } from '@/lib/utils';
+import { getDocsPathEntries } from '@/lib/docs-paths';
 
 function isSemester(segment: string): boolean {
   return SEMESTER_NAMES.has(segment);
@@ -47,10 +47,9 @@ export function findRedirect(
     if (!isCourseCode(courseCode)) return null;
   }
 
-  const allPages = source.getPages();
   const matches: { slugs: string[] }[] = [];
 
-  for (const page of allPages) {
+  for (const page of getDocsPathEntries()) {
     if (page.slugs.length < 4) continue;
     const pageCourseCode = page.slugs[3]?.toUpperCase();
     if (pageCourseCode !== courseCode) continue;

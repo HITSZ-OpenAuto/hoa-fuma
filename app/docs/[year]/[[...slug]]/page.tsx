@@ -1,4 +1,4 @@
-import { getPageImage, source } from '@/lib/source';
+import { getPageImage, source } from '@/lib/source/docs';
 import {
   DocsBody,
   DocsDescription,
@@ -15,7 +15,8 @@ import { PageActions } from '@/components/page-actions';
 import { cookies } from 'next/headers';
 import { findRedirect } from '@/lib/redirect';
 import { isYear } from '@/lib/utils';
-import { getMDXComponents } from '@/components/mdx';
+import { getMDXComponents, NoPrefetchLink } from '@/components/mdx';
+import { getDocsCourse } from '@/lib/course-frontmatter';
 
 export default async function Page(props: {
   params: Promise<{ year: string; slug?: string[] }>;
@@ -33,13 +34,15 @@ export default async function Page(props: {
     notFound();
   }
 
-  const page = source.getPage([params.year, ...(params.slug ?? [])]);
+  const segments = [params.year, ...(params.slug ?? [])];
+  const page = source.getPage(segments);
   if (!page) notFound();
 
-  const MDX = page.data.body;
+  const pageBody = await page.data.load();
+  const MDX = pageBody.body;
 
-  // For course pages, extract repo name from the last slug segment
-  const repoName = page.data.course ? (params.slug?.at(-1) ?? null) : null;
+  const course = getDocsCourse(segments);
+  const repoName = course ? (params.slug?.at(-1) ?? null) : null;
   const latestCommit = repoName ? await getLatestCommit(repoName) : null;
 
   const githubUrl = repoName
@@ -47,7 +50,7 @@ export default async function Page(props: {
     : null;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
+    <DocsPage toc={pageBody.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription className="mb-0 text-base">
         {latestCommit ? (
@@ -65,10 +68,10 @@ export default async function Page(props: {
         <MDX
           components={getMDXComponents(
             {
-              a: createRelativeLink(source, page),
+              a: createRelativeLink(source, page, NoPrefetchLink),
             },
             {
-              course: page.data.course,
+              course,
             }
           )}
         />

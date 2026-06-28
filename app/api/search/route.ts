@@ -1,18 +1,26 @@
-import { source } from '@/lib/source';
-import { createFromSource } from 'fumadocs-core/search/server';
-import { createTokenizer } from '@orama/tokenizers/mandarin';
+import { searchDocs } from '@/lib/search-index';
 
-export const { GET } = createFromSource(source, {
-  localeMap: {
-    // [locale]: Orama options
-    cn: {
-      components: {
-        tokenizer: createTokenizer(),
-      },
-      search: {
-        threshold: 0,
-        tolerance: 0,
-      },
+export const dynamic = 'force-dynamic';
+
+export function GET(request: Request) {
+  const url = new URL(request.url);
+  const query = url.searchParams.get('query');
+  const locale = url.searchParams.get('locale');
+  const limit = url.searchParams.has('limit')
+    ? Number(url.searchParams.get('limit'))
+    : undefined;
+
+  if (!query || (locale && locale !== 'cn')) {
+    return Response.json([]);
+  }
+  const resultLimit =
+    typeof limit === 'number' && Number.isInteger(limit) && limit > 0
+      ? limit
+      : 60;
+
+  return Response.json(searchDocs(query, resultLimit), {
+    headers: {
+      'Cache-Control': 'no-store',
     },
-  },
-});
+  });
+}

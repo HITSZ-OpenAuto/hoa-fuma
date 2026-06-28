@@ -4,40 +4,25 @@ import {
   defineDocs,
   frontmatterSchema,
   metaSchema,
+  applyMdxPreset,
 } from 'fumadocs-mdx/config';
 import z from 'zod';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkAlert from 'remark-github-blockquote-alert';
 
-// You can customise Zod schemas for frontmatter and `meta.json` here
-// see https://fumadocs.dev/docs/mdx/collections
-const courseInfoSchema = z.object({
-  credit: z.number(),
-  assessmentMethod: z.string(),
-  courseNature: z.string(),
-  hourDistribution: z.object({
-    theory: z.number(),
-    lab: z.number(),
-    practice: z.number(),
-    exercise: z.number(),
-    computer: z.number(),
-    tutoring: z.number(),
-  }),
-  gradingScheme: z.array(
-    z.object({
-      name: z.string(),
-      percent: z.number(),
-    })
-  ),
-});
-
 export const docs = defineDocs({
   dir: 'content/docs',
   docs: {
-    schema: frontmatterSchema.extend({
-      course: courseInfoSchema.optional(),
-    }),
+    dynamic: true,
+    mdxOptions: (environment) =>
+      applyMdxPreset({
+        remarkImageOptions: {
+          external: false,
+        },
+        remarkPlugins: [remarkMath, remarkAlert],
+        rehypePlugins: (plugins) => [rehypeKatex, ...plugins],
+      })(environment),
     postprocess: {
       includeProcessedMarkdown: false,
     },
