@@ -42,10 +42,13 @@ export function SearchDialog({
 }: DefaultSearchDialogProps) {
   const { locale } = useI18n();
   const [tag, setTag] = useState(defaultTag);
-  const client =
-    type === 'static'
-      ? oramaStaticClient({ from: api, locale, tag })
-      : fetchClient({ api, locale, tag });
+  const client = useMemo(
+    () =>
+      type === 'static'
+        ? oramaStaticClient({ from: api, locale, tag })
+        : fetchClient({ api, locale, tag }),
+    [type, api, locale, tag]
+  );
   const { search, setSearch, query } = useDocsSearch({ client, delayMs });
   const defaultItems = useMemo(() => {
     if (links.length === 0) return null;
