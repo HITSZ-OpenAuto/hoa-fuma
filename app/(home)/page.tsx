@@ -123,7 +123,16 @@ export default function HomePage() {
         </div>
 
         <div className="mx-auto max-w-5xl px-6 text-center">
-          <p className="text-muted-foreground text-xs">© 2026 HITSZ OpenAuto</p>
+          <p className="text-muted-foreground flex items-center justify-center gap-2 text-xs">
+            <span>© 2026 HITSZ OpenAuto</span>
+            <span aria-hidden="true">·</span>
+            <a
+              href="/privacy"
+              className="hover:text-foreground transition-colors"
+            >
+              隐私政策
+            </a>
+          </p>
         </div>
       </footer>
     </div>
