@@ -37,7 +37,7 @@ export default function Page() {
         <h2 className="mb-4 text-xl font-semibold">HITSZ OpenAuto 站点</h2>
         <Cards className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Card
-            href="https://stats.hoa.moe/share/LhA8O8CHnNCO39nh/hoa.moe"
+            href="https://stats.hoa.moe/share/m4sMKE2yG9peJH65"
             title="HOA 网站访问数据"
             icon={<UmamiIcon />}
           />
