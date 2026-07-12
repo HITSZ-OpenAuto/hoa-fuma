@@ -174,22 +174,33 @@ function buildChildren(
   }
 
   if (meta.pages) {
+    let hasRest = false;
+    let hasRestReversed = false;
+
     for (const item of meta.pages) {
       if (item === '...') {
-        addRest();
+        hasRest = true;
         continue;
       }
 
       if (item === 'z...a') {
-        for (const name of listChildNames(dir).reverse()) {
-          addChild(name);
-        }
+        hasRestReversed = true;
         continue;
       }
 
       if (!item.startsWith('!')) {
         addChild(item);
       }
+    }
+
+    if (hasRestReversed) {
+      for (const name of listChildNames(dir).reverse()) {
+        addChild(name);
+      }
+    }
+
+    if (hasRest) {
+      addRest();
     }
   } else {
     addRest();
