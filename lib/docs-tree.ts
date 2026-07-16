@@ -120,6 +120,31 @@ function listChildNames(dir: string): string[] {
   return sortEntries(Array.from(names));
 }
 
+function getSemesterOrder(page: string): number | undefined {
+  const parts = page.split('-');
+  if (parts.length !== 2) return undefined;
+
+  const [year, semester] = parts;
+  const yearIndex = ['fresh', 'sophomore', 'junior', 'senior', 'fifth'].indexOf(
+    year
+  );
+  const semesterIndex = ['autumn', 'summer', 'spring'].indexOf(semester);
+
+  if (yearIndex === -1 || semesterIndex === -1) return undefined;
+  return yearIndex * 3 + semesterIndex;
+}
+
+function orderSemesterPages(pages: string[]): string[] {
+  const semesters = pages
+    .filter((page) => getSemesterOrder(page) !== undefined)
+    .toSorted((a, b) => getSemesterOrder(a)! - getSemesterOrder(b)!);
+  let index = 0;
+
+  return pages.map((page) =>
+    getSemesterOrder(page) === undefined ? page : semesters[index++]
+  );
+}
+
 function buildChild(
   dir: string,
   slugs: string[],
@@ -173,23 +198,38 @@ function buildChildren(
     }
   }
 
+  if (!excludeIndex) {
+    addChild('index');
+  }
+
   if (meta.pages) {
-    for (const item of meta.pages) {
+    let hasRest = false;
+    let hasRestReversed = false;
+
+    for (const item of orderSemesterPages(meta.pages)) {
       if (item === '...') {
-        addRest();
+        hasRest = true;
         continue;
       }
 
       if (item === 'z...a') {
-        for (const name of listChildNames(dir).reverse()) {
-          addChild(name);
-        }
+        hasRestReversed = true;
         continue;
       }
 
       if (!item.startsWith('!')) {
         addChild(item);
       }
+    }
+
+    if (hasRestReversed) {
+      for (const name of listChildNames(dir).reverse()) {
+        addChild(name);
+      }
+    }
+
+    if (hasRest) {
+      addRest();
     }
   } else {
     addRest();
