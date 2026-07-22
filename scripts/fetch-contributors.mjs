@@ -12,7 +12,9 @@ const outputFile = path.join(projectRoot, 'lib/data/contributors.json');
 const GITHUB_ORG = 'HITSZ-OpenAuto';
 
 async function fetchContributors() {
-  console.log(`[Contributor Graph] Fetching contributors for org: ${GITHUB_ORG}...`);
+  console.log(
+    `[Contributor Graph] Fetching contributors for org: ${GITHUB_ORG}...`
+  );
   const headers = {
     Accept: 'application/vnd.github+json',
     'User-Agent': 'HOA-Contributor-Fetcher',
@@ -29,7 +31,9 @@ async function fetchContributors() {
     );
 
     if (!reposRes.ok) {
-      console.warn(`[Warning] GitHub API returned ${reposRes.status}. Using existing contributors.json`);
+      console.warn(
+        `[Warning] GitHub API returned ${reposRes.status}. Using existing contributors.json`
+      );
       return;
     }
 
@@ -75,9 +79,13 @@ async function fetchContributors() {
         JSON.stringify(contributorsList, null, 2),
         'utf-8'
       );
-      console.log(`[Success] Successfully saved ${contributorsList.length} contributors to lib/data/contributors.json`);
+      console.log(
+        `[Success] Successfully saved ${contributorsList.length} contributors to lib/data/contributors.json`
+      );
     } else {
-      console.log(`[Info] No new contributor data fetched. Retaining current file.`);
+      console.log(
+        `[Info] No new contributor data fetched. Retaining current file.`
+      );
     }
   } catch (err) {
     console.error(`[Error] Failed to fetch contributors:`, err.message);

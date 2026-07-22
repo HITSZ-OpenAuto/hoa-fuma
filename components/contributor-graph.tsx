@@ -1,6 +1,12 @@
 'use client';
 
-import { Users, GitCommit, GitPullRequest, ExternalLink, Sparkles } from 'lucide-react';
+import {
+  Users,
+  GitCommit,
+  GitPullRequest,
+  ExternalLink,
+  Sparkles,
+} from 'lucide-react';
 import type { ContributorItem } from '@/lib/github';
 import { Button } from '@/components/ui/button';
 
@@ -19,15 +25,15 @@ export function ContributorGraph({ contributors }: ContributorGraphProps) {
   );
 
   return (
-    <section className="relative my-16 overflow-hidden rounded-2xl border bg-card/60 p-6 backdrop-blur-md transition-all md:p-10">
+    <section className="bg-card/60 relative my-16 overflow-hidden rounded-2xl border p-6 backdrop-blur-md transition-all md:p-10">
       {/* Background Subtle Gradient Glow */}
-      <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
+      <div className="bg-primary/10 pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full blur-3xl" />
+      <div className="bg-primary/5 pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full blur-3xl" />
 
       {/* Header Info */}
       <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+          <div className="border-primary/20 bg-primary/10 text-primary inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium">
             <Sparkles className="size-3.5" />
             <span>Contributor Graph</span>
           </div>
@@ -41,18 +47,20 @@ export function ContributorGraph({ contributors }: ContributorGraphProps) {
 
         {/* Stats Pills */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 rounded-lg border bg-background/80 px-3.5 py-2 shadow-xs">
-            <Users className="size-4 text-primary" />
+          <div className="bg-background/80 flex items-center gap-2 rounded-lg border px-3.5 py-2 shadow-xs">
+            <Users className="text-primary size-4" />
             <div className="text-left">
-              <div className="text-xs text-muted-foreground">贡献者</div>
+              <div className="text-muted-foreground text-xs">贡献者</div>
               <div className="text-sm font-bold">{contributors.length} 人</div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-lg border bg-background/80 px-3.5 py-2 shadow-xs">
-            <GitCommit className="size-4 text-primary" />
+          <div className="bg-background/80 flex items-center gap-2 rounded-lg border px-3.5 py-2 shadow-xs">
+            <GitCommit className="text-primary size-4" />
             <div className="text-left">
-              <div className="text-xs text-muted-foreground font-sans">累计 Commits</div>
+              <div className="text-muted-foreground font-sans text-xs">
+                累计 Commits
+              </div>
               <div className="text-sm font-bold">{totalContributions} 次</div>
             </div>
           </div>
@@ -63,7 +71,7 @@ export function ContributorGraph({ contributors }: ContributorGraphProps) {
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12">
         {/* Left Col: Leaderboard & Distribution Bars */}
         <div className="space-y-4 lg:col-span-7">
-          <h3 className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+          <h3 className="text-muted-foreground flex items-center gap-2 text-sm font-semibold">
             <GitPullRequest className="size-4" />
             贡献排行与活跃度
           </h3>
@@ -76,38 +84,38 @@ export function ContributorGraph({ contributors }: ContributorGraphProps) {
               return (
                 <div
                   key={contributor.login}
-                  className="group relative flex flex-col gap-2 rounded-xl border bg-background/50 p-3 transition-all hover:bg-background/80 hover:shadow-xs"
+                  className="group bg-background/50 hover:bg-background/80 relative flex flex-col gap-2 rounded-xl border p-3 transition-all hover:shadow-xs"
                 >
                   <div className="flex items-center justify-between text-xs md:text-sm">
                     <div className="flex items-center gap-2.5">
-                      <span className="flex size-5 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                      <span className="bg-primary/10 text-primary flex size-5 items-center justify-center rounded-full text-xs font-bold">
                         {index + 1}
                       </span>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={contributor.avatarUrl}
                         alt={contributor.login}
-                        className="size-7 rounded-full border border-border object-cover"
+                        className="border-border size-7 rounded-full border object-cover"
                       />
                       <a
                         href={contributor.htmlUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium hover:underline hover:text-primary transition-colors flex items-center gap-1"
+                        className="hover:text-primary flex items-center gap-1 font-medium transition-colors hover:underline"
                       >
                         {contributor.name || contributor.login}
                         <ExternalLink className="size-3 opacity-0 transition-opacity group-hover:opacity-100" />
                       </a>
                     </div>
-                    <span className="font-mono text-xs font-semibold text-muted-foreground">
+                    <span className="text-muted-foreground font-mono text-xs font-semibold">
                       {contributor.contributions} 次贡献
                     </span>
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all duration-500"
+                      className="from-primary/80 to-primary h-full rounded-full bg-gradient-to-r transition-all duration-500"
                       style={{ width: `${Math.max(percentage, 8)}%` }}
                     />
                   </div>
@@ -120,7 +128,7 @@ export function ContributorGraph({ contributors }: ContributorGraphProps) {
         {/* Right Col: Avatar Grid Wall & Contribute CTA */}
         <div className="flex flex-col justify-between space-y-6 lg:col-span-5">
           <div>
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-4">
+            <h3 className="text-muted-foreground mb-4 flex items-center gap-2 text-sm font-semibold">
               <Users className="size-4" />
               全员贡献者墙
             </h3>
@@ -133,7 +141,7 @@ export function ContributorGraph({ contributors }: ContributorGraphProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`${contributor.login} (${contributor.contributions} 次贡献)`}
-                  className="group relative flex items-center gap-2 rounded-full border bg-background/60 p-1.5 pr-3 transition-all hover:scale-105 hover:border-primary/40 hover:bg-background shadow-2xs"
+                  className="group bg-background/60 hover:border-primary/40 hover:bg-background relative flex items-center gap-2 rounded-full border p-1.5 pr-3 shadow-2xs transition-all hover:scale-105"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -141,7 +149,7 @@ export function ContributorGraph({ contributors }: ContributorGraphProps) {
                     alt={contributor.login}
                     className="size-8 rounded-full border object-cover"
                   />
-                  <span className="text-xs font-medium group-hover:text-primary transition-colors">
+                  <span className="group-hover:text-primary text-xs font-medium transition-colors">
                     {contributor.login}
                   </span>
                 </a>
@@ -150,10 +158,13 @@ export function ContributorGraph({ contributors }: ContributorGraphProps) {
           </div>
 
           {/* Become Contributor Card */}
-          <div className="rounded-xl border border-dashed border-primary/30 bg-primary/5 p-5 text-left transition-colors hover:bg-primary/10">
-            <h4 className="font-bold text-sm text-foreground">想加入 HITSZ-OpenAuto 贡献计划？</h4>
-            <p className="mt-1 text-xs text-muted-foreground">
-              无论完善课程笔记、分享考试经验还是提交代码重构，均欢迎提交 Pull Request！
+          <div className="border-primary/30 bg-primary/5 hover:bg-primary/10 rounded-xl border border-dashed p-5 text-left transition-colors">
+            <h4 className="text-foreground text-sm font-bold">
+              想加入 HITSZ-OpenAuto 贡献计划？
+            </h4>
+            <p className="text-muted-foreground mt-1 text-xs">
+              无论完善课程笔记、分享考试经验还是提交代码重构，均欢迎提交 Pull
+              Request！
             </p>
             <div className="mt-4 flex items-center gap-3">
               <Button size="sm" asChild className="rounded-lg text-xs">

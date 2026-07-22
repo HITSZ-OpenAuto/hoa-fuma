@@ -1,6 +1,8 @@
 import { SEMESTER_NAMES, COURSE_CODE_RE } from '@/lib/constants';
 import { isYear } from '@/lib/utils';
 import { getDocsPathEntries } from '@/lib/docs-paths';
+import { MERGED_COURSE_MAP } from '@/lib/merged-courses';
+
 
 function isSemester(segment: string): boolean {
   return SEMESTER_NAMES.has(segment);
@@ -27,6 +29,7 @@ function parseCookiePath(cookiePath: string): {
   }
 }
 
+
 export function findRedirect(
   segments: string[],
   cookiePath?: string
@@ -46,6 +49,12 @@ export function findRedirect(
     courseCode = segments[0].toUpperCase();
     if (!isCourseCode(courseCode)) return null;
   }
+
+  // Check merged course mapping (e.g. ECON3001 -> Cross-Econ)
+  if (MERGED_COURSE_MAP[courseCode]) {
+    return MERGED_COURSE_MAP[courseCode].targetPath;
+  }
+
 
   const matches: { slugs: string[] }[] = [];
 

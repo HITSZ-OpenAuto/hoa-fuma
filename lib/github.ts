@@ -227,9 +227,8 @@ export type ContributorItem = {
 
 export async function getContributors(): Promise<ContributorItem[]> {
   try {
-    const defaultData: ContributorItem[] = await import('./data/contributors.json').then(
-      (m) => m.default || m
-    );
+    const defaultData: ContributorItem[] =
+      await import('./data/contributors.json').then((m) => m.default || m);
     return defaultData;
   } catch (err) {
     console.error('Failed to load contributors data:', err);

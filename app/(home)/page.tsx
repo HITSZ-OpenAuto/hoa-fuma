@@ -73,7 +73,7 @@ export default function HomePage() {
       </section>
 
       {/* Recent updates section */}
-      <div className="relative px-6 mx-auto max-w-6xl">
+      <div className="relative mx-auto max-w-6xl px-6">
         <Suspense fallback={null}>
           <RecentReposSection />
         </Suspense>

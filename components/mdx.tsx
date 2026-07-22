@@ -17,6 +17,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+import { ElectiveCourseTaxonomy } from '@/components/course-info/elective-course-taxonomy';
+import { ProjectRenamingBanner } from '@/components/docs/project-renaming-banner';
+import { MergedCourseBanner } from '@/components/course-info/merged-course-banner';
+import { CourseReviewBadge } from '@/components/course-info/course-review-badge';
+
 type MdxContext = {
   course?: CourseInfoData;
 };
@@ -57,9 +62,14 @@ export function getMDXComponents(
     SelectItem,
     SelectTrigger,
     SelectValue,
+    ElectiveCourseTaxonomy,
+    ProjectRenamingBanner,
+    MergedCourseBanner,
+    CourseReviewBadge,
     ...components,
   } satisfies MDXComponents;
 }
+
 
 export const useMDXComponents = getMDXComponents;
 
