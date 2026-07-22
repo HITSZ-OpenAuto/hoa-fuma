@@ -1,10 +1,18 @@
 'use client';
 
-import { SearchIcon, DownloadIcon, ZapIcon, HardDrive } from 'lucide-react';
+import { useState } from 'react';
+import {
+  SearchIcon,
+  DownloadIcon,
+  ZapIcon,
+  HardDrive,
+  UploadCloud,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { cn } from '@/lib/utils';
+import { UploadDialog } from './upload-dialog';
 
 interface ToolbarProps {
   globalFilter: string;
@@ -29,6 +37,8 @@ export function Toolbar({
   onBatchDownload,
   url,
 }: ToolbarProps) {
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div className="flex w-full items-center gap-2 sm:order-2 sm:mx-auto sm:w-auto sm:max-w-md sm:flex-1">
@@ -76,10 +86,15 @@ export function Toolbar({
       </div>
 
       <div className="flex flex-wrap items-center gap-2 sm:order-3">
-        {/* <Button variant="outline" size="sm" className="h-8 px-2 sm:px-3">
-          <UploadCloudIcon className="text-muted-foreground size-4" />
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 px-2 sm:px-3"
+          onClick={() => setIsUploadOpen(true)}
+        >
+          <UploadCloud className="text-muted-foreground size-4" />
           <span className="hidden sm:inline">上传文件</span>
-        </Button> */}
+        </Button>
 
         <Button
           variant="outline"
@@ -107,6 +122,12 @@ export function Toolbar({
           )}
           <span className="hidden sm:inline">批量下载</span>
         </Button>
+
+        <UploadDialog
+          isOpen={isUploadOpen}
+          onClose={() => setIsUploadOpen(false)}
+          url={url}
+        />
       </div>
     </div>
   );
