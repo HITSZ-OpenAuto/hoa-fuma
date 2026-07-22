@@ -7,8 +7,9 @@ import { LatestPosts } from '@/components/latest-posts';
 import { HeroCards } from '@/components/hero-cards';
 import { HeroButtons } from '@/components/hero-buttons';
 import { Button } from '@/components/ui/button';
-import { getRecentRepos } from '@/lib/github';
+import { getRecentRepos, getContributors } from '@/lib/github';
 import { getYearMajorMap } from '@/lib/docs-home';
+import { ContributorGraph } from '@/components/contributor-graph';
 
 const wordmark = localFont({
   src: '../../public/fonts/zalando-sans-expanded-latin-500.woff2',
@@ -46,6 +47,11 @@ async function RecentReposSection() {
   return <RecentRepos repos={recentRepos} title="最近更新的仓库" />;
 }
 
+async function ContributorGraphSection() {
+  const contributors = await getContributors();
+  return <ContributorGraph contributors={contributors} />;
+}
+
 export default function HomePage() {
   return (
     <div className="bg-background text-foreground relative min-h-svh">
@@ -67,11 +73,14 @@ export default function HomePage() {
       </section>
 
       {/* Recent updates section */}
-      <div className="relative px-6">
+      <div className="relative px-6 mx-auto max-w-6xl">
         <Suspense fallback={null}>
           <RecentReposSection />
         </Suspense>
         <LatestPosts />
+        <Suspense fallback={null}>
+          <ContributorGraphSection />
+        </Suspense>
       </div>
 
       <footer className="relative py-16">

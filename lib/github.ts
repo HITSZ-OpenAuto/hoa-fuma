@@ -215,3 +215,24 @@ export async function getLatestCommit(
     return null;
   }
 }
+
+export type ContributorItem = {
+  login: string;
+  name: string;
+  avatarUrl: string;
+  htmlUrl: string;
+  contributions: number;
+  repos?: string[];
+};
+
+export async function getContributors(): Promise<ContributorItem[]> {
+  try {
+    const defaultData: ContributorItem[] = await import('./data/contributors.json').then(
+      (m) => m.default || m
+    );
+    return defaultData;
+  } catch (err) {
+    console.error('Failed to load contributors data:', err);
+    return [];
+  }
+}
