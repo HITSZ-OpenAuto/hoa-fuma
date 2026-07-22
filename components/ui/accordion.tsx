@@ -1,6 +1,6 @@
 'use client';
 
-import type { ComponentProps, ReactNode } from 'react';
+import { useId, type ComponentProps, type ReactNode } from 'react';
 import {
   Accordion as FumaAccordion,
   Accordions as FumaAccordions,
@@ -40,17 +40,19 @@ function parseMarkdownLinks(text: string): ReactNode[] {
 export function Accordion({
   title,
   value,
+  id,
   ...props
 }: ComponentProps<typeof FumaAccordion>) {
+  const autoId = useId();
   const parsedTitle =
     typeof title === 'string' ? parseMarkdownLinks(title) : title;
-  const itemValue =
-    value ?? (typeof title === 'string' ? title : undefined);
+  const itemValue = value ?? id ?? autoId;
 
   return (
     <FumaAccordion
       title={<>{parsedTitle}</>}
       value={itemValue}
+      id={id}
       {...props}
     />
   );
