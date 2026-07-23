@@ -7,9 +7,25 @@ import type { Metadata } from 'next';
 import { SearchDialog } from '@/components/search-dialog';
 
 export const metadata: Metadata = {
-  title: 'HITSZ 课程攻略共享计划',
-  description: '为你的 HITSZ 求学路提供全面的课程资料与经验分享',
+  title: {
+    template: '%s | hoa.moe - HITSZ 课程攻略与开源社区',
+    default: 'hoa.moe - HITSZ 课程攻略与开源自动化社区',
+  },
+  description: '为哈尔滨工业大学（深圳）求学路提供全面的课程资料、选修指南与开源代码经验分享',
   metadataBase: new URL('https://hoa.moe'),
+  openGraph: {
+    title: 'hoa.moe - HITSZ 课程攻略与开源自动化社区',
+    description: '为哈尔滨工业大学（深圳）求学路提供全面的课程资料、选修指南与开源代码经验分享',
+    url: 'https://hoa.moe',
+    siteName: 'hoa.moe',
+    locale: 'zh_CN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'hoa.moe - HITSZ 课程攻略与开源自动化社区',
+    description: '为哈尔滨工业大学（深圳）求学路提供全面的课程资料、选修指南与开源代码经验分享',
+  },
   icons: {
     icon: [
       {
