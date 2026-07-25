@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { CopyAgentPrompt } from '@/components/copy-agent-prompt';
 import { HOA_LAST_PATH_COOKIE } from '@/lib/constants';
 
 interface HeroButtonsProps {
@@ -116,6 +117,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
             >
               <Link href="https://wiki.hoa.moe">参与指南</Link>
             </Button>
+            <CopyAgentPrompt />
           </>
         )}
       </div>
