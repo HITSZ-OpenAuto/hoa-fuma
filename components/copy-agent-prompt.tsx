@@ -26,7 +26,7 @@ export function CopyAgentPrompt() {
     <Button
       variant="secondary"
       size="lg"
-      className="rounded-full transition-transform hover:scale-105"
+      className="hidden rounded-full transition-transform hover:scale-105 lg:inline-flex"
       onClick={handleCopy}
     >
       {copied ? <Check className="size-4" /> : <Bot className="size-4" />}
