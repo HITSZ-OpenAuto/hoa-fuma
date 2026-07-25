@@ -39,12 +39,24 @@ function parseMarkdownLinks(text: string): ReactNode[] {
 
 export function Accordion({
   title,
+  value,
   ...props
 }: ComponentProps<typeof FumaAccordion>) {
   const parsedTitle =
     typeof title === 'string' ? parseMarkdownLinks(title) : title;
 
-  return <FumaAccordion title={<>{parsedTitle}</>} {...props} />;
+  return (
+    <FumaAccordion
+      title={<>{parsedTitle}</>}
+      value={value ?? (typeof title === 'string' ? title : undefined)}
+      {...props}
+    />
+  );
 }
 
-export const Accordions = FumaAccordions;
+export function Accordions(props: ComponentProps<typeof FumaAccordions>) {
+  if (props.type === 'single') {
+    return <FumaAccordions {...props} />;
+  }
+  return <FumaAccordions {...props} type="multiple" />;
+}
