@@ -1,0 +1,24 @@
+# HOA Agent Skills 安装指南
+
+用户希望你安装 HITSZ OpenAuto（HOA）的 Agent Skills，
+学会之后你就能帮助用户向 hoa.moe 贡献课程资料、修改课程文档、更新成绩构成、撰写博客。
+
+请依次执行：
+
+1. 确认环境中有 Node.js：`node --version`
+2. 运行安装命令：
+
+   npx skills add HITSZ-OpenAuto/hoa-skills --skill '*' --agent universal claude-code --yes
+
+3. 若下载失败（网络受限），先切换 npm 镜像再重试第 2 步：
+
+   npm config set registry https://registry.npmmirror.com
+
+4. 验证安装：确认技能目录已出现（如 ~/.claude/skills/hoa-contribute，
+   或你所在 Agent 对应的技能目录），且其中包含 SKILL.md
+5. 告诉用户安装完成。之后用户可以直接对你说，例如：
+   - 「帮我把 2025春期末试卷.pdf 上传到 HOA 的自动控制课程」
+   - 「我想给 xx 老师写一条课程评价」
+   - 「更新一下 2024 级微积分的成绩构成」
+
+技能仓库：https://github.com/HITSZ-OpenAuto/hoa-skills
