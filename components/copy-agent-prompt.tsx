@@ -30,7 +30,7 @@ export function CopyAgentPrompt() {
       onClick={handleCopy}
     >
       {copied ? <Check className="size-4" /> : <Bot className="size-4" />}
-      AI 贡献
+      Agent 技能
     </Button>
   );
 }
