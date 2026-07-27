@@ -155,7 +155,15 @@ ${content}
 
   // Simple Markdown renderer for live preview
   const renderPreviewHTML = (text: string) => {
-    return text
+    // Escape raw HTML tags in user input to prevent XSS
+    const safeText = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+
+    return safeText
       .replace(
         /^### (.*$)/gim,
         '<h3 class="text-base font-semibold text-fd-foreground mt-4 mb-2">$1</h3>'

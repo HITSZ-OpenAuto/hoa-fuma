@@ -108,9 +108,12 @@ self.addEventListener('fetch', (event) => {
             networkResponse.status === 200 &&
             (networkResponse.type === 'basic' || networkResponse.type === 'cors')
           ) {
-            cache.put(request, networkResponse.clone()).catch((err) => {
-              console.warn('[SW] Failed to put response into cache:', err);
-            });
+            const cacheControl = networkResponse.headers.get('Cache-Control') || '';
+            if (!cacheControl.includes('no-store') && !cacheControl.includes('no-cache')) {
+              cache.put(request, networkResponse.clone()).catch((err) => {
+                console.warn('[SW] Failed to put response into cache:', err);
+              });
+            }
           }
           return networkResponse;
         })
@@ -128,6 +131,11 @@ self.addEventListener('fetch', (event) => {
             statusText: 'Service Unavailable',
           });
         });
+
+      // Network-first for API requests and page navigations to ensure freshness
+      if (url.pathname.startsWith('/api/') || request.mode === 'navigate') {
+        return fetchPromise;
+      }
 
       // Stale-While-Revalidate: return cached asset immediately if present, otherwise await fetch
       return cachedResponse || fetchPromise;
