@@ -5,6 +5,9 @@ import { Toaster } from '@/components/ui/sonner';
 import Script from 'next/script';
 import type { Metadata } from 'next';
 import { SearchDialog } from '@/components/search-dialog';
+import { ServiceWorkerRegister } from '@/components/service-worker-register';
+import { BookmarkDrawer } from '@/components/bookmark-system';
+import { ShortcutsHelpModal } from '@/components/shortcuts-help';
 
 export const metadata: Metadata = {
   title: {
@@ -44,11 +47,22 @@ export const metadata: Metadata = {
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+        <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+        <link rel="preconnect" href="https://fastdl.hoa.moe" />
+        <link rel="dns-prefetch" href="https://fastdl.hoa.moe" />
+        <link rel="preconnect" href="https://avatars.githubusercontent.com" />
+        <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
+      </head>
       <body className="flex min-h-screen flex-col">
         <RootProvider search={{ SearchDialog }}>
           {children}
           <Toaster />
+          <BookmarkDrawer />
+          <ShortcutsHelpModal />
         </RootProvider>
+        <ServiceWorkerRegister />
         {process.env.NEXT_PUBLIC_UMAMI_SRC &&
           process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
             <Script
@@ -61,3 +75,4 @@ export default function Layout({ children }: LayoutProps<'/'>) {
     </html>
   );
 }
+

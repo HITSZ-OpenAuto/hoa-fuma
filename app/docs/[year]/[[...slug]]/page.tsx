@@ -15,7 +15,7 @@ import { PageActions } from '@/components/page-actions';
 import { cookies } from 'next/headers';
 import { findRedirect } from '@/lib/redirect';
 import { isYear } from '@/lib/utils';
-import { getMDXComponents, NoPrefetchLink } from '@/components/mdx';
+import { getMDXComponents, NoPrefetchLink, PageFeedback } from '@/components/mdx';
 import { getDocsCourse } from '@/lib/course-frontmatter';
 
 export default async function Page(props: {
@@ -75,6 +75,7 @@ export default async function Page(props: {
             }
           )}
         />
+        <PageFeedback />
       </DocsBody>
     </DocsPage>
   );

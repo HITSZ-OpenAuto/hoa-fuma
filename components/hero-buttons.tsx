@@ -65,12 +65,12 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
   const triggerClasses = 'h-10 rounded-full';
 
   return (
-    <div className="flex h-[5.25rem] flex-col justify-between">
+    <nav className="flex h-[5.25rem] flex-col justify-between" aria-label="文档导航入口">
       <div className={rowClasses}>
         {selecting ? (
           <>
             <Select value={year} onValueChange={handleYearChange}>
-              <SelectTrigger className={triggerClasses}>
+              <SelectTrigger className={triggerClasses} aria-label="选择入学年份">
                 <SelectValue placeholder="入学年份" />
               </SelectTrigger>
               <SelectContent className="min-w-0 rounded-xl">
@@ -82,7 +82,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               </SelectContent>
             </Select>
             <Select value="" onValueChange={handleMajorChange} disabled={!year}>
-              <SelectTrigger className={triggerClasses}>
+              <SelectTrigger className={triggerClasses} aria-label="选择专业">
                 <SelectValue placeholder="专业" />
               </SelectTrigger>
               <SelectContent className="min-w-0 rounded-xl">
@@ -105,6 +105,8 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               size="lg"
               className="rounded-full transition-transform hover:scale-105"
               onClick={handleDocsClick}
+              aria-label="查看文档"
+              aria-expanded={selecting}
             >
               查看文档
             </Button>
@@ -114,7 +116,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               className="rounded-full transition-transform hover:scale-105"
               asChild
             >
-              <Link href="https://wiki.hoa.moe">参与指南</Link>
+              <Link href="https://wiki.hoa.moe" aria-label="参与指南">参与指南</Link>
             </Button>
           </>
         )}
@@ -123,9 +125,9 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
         className={`text-muted-foreground h-5 shrink-0 text-center text-sm leading-5 lg:text-left ${selecting ? '' : 'invisible'}`}
       >
         进入文档后，可通过侧边栏
-        <Sidebar className="mx-0.5 inline size-4 align-text-bottom" />
+        <Sidebar className="mx-0.5 inline size-4 align-text-bottom" aria-hidden="true" />
         随时切换年份和专业
       </p>
-    </div>
+    </nav>
   );
 }

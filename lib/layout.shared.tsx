@@ -1,4 +1,5 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import { LanguageToggle } from '@/components/language-toggle';
 
 export function baseOptions(): BaseLayoutProps {
   return {
@@ -28,6 +29,10 @@ export function baseOptions(): BaseLayoutProps {
         text: '友链',
         url: '/links',
         active: 'nested-url',
+      },
+      {
+        type: 'custom',
+        children: <LanguageToggle key="language-toggle" />,
       },
     ],
     githubUrl: 'https://github.com/hitsz-openauto',

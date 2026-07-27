@@ -70,7 +70,7 @@
   --destructive: oklch(0.58 0.22 27);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: oklch(0.4 0 0);
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
   --chart-3: oklch(0.546 0.245 262.881);
@@ -84,7 +84,7 @@
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: oklch(0.4 0 0);
 
   /* File tree indent multipliers */
   --file-tree-indent-mobile: 0.5rem;
@@ -109,7 +109,7 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
   --chart-3: oklch(0.546 0.245 262.881);
@@ -122,7 +122,7 @@
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 @layer base {
@@ -131,6 +131,26 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* WCAG 2.1 AA compliant :focus-visible styling for interactive elements */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible,
+  [role="button"]:focus-visible,
+  [role="link"]:focus-visible,
+  [role="checkbox"]:focus-visible,
+  [role="combobox"]:focus-visible,
+  [role="option"]:focus-visible,
+  [role="menuitem"]:focus-visible,
+  [role="tab"]:focus-visible,
+  [role="switch"]:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
 }
 
@@ -353,3 +373,81 @@
   color: var(--color-danger-fg);
   color: var(--fgColor-danger, var(--color-danger-fg));
 }
+
+/* ========================================
+   Print Stylesheet (Issue #128)
+   ======================================== */
+@page {
+  margin: 1.5cm;
+}
+
+@media print {
+  /* Hide navbar, sidebar, footer, search buttons, edit buttons, fixed widgets */
+  header,
+  nav,
+  aside,
+  footer,
+  #nd-nav,
+  #nd-subnav,
+  #nd-sidebar,
+  #nd-toc,
+  .nd-nav,
+  .nd-sidebar,
+  .nd-toc,
+  [data-sidebar],
+  [data-toc],
+  [data-toc-popover],
+  button[data-search],
+  button[data-search-full],
+  [data-search],
+  button[aria-label*="Search"],
+  button[aria-label*="search"],
+  .page-actions,
+  [data-page-actions],
+  [data-sonner-toaster],
+  [role="status"],
+  [role="aria-live"],
+  .fixed,
+  [class*="fixed"]:not(#nd-docs-layout):not(body):not(html):not(main):not(article) {
+    display: none !important;
+  }
+
+  /* Reset layout containers for printing */
+  #nd-docs-layout,
+  main,
+  article,
+  .nd-page {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Force text colors to pure black, backgrounds to white/transparent */
+  *,
+  *::before,
+  *::after {
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Prevent page breaks inside pre, code, table, blockquote, .prose img */
+  pre,
+  code,
+  table,
+  blockquote,
+  .prose img {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
