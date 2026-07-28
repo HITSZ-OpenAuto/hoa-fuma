@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { siGithub } from 'simple-icons';
-import { Edit3 } from 'lucide-react';
+import { Edit3, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { OnlineEditorDialog } from '@/components/docs/online-editor-dialog';
+import { ShareDrawer } from '@/components/docs/share-drawer';
 import { BookmarkButton } from '@/components/bookmark-system';
 import { DocHistoryViewer } from '@/components/doc-history';
 
@@ -32,7 +33,12 @@ function GitHubButton({
         target="_blank"
         aria-label="在 GitHub 上查看源码"
       >
-        <svg fill="currentColor" role="img" viewBox="0 0 24 24" aria-hidden="true">
+        <svg
+          fill="currentColor"
+          role="img"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <title>{siGithub.title}</title>
           <path d={siGithub.path} />
         </svg>
@@ -44,11 +50,28 @@ function GitHubButton({
 
 export function PageActions({ githubUrl }: { githubUrl: string }) {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2" role="region" aria-label="页面操作">
+      <div
+        className="flex flex-wrap items-center gap-2"
+        role="region"
+        aria-label="页面操作"
+      >
         <BookmarkButton />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsShareOpen(true)}
+          className="h-8 gap-1.5 text-xs"
+          aria-label="分享文档与剪贴板"
+          aria-expanded={isShareOpen}
+          aria-haspopup="dialog"
+        >
+          <Share2 className="text-fd-primary size-3.5" aria-hidden="true" />
+          分享文档
+        </Button>
         <Button
           variant="outline"
           size="sm"
@@ -65,6 +88,8 @@ export function PageActions({ githubUrl }: { githubUrl: string }) {
         <GitHubButton href={githubUrl} />
       </div>
 
+      <ShareDrawer isOpen={isShareOpen} onClose={() => setIsShareOpen(false)} />
+
       <OnlineEditorDialog
         isOpen={isEditorOpen}
         onClose={() => setIsEditorOpen(false)}
@@ -73,4 +98,3 @@ export function PageActions({ githubUrl }: { githubUrl: string }) {
     </>
   );
 }
-

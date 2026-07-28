@@ -3,7 +3,11 @@ import Link, { type LinkProps } from 'fumadocs-core/link';
 import { Card as FumadocsCard } from 'fumadocs-ui/components/card';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
-import { CourseInfo } from '@/components/course-info';
+import {
+  CourseInfo,
+  CourseSkeleton,
+  CourseHealthDashboard,
+} from '@/components/course-info';
 import type { CourseInfoData } from '@/lib/types';
 import { Files, Folder, File } from '@/components/file-tree';
 import { Accordion, Accordions } from '@/components/ui/accordion';
@@ -22,6 +26,8 @@ import { ProjectRenamingBanner } from '@/components/docs/project-renaming-banner
 import { MergedCourseBanner } from '@/components/course-info/merged-course-banner';
 import { CourseReviewBadge } from '@/components/course-info/course-review-badge';
 import { ScrollSpyTOC } from '@/components/docs/scroll-spy-toc';
+import { ShareDrawer } from '@/components/docs/share-drawer';
+import { MobileQuickNav } from '@/components/docs/mobile-quick-nav';
 import { ImageZoom } from '@/components/image-zoom';
 import { CodeBlockActions } from '@/components/code-block-actions';
 import { PageFeedback } from '@/components/docs/page-feedback';
@@ -51,7 +57,10 @@ function CustomPre(props: ComponentProps<'pre'>) {
 
   for (const child of childrenArray) {
     if (React.isValidElement(child)) {
-      const childProps = child.props as { children?: React.ReactNode; className?: string };
+      const childProps = child.props as {
+        children?: React.ReactNode;
+        className?: string;
+      };
       if (childProps.children) {
         if (typeof childProps.children === 'string') {
           codeText = childProps.children;
@@ -71,9 +80,14 @@ function CustomPre(props: ComponentProps<'pre'>) {
   const DefaultPre = defaultMdxComponents.pre || 'pre';
 
   return (
-    <div className="relative group my-4 rounded-xl border border-fd-border bg-fd-card overflow-hidden">
-      {codeText ? <CodeBlockActions code={codeText} language={language} /> : null}
-      <DefaultPre {...props} className={`p-4 overflow-x-auto ${props.className || ''}`} />
+    <div className="group border-fd-border bg-fd-card relative my-4 overflow-hidden rounded-xl border">
+      {codeText ? (
+        <CodeBlockActions code={codeText} language={language} />
+      ) : null}
+      <DefaultPre
+        {...props}
+        className={`overflow-x-auto p-4 ${props.className || ''}`}
+      />
     </div>
   );
 }
@@ -83,7 +97,11 @@ function KaTeXMath({ math, block = false }: { math: string; block?: boolean }) {
   return (
     <span
       dangerouslySetInnerHTML={{ __html: html }}
-      className={block ? 'katex-display-block my-4 flex justify-center overflow-x-auto' : 'katex-inline'}
+      className={
+        block
+          ? 'katex-display-block my-4 flex justify-center overflow-x-auto'
+          : 'katex-inline'
+      }
     />
   );
 }
@@ -109,6 +127,10 @@ export function getMDXComponents(
     CourseInfo: (props: ComponentProps<typeof CourseInfo>) => (
       <CourseInfo {...props} data={props.data ?? context?.course} />
     ),
+    CourseSkeleton,
+    CourseHealthDashboard,
+    ShareDrawer,
+    MobileQuickNav,
     Select,
     SelectContent,
     SelectGroup,
@@ -124,7 +146,16 @@ export function getMDXComponents(
   } satisfies MDXComponents;
 }
 
-export { PageFeedback, ImageZoom, CodeBlockActions, KaTeXMath as Math };
+export {
+  PageFeedback,
+  ImageZoom,
+  CodeBlockActions,
+  KaTeXMath as Math,
+  CourseSkeleton,
+  CourseHealthDashboard,
+  ShareDrawer,
+  MobileQuickNav,
+};
 
 export const useMDXComponents = getMDXComponents;
 
