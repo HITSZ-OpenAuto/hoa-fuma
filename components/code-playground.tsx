@@ -43,53 +43,72 @@ export function CodePlayground({ code: initialCode, language = 'javascript', cla
       return;
     }
 
-    const customConsole = {
-      log: (...args: any[]) => {
-        logs.push({
-          type: 'log',
-          content: args.map((arg) => (typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg))).join(' '),
-        });
-      },
-      error: (...args: any[]) => {
-        logs.push({
-          type: 'error',
-          content: args.map((arg) => (typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg))).join(' '),
-        });
-      },
-    };
+    let executableCode = code;
+    executableCode = executableCode.replace(/:\s*(string|number|boolean|any|void|object|unknown|never)/g, '');
 
-    try {
-      let executableCode = code;
-      executableCode = executableCode.replace(/:\s*(string|number|boolean|any|void|object|unknown|never)/g, '');
+    const workerCode = `
+      self.onmessage = function(e) {
+        const code = e.data;
+        const customConsole = {
+          log: (...args) => {
+            self.postMessage({ type: 'log', content: args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ') });
+          },
+          error: (...args) => {
+            self.postMessage({ type: 'error', content: args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ') });
+          }
+        };
 
-      const runner = new Function('console', `
-        "use strict";
         try {
-          ${executableCode}
-        } catch(e) {
-          throw e;
+          const runner = new Function('console', '"use strict";\\n' + code);
+          const result = runner(customConsole);
+          if (result !== undefined) {
+            self.postMessage({ type: 'return', content: 'Return Value: ' + (typeof result === 'object' ? JSON.stringify(result, null, 2) : String(result)) });
+          }
+          self.postMessage({ type: 'done' });
+        } catch(err) {
+          self.postMessage({ type: 'error', content: err.message || String(err) });
+          self.postMessage({ type: 'done' });
         }
-      `);
+      };
+    `;
 
-      const result = runner(customConsole);
-      if (result !== undefined) {
-        logs.push({
-          type: 'return',
-          content: `Return Value: ${typeof result === 'object' ? JSON.stringify(result, null, 2) : String(result)}`,
-        });
-      }
-      setStatus('success');
-    } catch (err: any) {
-      logs.push({
-        type: 'error',
-        content: err?.message || String(err),
-      });
+    const blob = new Blob([workerCode], { type: 'application/javascript' });
+    const workerUrl = URL.createObjectURL(blob);
+    const worker = new Worker(workerUrl);
+
+    setOutput([]);
+    
+    const timeoutId = setTimeout(() => {
+      worker.terminate();
+      logs.push({ type: 'error', content: 'Execution Timeout (2000ms). Infinite loop detected?' });
+      setOutput([...logs]);
       setStatus('error');
-    } finally {
-      const endTime = performance.now();
-      setExecutionTime(Math.round((endTime - startTime) * 100) / 100);
-      setOutput(logs);
-    }
+      setExecutionTime(Math.round((performance.now() - startTime) * 100) / 100);
+      URL.revokeObjectURL(workerUrl);
+    }, 2000);
+
+    worker.onmessage = (e) => {
+      const data = e.data;
+      if (data.type === 'done') {
+        clearTimeout(timeoutId);
+        worker.terminate();
+        URL.revokeObjectURL(workerUrl);
+        
+        const endTime = performance.now();
+        setExecutionTime(Math.round((endTime - startTime) * 100) / 100);
+        
+        if (logs.some(l => l.type === 'error')) {
+          setStatus('error');
+        } else {
+          setStatus('success');
+        }
+      } else {
+        logs.push({ type: data.type, content: data.content });
+        setOutput([...logs]);
+      }
+    };
+    
+    worker.postMessage(executableCode);
   }, [code, lang]);
 
   const clearOutput = () => {
