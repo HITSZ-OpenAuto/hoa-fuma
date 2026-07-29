@@ -127,6 +127,7 @@ const IGNORED_PREFIXES = [
   'merge',
   'chore:',
   'docs:',
+  'fix:',
 ];
 
 function isUserCommit(message: string): boolean {
