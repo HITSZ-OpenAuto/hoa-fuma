@@ -129,7 +129,7 @@ export default async function Page(props: {
         )}
       </div>
 
-      <div className="prose min-w-0 flex-1">
+      <div className="prose min-w-0 flex-1 break-words">
         {toc.length > 0 && (
           <InlineTOC items={toc} className="mb-6">
             目录

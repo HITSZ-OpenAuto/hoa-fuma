@@ -112,7 +112,7 @@ export default async function Page(props: {
         )}
       </div>
 
-      <div className="prose min-w-0 flex-1">
+      <div className="prose min-w-0 flex-1 break-words">
         <Mdx components={getMDXComponents()} />
       </div>
     </article>
