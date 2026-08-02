@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Rss } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
 import { getPostListItems } from '@/lib/posts-summary';
+import { BlogPostList } from '@/components/blog-post-list';
 
 export default function Page() {
   const items = getPostListItems('blog');
@@ -26,33 +26,7 @@ export default function Page() {
           了解校内最新资讯，分享学习心得
         </p>
       </div>
-      <div className="divide-y border-y">
-        {items.map((item) => (
-          <Link
-            key={`${item.type}-${item.slug}`}
-            href={item.type === 'series' ? `/blog/${item.slug}` : item.url}
-            className="group flex flex-col gap-3 py-5 md:flex-row md:items-start md:justify-between md:gap-8"
-          >
-            <div className="min-w-0">
-              <h2 className="group-hover:text-brand font-medium transition-colors">
-                {item.title}
-              </h2>
-              <p className="text-fd-muted-foreground mt-1 text-sm">
-                {item.description}
-              </p>
-            </div>
-
-            {item.date && (
-              <time
-                dateTime={item.date.toISOString()}
-                className="text-brand shrink-0 text-xs md:pt-1"
-              >
-                {formatDate(item.date)}
-              </time>
-            )}
-          </Link>
-        ))}
-      </div>
+      <BlogPostList items={items} />
     </main>
   );
 }

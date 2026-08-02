@@ -47,6 +47,7 @@ export const blogPosts = defineCollections({
       .optional(),
     description: z.string().optional(),
     date: z.iso.date().or(z.date()),
+    tags: z.array(z.string()).optional(),
     weight: z.number().optional(),
   }),
 });

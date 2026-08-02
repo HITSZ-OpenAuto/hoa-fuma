@@ -9,6 +9,7 @@ type PostFrontmatter = {
   description?: string;
   date?: string | Date;
   weight?: number;
+  tags?: string[];
   authors?: { name: string; link?: string; image?: string }[];
 };
 
@@ -17,10 +18,30 @@ export type PostSummary = {
   description?: string;
   date: string | Date;
   weight?: number;
+  tags: string[];
   authors?: { name: string; link?: string; image?: string }[];
   url: string;
   slugs: string[];
 };
+
+export type PostListItem =
+  | {
+      type: 'series';
+      slug: string;
+      title: string;
+      description: string;
+      date: Date | null;
+      tags: string[];
+    }
+  | {
+      type: 'post';
+      slug: string;
+      title: string;
+      description?: string;
+      date: Date;
+      tags: string[];
+      url: string;
+    };
 
 const roots = {
   blog: join(process.cwd(), 'content/blog'),
@@ -79,6 +100,7 @@ export function getPostSummaries(kind: PostKind): PostSummary[] {
         description: data.description,
         date: data.date,
         weight: data.weight,
+        tags: data.tags ?? [],
         authors: data.authors,
         url: `/${kind}/${slugs.join('/')}`,
         slugs,
@@ -127,7 +149,7 @@ export function getSeriesPosts(kind: PostKind, seriesSlugs: readonly string[]) {
     });
 }
 
-export function getPostListItems(kind: PostKind) {
+export function getPostListItems(kind: PostKind): PostListItem[] {
   const pages = getPostSummaries(kind);
   const seriesMap = new Map<
     string,
@@ -163,6 +185,12 @@ export function getPostListItems(kind: PostKind) {
         title: entry.index?.title ?? slug,
         description: entry.index?.description ?? '',
         date: latestDate,
+        tags: [
+          ...new Set([
+            ...(entry.index?.tags ?? []),
+            ...entry.posts.flatMap((post) => post.tags),
+          ]),
+        ],
       };
     });
 
@@ -177,6 +205,7 @@ export function getPostListItems(kind: PostKind) {
       title: post.title,
       description: post.description,
       date: new Date(post.date),
+      tags: post.tags,
       url: post.url,
     }));
 

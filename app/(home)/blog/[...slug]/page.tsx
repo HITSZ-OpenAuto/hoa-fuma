@@ -64,53 +64,68 @@ export default async function Page(props: {
       <h1 className="mb-4 text-3xl font-semibold">{page.data.title}</h1>
       <p className="text-fd-muted-foreground mb-8">{page.data.description}</p>
 
-      <div className="text-fd-muted-foreground mb-8 flex flex-row items-center gap-2 text-sm">
-        <p>{formatDate(page.data.date)}</p>
-        {page.data.authors && page.data.authors.length > 0 && (
-          <>
-            <span>·</span>
-            <div className="flex flex-row flex-wrap items-center">
-              {page.data.authors.map((author, index) => (
-                <div
-                  key={index}
-                  className="mx-1 flex flex-row items-center gap-1.5"
-                >
-                  {author.link ? (
-                    <Link
-                      href={author.link}
-                      className="text-fd-foreground flex flex-row items-center gap-1.5 font-medium hover:underline"
-                    >
-                      {author.image && (
-                        <Image
-                          src={author.image}
-                          alt={author.name}
-                          width={24}
-                          height={24}
-                          className="rounded-full"
-                        />
-                      )}
-                      {author.name}
-                    </Link>
-                  ) : (
-                    <div className="flex flex-row items-center gap-1.5">
-                      {author.image && (
-                        <Image
-                          src={author.image}
-                          alt={author.name}
-                          width={24}
-                          height={24}
-                          className="rounded-full"
-                        />
-                      )}
-                      <p className="text-fd-foreground font-medium">
+      <div className="mb-8 space-y-3">
+        <div className="text-fd-muted-foreground flex flex-row items-center gap-2 text-sm">
+          <p>{formatDate(page.data.date)}</p>
+          {page.data.authors && page.data.authors.length > 0 && (
+            <>
+              <span>·</span>
+              <div className="flex flex-row flex-wrap items-center">
+                {page.data.authors.map((author, index) => (
+                  <div
+                    key={index}
+                    className="mx-1 flex flex-row items-center gap-1.5"
+                  >
+                    {author.link ? (
+                      <Link
+                        href={author.link}
+                        className="text-fd-foreground flex flex-row items-center gap-1.5 font-medium hover:underline"
+                      >
+                        {author.image && (
+                          <Image
+                            src={author.image}
+                            alt={author.name}
+                            width={24}
+                            height={24}
+                            className="rounded-full"
+                          />
+                        )}
                         {author.name}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </>
+                      </Link>
+                    ) : (
+                      <div className="flex flex-row items-center gap-1.5">
+                        {author.image && (
+                          <Image
+                            src={author.image}
+                            alt={author.name}
+                            width={24}
+                            height={24}
+                            className="rounded-full"
+                          />
+                        )}
+                        <p className="text-fd-foreground font-medium">
+                          {author.name}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+        {page.data.tags && page.data.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {page.data.tags.map((tag) => (
+              <Link
+                key={tag}
+                href={`/blog/tags/${encodeURIComponent(tag)}`}
+                className="text-fd-muted-foreground hover:text-fd-foreground text-sm transition-colors"
+              >
+                #{tag}
+              </Link>
+            ))}
+          </div>
         )}
       </div>
 
