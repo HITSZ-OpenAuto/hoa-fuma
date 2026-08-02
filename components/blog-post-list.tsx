@@ -38,7 +38,11 @@ export function BlogPostList({
       <Link
         key={tag.value}
         href={tag.href}
-        aria-current={activeTag === tag.value ? 'page' : undefined}
+        aria-current={
+          activeTag === tag.value || (!activeTag && tag.value === '')
+            ? 'page'
+            : undefined
+        }
         className={`shrink-0 rounded-full border px-3 py-1 text-sm whitespace-nowrap transition-colors ${
           activeTag === tag.value || (!activeTag && tag.value === '')
             ? 'bg-fd-primary text-fd-primary-foreground border-transparent'
