@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ChevronDown } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import type { PostListItem } from '@/lib/posts-summary';
 
@@ -19,38 +20,46 @@ export function BlogPostList({
     if (activeTag) return item.tags.includes(activeTag);
     return true;
   });
+  const filters = [
+    { label: '全部', value: '', href: '/blog' },
+    ...tags.map((tag) => ({
+      label: tag,
+      value: tag,
+      href: `/blog/tags/${encodeURIComponent(tag)}`,
+    })),
+    {
+      label: '未分类',
+      value: untaggedFilter,
+      href: `/blog/tags/${encodeURIComponent(untaggedFilter)}`,
+    },
+  ];
+  const filterLinks = () =>
+    filters.map((tag) => (
+      <Link
+        key={tag.value}
+        href={tag.href}
+        aria-current={activeTag === tag.value ? 'page' : undefined}
+        className={`shrink-0 rounded-full border px-3 py-1 text-sm whitespace-nowrap transition-colors ${
+          activeTag === tag.value || (!activeTag && tag.value === '')
+            ? 'bg-fd-primary text-fd-primary-foreground border-transparent'
+            : 'text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-accent-foreground'
+        }`}
+      >
+        {tag.label}
+      </Link>
+    ));
 
   return (
     <>
       <div className="mb-4">
-        <div className="flex gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:overflow-visible">
-          {[
-            { label: '全部', value: '', href: '/blog' },
-            ...tags.map((tag) => ({
-              label: tag,
-              value: tag,
-              href: `/blog/tags/${encodeURIComponent(tag)}`,
-            })),
-            {
-              label: '未分类',
-              value: untaggedFilter,
-              href: `/blog/tags/${encodeURIComponent(untaggedFilter)}`,
-            },
-          ].map((tag) => (
-            <Link
-              key={tag.value}
-              href={tag.href}
-              aria-current={activeTag === tag.value ? 'page' : undefined}
-              className={`shrink-0 rounded-full border px-3 py-1 text-sm whitespace-nowrap transition-colors ${
-                activeTag === tag.value || (!activeTag && tag.value === '')
-                  ? 'bg-fd-primary text-fd-primary-foreground border-transparent'
-                  : 'text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-accent-foreground'
-              }`}
-            >
-              {tag.label}
-            </Link>
-          ))}
-        </div>
+        <details className="group sm:hidden">
+          <summary className="text-fd-muted-foreground flex cursor-pointer list-none items-center justify-between rounded-lg border px-3 py-2 text-sm [&::-webkit-details-marker]:hidden">
+            <span>标签：{activeTag ?? '全部'}</span>
+            <ChevronDown className="size-4 transition-transform group-open:rotate-180" />
+          </summary>
+          <div className="mt-3 flex flex-wrap gap-2">{filterLinks()}</div>
+        </details>
+        <div className="hidden flex-wrap gap-2 sm:flex">{filterLinks()}</div>
       </div>
       <div className="divide-y border-y">
         {filteredItems.map((item) => (
