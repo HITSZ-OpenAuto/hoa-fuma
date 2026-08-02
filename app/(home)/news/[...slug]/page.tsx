@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getMDXComponents } from '@/components/mdx';
 import { Breadcrumb } from '@/components/breadcrumb';
+import { PostNavigation } from '@/components/post-navigation';
 import { news } from '@/lib/source/posts';
 import { formatDate } from '@/lib/utils';
 import { getPostSummaries, getSeriesPosts } from '@/lib/posts-summary';
@@ -52,6 +53,7 @@ export default async function Page(props: {
             </Link>
           ))}
         </div>
+        <PostNavigation tree={news.pageTree} url={page.url} />
       </main>
     );
   }
@@ -115,6 +117,7 @@ export default async function Page(props: {
       <div className="prose min-w-0 flex-1 break-words">
         <Mdx components={getMDXComponents()} />
       </div>
+      <PostNavigation tree={news.pageTree} url={page.url} />
     </article>
   );
 }
