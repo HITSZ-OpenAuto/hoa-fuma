@@ -6,7 +6,11 @@ import { Breadcrumb } from '@/components/breadcrumb';
 import { PostNavigation } from '@/components/post-navigation';
 import { news } from '@/lib/source/posts';
 import { formatDate } from '@/lib/utils';
-import { getPostSummaries, getSeriesPosts } from '@/lib/posts-summary';
+import {
+  getPostNavigationPosts,
+  getPostSummaries,
+  getSeriesPosts,
+} from '@/lib/posts-summary';
 
 export default async function Page(props: {
   params: Promise<{ slug: string[] }>;
@@ -16,6 +20,7 @@ export default async function Page(props: {
 
   if (!page) notFound();
   const seriesPosts = getSeriesPosts('news', page.slugs);
+  const navigationPosts = getPostNavigationPosts('news');
   const Mdx = page.data.body;
 
   if (seriesPosts.length > 0) {
@@ -53,7 +58,6 @@ export default async function Page(props: {
             </Link>
           ))}
         </div>
-        <PostNavigation tree={news.pageTree} url={page.url} />
       </main>
     );
   }
@@ -117,7 +121,7 @@ export default async function Page(props: {
       <div className="prose min-w-0 flex-1 break-words">
         <Mdx components={getMDXComponents()} />
       </div>
-      <PostNavigation tree={news.pageTree} url={page.url} />
+      <PostNavigation posts={navigationPosts} url={page.url} />
     </article>
   );
 }

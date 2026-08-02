@@ -7,7 +7,11 @@ import { Breadcrumb } from '@/components/breadcrumb';
 import { PostNavigation } from '@/components/post-navigation';
 import { blog } from '@/lib/source/posts';
 import { formatDate } from '@/lib/utils';
-import { getPostSummaries, getSeriesPosts } from '@/lib/posts-summary';
+import {
+  getPostNavigationPosts,
+  getPostSummaries,
+  getSeriesPosts,
+} from '@/lib/posts-summary';
 
 export default async function Page(props: {
   params: Promise<{ slug: string[] }>;
@@ -17,6 +21,7 @@ export default async function Page(props: {
 
   if (!page) notFound();
   const seriesPosts = getSeriesPosts('blog', page.slugs);
+  const navigationPosts = getPostNavigationPosts('blog');
   const Mdx = page.data.body;
   const toc = page.data.toc;
 
@@ -55,7 +60,6 @@ export default async function Page(props: {
             </Link>
           ))}
         </div>
-        <PostNavigation tree={blog.pageTree} url={page.url} />
       </main>
     );
   }
@@ -139,7 +143,7 @@ export default async function Page(props: {
         )}
         <Mdx components={getMDXComponents()} />
       </div>
-      <PostNavigation tree={blog.pageTree} url={page.url} />
+      <PostNavigation posts={navigationPosts} url={page.url} />
     </article>
   );
 }
