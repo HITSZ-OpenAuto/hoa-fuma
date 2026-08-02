@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { Rss } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { getPostListItems } from '@/lib/posts-summary';
 
@@ -7,38 +7,48 @@ export default function Page() {
   const items = getPostListItems('news');
 
   return (
-    <main className="max-w-page mx-auto w-full px-4 pb-12 md:py-12">
-      <div className="dark relative z-2 mb-4 aspect-[3.2] p-8 md:p-12">
-        <Image
-          src="/images/hoa-banner.png"
-          loading="eager"
-          alt="banner"
-          fill
-          className="absolute inset-0 -z-1 size-full object-cover"
-        />
-        <h1 className="text-landing-foreground mb-4 font-mono text-3xl font-medium">
-          HOA 新闻
-        </h1>
-        <p className="text-landing-foreground font-mono text-sm">
+    <main className="mx-auto w-full max-w-4xl px-4 pb-12 md:py-12">
+      <div className="mb-4 py-4 md:py-6">
+        <div className="mb-2 flex items-center gap-2">
+          <h1 className="text-fd-foreground font-mono text-3xl font-medium">
+            新闻
+          </h1>
+          <Link
+            href="/news/rss.xml"
+            aria-label="订阅新闻 RSS"
+            title="订阅新闻 RSS"
+            className="text-fd-muted-foreground hover:text-fd-foreground transition-colors"
+          >
+            <Rss className="size-5" />
+          </Link>
+        </div>
+        <p className="text-fd-muted-foreground font-mono text-sm">
           最新动态与公告
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-3 xl:grid-cols-4">
+      <div className="divide-y border-y">
         {items.map((item) => (
           <Link
             key={`${item.type}-${item.slug}`}
             href={item.type === 'series' ? `/news/${item.slug}` : item.url}
-            className="bg-fd-card hover:bg-fd-accent hover:text-fd-accent-foreground flex flex-col rounded-2xl border p-4 shadow-sm transition-colors"
+            className="group flex flex-col gap-3 py-5 md:flex-row md:items-start md:justify-between md:gap-8"
           >
-            <p className="font-medium">{item.title}</p>
-            <p className="text-fd-muted-foreground text-sm">
-              {item.description}
-            </p>
+            <div className="min-w-0">
+              <h2 className="group-hover:text-brand font-medium transition-colors">
+                {item.title}
+              </h2>
+              <p className="text-fd-muted-foreground mt-1 text-sm">
+                {item.description}
+              </p>
+            </div>
 
             {item.date && (
-              <p className="text-brand mt-auto pt-4 text-xs">
+              <time
+                dateTime={item.date.toISOString()}
+                className="text-brand shrink-0 text-xs md:pt-1"
+              >
                 {formatDate(item.date)}
-              </p>
+              </time>
             )}
           </Link>
         ))}
