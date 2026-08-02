@@ -62,6 +62,11 @@ export function BlogPostList({
         <div className="hidden flex-wrap gap-2 sm:flex">{filterLinks()}</div>
       </div>
       <div className="divide-y border-y">
+        {filteredItems.length === 0 && (
+          <p className="text-fd-muted-foreground py-8 text-center text-sm">
+            暂无相关文章。
+          </p>
+        )}
         {filteredItems.map((item) => (
           <div
             key={`${item.type}-${item.slug}`}
