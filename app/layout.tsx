@@ -10,6 +10,20 @@ export const metadata: Metadata = {
   title: 'HITSZ 课程攻略共享计划',
   description: '为你的 HITSZ 求学路提供全面的课程资料与经验分享',
   metadataBase: new URL('https://hoa.moe'),
+  alternates: {
+    types: {
+      'application/rss+xml': [
+        {
+          title: 'HOA 博客',
+          url: '/blog/rss.xml',
+        },
+        {
+          title: 'HOA 新闻',
+          url: '/news/rss.xml',
+        },
+      ],
+    },
+  },
   icons: {
     icon: [
       {
