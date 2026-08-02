@@ -2,8 +2,8 @@ import { getRSS } from '@/lib/rss';
 
 export const revalidate = false;
 
-export function GET() {
-  return new Response(getRSS('blog'), {
+export async function GET() {
+  return new Response(await getRSS('blog'), {
     headers: {
       'Content-Type': 'application/rss+xml; charset=utf-8',
     },
