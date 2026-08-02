@@ -1,6 +1,9 @@
 import type { ComponentProps, JSX } from 'react';
 import Link, { type LinkProps } from 'fumadocs-core/link';
-import { Card as FumadocsCard } from 'fumadocs-ui/components/card';
+import {
+  Card as FumadocsCard,
+  Cards as FumadocsCards,
+} from 'fumadocs-ui/components/card';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
 import { CourseInfo } from '@/components/course-info';
@@ -8,6 +11,7 @@ import type { CourseInfoData } from '@/lib/types';
 import { Files, Folder, File } from '@/components/file-tree';
 import { Accordion, Accordions } from '@/components/ui/accordion';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { cn } from '@/lib/utils';
 import {
   Select,
   SelectContent,
@@ -34,12 +38,22 @@ function NoPrefetchCard(props: CardProps) {
   return <Card {...props} prefetch={false} />;
 }
 
+function Cards(props: ComponentProps<typeof FumadocsCards>) {
+  return (
+    <FumadocsCards
+      {...props}
+      className={cn('[&>*:only-child]:col-span-full', props.className)}
+    />
+  );
+}
+
 export function getMDXComponents(
   components?: MDXComponents,
   context?: MdxContext
 ) {
   return {
     ...defaultMdxComponents,
+    Cards,
     Files,
     Folder,
     File,

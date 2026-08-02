@@ -115,7 +115,11 @@ export default async function Page(props: {
       </div>
 
       <div className="prose min-w-0 flex-1">
-        <InlineTOC items={toc} />
+        {toc.length > 0 && (
+          <InlineTOC items={toc} className="mb-6">
+            目录
+          </InlineTOC>
+        )}
         <Mdx components={getMDXComponents()} />
       </div>
     </article>
