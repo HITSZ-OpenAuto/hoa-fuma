@@ -149,6 +149,26 @@ export function getSeriesPosts(kind: PostKind, seriesSlugs: readonly string[]) {
     });
 }
 
+export function getPostNavigationPosts(kind: PostKind) {
+  const posts = getPostSummaries(kind);
+
+  return posts
+    .filter(
+      (post) =>
+        !posts.some(
+          (candidate) =>
+            candidate.slugs.length > post.slugs.length &&
+            post.slugs.every((slug, index) => slug === candidate.slugs[index])
+        )
+    )
+    .sort((a, b) => {
+      const dateDifference =
+        new Date(b.date).getTime() - new Date(a.date).getTime();
+      if (dateDifference !== 0) return dateDifference;
+      return a.url.localeCompare(b.url);
+    });
+}
+
 export function getPostListItems(kind: PostKind): PostListItem[] {
   const pages = getPostSummaries(kind);
   const seriesMap = new Map<
