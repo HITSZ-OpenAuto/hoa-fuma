@@ -1,13 +1,10 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { BlogPostList, untaggedFilter } from '@/components/blog-post-list';
+import { BlogPostList } from '@/components/blog-post-list';
 import { getPostListItems } from '@/lib/posts-summary';
 
 function getTags() {
-  return [
-    ...new Set(getPostListItems('blog').flatMap((item) => item.tags)),
-    untaggedFilter,
-  ];
+  return [...new Set(getPostListItems('blog').flatMap((item) => item.tags))];
 }
 
 function decodeTag(tag: string) {

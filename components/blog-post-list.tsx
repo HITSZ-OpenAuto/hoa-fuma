@@ -3,25 +3,23 @@ import { ChevronDown } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import type { PostListItem } from '@/lib/posts-summary';
 
-export const untaggedFilter = '未分类';
-
 export function BlogPostList({
   items,
   activeTag,
 }: {
   items: PostListItem[];
-  activeTag?: string;
+  activeTag?: string | null;
 }) {
   const tags = [...new Set(items.flatMap((item) => item.tags))].sort((a, b) =>
     a.localeCompare(b, 'zh-CN')
   );
   const filteredItems = items.filter((item) => {
-    if (activeTag === untaggedFilter) return item.tags.length === 0;
+    if (activeTag === null) return item.tags.length === 0;
     if (activeTag) return item.tags.includes(activeTag);
     return true;
   });
   const filters = [
-    { label: '全部', value: '', href: '/blog' },
+    { label: '全部', value: undefined, href: '/blog' },
     ...tags.map((tag) => ({
       label: tag,
       value: tag,
@@ -29,22 +27,18 @@ export function BlogPostList({
     })),
     {
       label: '未分类',
-      value: untaggedFilter,
-      href: `/blog/tags/${encodeURIComponent(untaggedFilter)}`,
+      value: null,
+      href: '/blog/tags',
     },
   ];
   const filterLinks = () =>
     filters.map((tag) => (
       <Link
-        key={tag.value}
+        key={tag.href}
         href={tag.href}
-        aria-current={
-          activeTag === tag.value || (!activeTag && tag.value === '')
-            ? 'page'
-            : undefined
-        }
+        aria-current={activeTag === tag.value ? 'page' : undefined}
         className={`shrink-0 rounded-full border px-3 py-1 text-sm whitespace-nowrap transition-colors ${
-          activeTag === tag.value || (!activeTag && tag.value === '')
+          activeTag === tag.value
             ? 'bg-fd-primary text-fd-primary-foreground border-transparent'
             : 'text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-accent-foreground'
         }`}
@@ -58,7 +52,9 @@ export function BlogPostList({
       <div className="mb-4">
         <details className="group sm:hidden">
           <summary className="text-fd-muted-foreground flex cursor-pointer list-none items-center justify-between rounded-lg border px-3 py-2 text-sm [&::-webkit-details-marker]:hidden">
-            <span>标签：{activeTag ?? '全部'}</span>
+            <span>
+              标签：{activeTag === null ? '未分类' : (activeTag ?? '全部')}
+            </span>
             <ChevronDown className="size-4 transition-transform group-open:rotate-180" />
           </summary>
           <div className="mt-3 flex flex-wrap gap-2">{filterLinks()}</div>
