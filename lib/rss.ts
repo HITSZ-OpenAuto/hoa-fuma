@@ -25,7 +25,7 @@ export function getRSS(kind: FeedKind) {
     id: `${baseUrl}/${kind}`,
     link: `${baseUrl}/${kind}`,
     language: 'zh-CN',
-    image: `${baseUrl}/images/hoa-banner.png`,
+    image: `${baseUrl}/apple-icon.png`,
     favicon: `${baseUrl}/icons/favicon-light.png`,
     copyright: 'HITSZ OpenAuto contributors',
     feedLinks: {
