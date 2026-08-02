@@ -90,9 +90,31 @@ export function getPostSummaries(kind: PostKind): PostSummary[] {
   return posts;
 }
 
-export function getSeriesPosts(kind: PostKind, seriesSlug: string) {
-  return getPostSummaries(kind)
-    .filter((post) => post.slugs.length > 1 && post.slugs[0] === seriesSlug)
+export function getSeriesPosts(kind: PostKind, seriesSlugs: readonly string[]) {
+  const posts = getPostSummaries(kind);
+  const postPaths = new Set(posts.map((post) => post.slugs.join('/')));
+
+  return posts
+    .filter((post) => {
+      if (
+        post.slugs.length <= seriesSlugs.length ||
+        !seriesSlugs.every((slug, index) => post.slugs[index] === slug)
+      ) {
+        return false;
+      }
+
+      for (
+        let depth = seriesSlugs.length + 1;
+        depth < post.slugs.length;
+        depth++
+      ) {
+        if (postPaths.has(post.slugs.slice(0, depth).join('/'))) {
+          return false;
+        }
+      }
+
+      return true;
+    })
     .sort((a, b) => {
       const wa = a.weight ?? Infinity;
       const wb = b.weight ?? Infinity;

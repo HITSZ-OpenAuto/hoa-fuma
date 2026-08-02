@@ -3,6 +3,7 @@ import { InlineTOC } from 'fumadocs-ui/components/inline-toc';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getMDXComponents } from '@/components/mdx';
+import { Breadcrumb } from '@/components/breadcrumb';
 import { blog } from '@/lib/source/posts';
 import { formatDate } from '@/lib/utils';
 import { getPostSummaries, getSeriesPosts } from '@/lib/posts-summary';
@@ -14,34 +15,42 @@ export default async function Page(props: {
   const page = blog.getPage(params.slug);
 
   if (!page) notFound();
-  const isSeriesIndex = page.slugs.length === 1;
-  const seriesPosts = isSeriesIndex
-    ? getSeriesPosts('blog', page.slugs[0])
-    : [];
+  const seriesPosts = getSeriesPosts('blog', page.slugs);
   const Mdx = page.data.body;
   const toc = page.data.toc;
 
-  if (isSeriesIndex && seriesPosts.length > 0) {
+  if (seriesPosts.length > 0) {
     return (
-      <main className="max-w-page mx-auto w-full px-4 py-12">
+      <main className="mx-auto w-full max-w-4xl px-4 py-12">
+        <Breadcrumb
+          tree={blog.pageTree}
+          root={{ name: '博客', url: '/blog' }}
+        />
         <div className="mb-6">
           <h1 className="mb-4 text-3xl font-semibold">{page.data.title}</h1>
           <p className="text-fd-muted-foreground">{page.data.description}</p>
         </div>
-        <div className="grid grid-cols-1 gap-2 md:grid-cols-3 xl:grid-cols-4">
+        <div className="divide-y border-y">
           {seriesPosts.map((post) => (
             <Link
               key={post.url}
               href={post.url}
-              className="bg-fd-card hover:bg-fd-accent hover:text-fd-accent-foreground flex flex-col rounded-2xl border p-4 shadow-sm transition-colors"
+              className="group flex flex-col gap-3 py-5 md:flex-row md:items-start md:justify-between md:gap-8"
             >
-              <p className="font-medium">{post.title}</p>
-              <p className="text-fd-muted-foreground text-sm">
-                {post.description}
-              </p>
-              <p className="text-brand mt-auto pt-4 text-xs">
+              <div className="min-w-0">
+                <h2 className="group-hover:text-brand font-medium transition-colors">
+                  {post.title}
+                </h2>
+                <p className="text-fd-muted-foreground mt-1 text-sm">
+                  {post.description}
+                </p>
+              </div>
+              <time
+                dateTime={new Date(post.date).toISOString()}
+                className="text-brand shrink-0 text-xs md:pt-1"
+              >
                 {formatDate(post.date)}
-              </p>
+              </time>
             </Link>
           ))}
         </div>
@@ -51,6 +60,7 @@ export default async function Page(props: {
 
   return (
     <article className="mx-auto flex w-full max-w-200 flex-col px-4 py-8">
+      <Breadcrumb tree={blog.pageTree} root={{ name: '博客', url: '/blog' }} />
       <h1 className="mb-4 text-3xl font-semibold">{page.data.title}</h1>
       <p className="text-fd-muted-foreground mb-8">{page.data.description}</p>
 
