@@ -103,7 +103,9 @@ function buildPageFromFile(
     }
   ).title;
   const name =
-    titleHint ??
+    (typeof titleHint === 'string' && titleHint.trim().length > 0
+      ? titleHint
+      : undefined) ??
     (typeof pageTitle === 'string' && pageTitle.trim().length > 0
       ? pageTitle
       : pathToName(basename(file, extname(file))));
