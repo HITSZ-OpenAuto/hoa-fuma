@@ -97,7 +97,18 @@ function buildPageFromFile(
   slugs: string[],
   titleHint?: string
 ): Item {
-  const name = titleHint ?? pathToName(basename(file, extname(file)));
+  const pageTitle = (
+    frontmatter(readFileSync(file, 'utf8')).data as {
+      title?: unknown;
+    }
+  ).title;
+  const name =
+    (typeof titleHint === 'string' && titleHint.trim().length > 0
+      ? titleHint
+      : undefined) ??
+    (typeof pageTitle === 'string' && pageTitle.trim().length > 0
+      ? pageTitle
+      : pathToName(basename(file, extname(file))));
   return createPage(slugs, name);
 }
 

@@ -1,7 +1,12 @@
 export type MajorEntry = {
   name: string;
+  study_level?: string;
   majors?: { name: string; major_ID: string }[];
 };
+
+function getMajorDisplayName(entry: MajorEntry): string {
+  return entry.study_level === 'postgrad' ? `【研】${entry.name}` : entry.name;
+}
 
 export function computeYearMajorMap(
   pages: { slugs: string[] }[],
@@ -34,7 +39,7 @@ export function computeYearMajorMap(
         }
       }
       for (const [id, entry] of Object.entries(yearData)) {
-        fastLookup.set(id, entry.name);
+        fastLookup.set(id, getMajorDisplayName(entry));
       }
     }
 
