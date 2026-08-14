@@ -97,9 +97,11 @@ function buildPageFromFile(
   slugs: string[],
   titleHint?: string
 ): Item {
-  const pageTitle = (frontmatter(readFileSync(file, 'utf8')).data as {
-    title?: unknown;
-  }).title;
+  const pageTitle = (
+    frontmatter(readFileSync(file, 'utf8')).data as {
+      title?: unknown;
+    }
+  ).title;
   const name =
     titleHint ??
     (typeof pageTitle === 'string' && pageTitle.trim().length > 0
