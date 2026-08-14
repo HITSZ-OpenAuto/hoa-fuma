@@ -98,10 +98,13 @@ function buildPageFromFile(
   titleHint?: string
 ): Item {
   const pageTitle = (frontmatter(readFileSync(file, 'utf8')).data as {
-    title?: string;
+    title?: unknown;
   }).title;
   const name =
-    titleHint ?? pageTitle ?? pathToName(basename(file, extname(file)));
+    titleHint ??
+    (typeof pageTitle === 'string' && pageTitle.trim().length > 0
+      ? pageTitle
+      : pathToName(basename(file, extname(file))));
   return createPage(slugs, name);
 }
 
