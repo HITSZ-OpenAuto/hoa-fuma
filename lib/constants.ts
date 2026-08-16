@@ -16,6 +16,7 @@ export const SEMESTER_NAMES = new Set([
   'senior-autumn',
   'general-knowledge',
   'cross-specialty',
+  'innovation-and-proctice',
 ]);
 
 export const COURSE_CODE_RE = /^[A-Z][A-Z0-9]{2,9}$/;
