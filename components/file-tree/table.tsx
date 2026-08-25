@@ -6,10 +6,7 @@ import {
   ExpandedState,
   RowSelectionState,
   flexRender,
-  getCoreRowModel,
-  getExpandedRowModel,
-  getFilteredRowModel,
-  useReactTable,
+  useTable,
 } from '@tanstack/react-table';
 import {
   Table,
@@ -24,6 +21,7 @@ import { cn } from '@/lib/utils';
 import type { FileNode } from '@/lib/types';
 import { getFileNodes, getAcceleratedUrl, downloadBatchFiles } from './utils';
 import { createColumns } from './columns';
+import { fileTreeFeatures } from './table-features';
 import { Toolbar } from './toolbar';
 
 interface FileTreeTableProps {
@@ -93,7 +91,8 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
     prevFilterRef.current = globalFilter;
   }, [globalFilter, data]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features: fileTreeFeatures,
     data,
     columns,
     state: {
@@ -107,9 +106,6 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
     onColumnFiltersChange: setColumnFilters,
     onExpandedChange: setExpanded,
     getSubRows: (row) => row.children,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     getRowId: (row) => row.id,
     enableRowSelection: true,
     filterFromLeafRows: true,
