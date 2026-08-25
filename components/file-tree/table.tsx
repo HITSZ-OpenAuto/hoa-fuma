@@ -1,15 +1,12 @@
 'use client';
 
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useState } from 'react';
 import {
   ColumnFiltersState,
   ExpandedState,
   RowSelectionState,
   flexRender,
-  getCoreRowModel,
-  getExpandedRowModel,
-  getFilteredRowModel,
-  useReactTable,
+  useTable,
 } from '@tanstack/react-table';
 import {
   Table,
@@ -24,6 +21,7 @@ import { cn } from '@/lib/utils';
 import type { FileNode } from '@/lib/types';
 import { getFileNodes, getAcceleratedUrl, downloadBatchFiles } from './utils';
 import { createColumns } from './columns';
+import { fileTreeFeatures } from './table-features';
 import { Toolbar } from './toolbar';
 
 interface FileTreeTableProps {
@@ -32,68 +30,72 @@ interface FileTreeTableProps {
   url?: string;
 }
 
+function getInitialExpanded(data: FileNode[]): ExpandedState {
+  const expanded: Record<string, boolean> = {};
+  const stack: FileNode[][] = [data];
+
+  while (stack.length > 0) {
+    const nodes = stack.pop()!;
+    for (const node of nodes) {
+      if (node.type === 'folder' && node.defaultOpen) {
+        expanded[node.id] = true;
+      }
+      if (node.children) {
+        stack.push(node.children);
+      }
+    }
+  }
+
+  return expanded;
+}
+
+function getFilteredExpanded(data: FileNode[], filter: string): ExpandedState {
+  const expanded: Record<string, boolean> = {};
+  const query = filter.toLowerCase();
+
+  function visit(nodes: FileNode[]): boolean {
+    let subtreeMatches = false;
+
+    for (const node of nodes) {
+      const nodeMatches = node.name.toLowerCase().includes(query);
+      const childrenMatch = node.children ? visit(node.children) : false;
+      const matches = nodeMatches || childrenMatch;
+
+      if (node.type === 'folder' && matches) {
+        expanded[node.id] = true;
+      }
+      subtreeMatches ||= matches;
+    }
+
+    return subtreeMatches;
+  }
+
+  visit(data);
+  return expanded;
+}
+
 export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
   const [globalFilter, setGlobalFilter] = useState('');
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [expanded, setExpanded] = useState<ExpandedState>(() => {
-    const initialExpanded: Record<string, boolean> = {};
-    const stack: FileNode[][] = [data];
-
-    while (stack.length > 0) {
-      const currentNodes = stack.pop()!;
-      for (let i = 0; i < currentNodes.length; i++) {
-        const node = currentNodes[i];
-        if (node.type === 'folder' && node.defaultOpen) {
-          initialExpanded[node.id] = true;
-        }
-        if (node.children) {
-          stack.push(node.children);
-        }
-      }
-    }
-    return initialExpanded;
-  });
+  const [expanded, setExpanded] = useState<ExpandedState>(() =>
+    getInitialExpanded(data)
+  );
   const [isAccelerated, setIsAccelerated] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState(0);
-  const prevFilterRef = useRef(globalFilter);
-
   const columns = useMemo(
     () => createColumns({ isAccelerated }),
     [isAccelerated]
   );
 
-  useEffect(() => {
-    if (globalFilter) {
-      const newExpanded: Record<string, boolean> = {};
-      const query = globalFilter.toLowerCase();
+  const handleGlobalFilterChange = (value: string) => {
+    setGlobalFilter(value);
+    setExpanded(value ? getFilteredExpanded(data, value) : {});
+  };
 
-      function expandMatching(nodes: FileNode[]): boolean {
-        let subtreeHasMatch = false;
-        for (const node of nodes) {
-          const matchesSelf = node.name.toLowerCase().includes(query);
-          const childrenMatch = node.children
-            ? expandMatching(node.children)
-            : false;
-
-          const anyMatch = matchesSelf || childrenMatch;
-          if (node.type === 'folder' && anyMatch) {
-            newExpanded[node.id] = true;
-          }
-          if (anyMatch) subtreeHasMatch = true;
-        }
-        return subtreeHasMatch;
-      }
-      expandMatching(data);
-      setExpanded(newExpanded);
-    } else if (prevFilterRef.current !== '') {
-      setExpanded({});
-    }
-    prevFilterRef.current = globalFilter;
-  }, [globalFilter, data]);
-
-  const table = useReactTable({
+  const table = useTable({
+    features: fileTreeFeatures,
     data,
     columns,
     state: {
@@ -102,14 +104,11 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
       columnFilters,
       expanded,
     },
-    onGlobalFilterChange: setGlobalFilter,
+    onGlobalFilterChange: handleGlobalFilterChange,
     onRowSelectionChange: setRowSelection,
     onColumnFiltersChange: setColumnFilters,
     onExpandedChange: setExpanded,
     getSubRows: (row) => row.children,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     getRowId: (row) => row.id,
     enableRowSelection: true,
     filterFromLeafRows: true,
@@ -157,7 +156,7 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
     <div className={cn('not-prose flex w-full flex-col gap-4', className)}>
       <Toolbar
         globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
+        setGlobalFilter={handleGlobalFilterChange}
         isAccelerated={isAccelerated}
         setIsAccelerated={setIsAccelerated}
         isDownloading={isDownloading}
