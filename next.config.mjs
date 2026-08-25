@@ -7,7 +7,7 @@ const config = {
   output: 'standalone',
   reactStrictMode: true,
   experimental: {
-    useTypeScriptCli: false,
+    useTypeScriptCli: true,
   },
   images: {
     dangerouslyAllowLocalIP: true,
