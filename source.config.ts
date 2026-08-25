@@ -2,9 +2,10 @@ import {
   defineCollections,
   defineConfig,
   defineDocs,
+  frontmatterSchema,
+  metaSchema,
   applyMdxPreset,
 } from 'fumadocs-mdx/config';
-import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
 import z from 'zod';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -34,7 +35,7 @@ export const docs = defineDocs({
 export const blogPosts = defineCollections({
   type: 'doc',
   dir: 'content/blog',
-  schema: pageSchema.extend({
+  schema: frontmatterSchema.extend({
     authors: z
       .array(
         z.object({
@@ -45,10 +46,7 @@ export const blogPosts = defineCollections({
       )
       .optional(),
     description: z.string().optional(),
-    date: z.iso
-      .date()
-      .or(z.iso.datetime({ offset: true }))
-      .or(z.date()),
+    date: z.iso.date().or(z.date()),
     tags: z.array(z.string()).optional(),
     weight: z.number().optional(),
   }),
@@ -57,7 +55,7 @@ export const blogPosts = defineCollections({
 export const newsPosts = defineCollections({
   type: 'doc',
   dir: 'content/news',
-  schema: pageSchema.extend({
+  schema: frontmatterSchema.extend({
     authors: z
       .array(
         z.object({
@@ -68,10 +66,7 @@ export const newsPosts = defineCollections({
       )
       .optional(),
     description: z.string().optional(),
-    date: z.iso
-      .date()
-      .or(z.iso.datetime({ offset: true }))
-      .or(z.date()),
+    date: z.iso.date().or(z.date()),
     weight: z.number().optional(),
   }),
 });

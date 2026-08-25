@@ -16,13 +16,12 @@ import { toast } from 'sonner';
 import type { FileNode } from '@/lib/types';
 import { getFileIcon, getAcceleratedUrl, formatBytes } from './utils';
 import { downloadSingleFile } from './utils';
-import type { FileTreeFeatures } from './table-features';
 
 interface ColumnOptions {
   isAccelerated: boolean;
 }
 
-function NameCell({ row }: { row: Row<FileTreeFeatures, FileNode> }) {
+function NameCell({ row }: { row: Row<FileNode> }) {
   const node = row.original;
   const isFolder = node.type === 'folder';
   const isExpanded = row.getIsExpanded();
@@ -58,7 +57,7 @@ function ActionsCell({
   row,
   isAccelerated,
 }: {
-  row: Row<FileTreeFeatures, FileNode>;
+  row: Row<FileNode>;
   isAccelerated: boolean;
 }) {
   const node = row.original;
@@ -118,7 +117,7 @@ function ActionsCell({
   );
 }
 
-function SelectCell({ row }: { row: Row<FileTreeFeatures, FileNode> }) {
+function SelectCell({ row }: { row: Row<FileNode> }) {
   return (
     <Checkbox
       checked={row.getIsSelected()}
@@ -129,9 +128,7 @@ function SelectCell({ row }: { row: Row<FileTreeFeatures, FileNode> }) {
   );
 }
 
-export function createColumns(
-  options: ColumnOptions
-): ColumnDef<FileTreeFeatures, FileNode>[] {
+export function createColumns(options: ColumnOptions): ColumnDef<FileNode>[] {
   return [
     {
       id: 'select',
@@ -146,6 +143,7 @@ export function createColumns(
         />
       ),
       cell: ({ row }) => <SelectCell row={row} />,
+      enableSorting: false,
       enableHiding: false,
       size: 40,
     },

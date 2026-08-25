@@ -3,5 +3,5 @@ allowBuilds:
   sharp: true
 
 minimumReleaseAgeExclude:
-  - oxlint
-  - '@oxlint/binding-*'
+  - typescript
+  - '@typescript/typescript-*'
