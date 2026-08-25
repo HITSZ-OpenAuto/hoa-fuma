@@ -2,10 +2,9 @@ import {
   defineCollections,
   defineConfig,
   defineDocs,
-  frontmatterSchema,
-  metaSchema,
   applyMdxPreset,
 } from 'fumadocs-mdx/config';
+import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
 import z from 'zod';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -35,7 +34,7 @@ export const docs = defineDocs({
 export const blogPosts = defineCollections({
   type: 'doc',
   dir: 'content/blog',
-  schema: frontmatterSchema.extend({
+  schema: pageSchema.extend({
     authors: z
       .array(
         z.object({
@@ -58,7 +57,7 @@ export const blogPosts = defineCollections({
 export const newsPosts = defineCollections({
   type: 'doc',
   dir: 'content/news',
-  schema: frontmatterSchema.extend({
+  schema: pageSchema.extend({
     authors: z
       .array(
         z.object({
