@@ -139,7 +139,7 @@ function getSemesterOrder(page: string): number | undefined {
   const yearIndex = ['fresh', 'sophomore', 'junior', 'senior', 'fifth'].indexOf(
     year
   );
-  const semesterIndex = ['autumn', 'summer', 'spring'].indexOf(semester);
+  const semesterIndex = ['autumn', 'spring', 'summer'].indexOf(semester);
 
   if (yearIndex === -1 || semesterIndex === -1) return undefined;
   return yearIndex * 3 + semesterIndex;
