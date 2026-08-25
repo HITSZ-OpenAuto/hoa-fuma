@@ -5,3 +5,5 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - typescript
   - '@typescript/typescript-*'
+  - oxlint
+  - '@oxlint/binding-*'
