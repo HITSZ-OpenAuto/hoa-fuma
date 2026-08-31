@@ -6,6 +6,12 @@ const withMDX = createMDX();
 const config = {
   output: 'standalone',
   reactStrictMode: true,
+  experimental: {
+    useTypeScriptCli: true,
+  },
+  outputFileTracingIncludes: {
+    '/*': ['node_modules/@swc/helpers/**/*'],
+  },
   images: {
     dangerouslyAllowLocalIP: true,
     remotePatterns: [
