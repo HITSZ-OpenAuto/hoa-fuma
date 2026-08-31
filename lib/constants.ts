@@ -17,6 +17,7 @@ export const SEMESTER_NAMES = new Set([
   'general-knowledge',
   'cross-specialty',
   'innovation-and-proctice',
+  'postgrad-electives',
 ]);
 
 export const COURSE_CODE_RE = /^[A-Z][A-Z0-9]{2,9}$/;
