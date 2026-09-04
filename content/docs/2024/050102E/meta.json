@@ -1,0 +1,19 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "sophomore-summer",
+    "junior-autumn",
+    "junior-spring",
+    "junior-summer",
+    "senior-autumn",
+    "senior-spring",
+    "cross-specialty",
+    "general-knowledge",
+    "innovation-and-proctice"
+  ],
+  "root": true,
+  "title": "电子封装技术"
+}
