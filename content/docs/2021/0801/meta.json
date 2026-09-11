@@ -1,0 +1,17 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "fresh-summer",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "sophomore-summer",
+    "cross-specialty",
+    "general-knowledge",
+    "innovation-and-proctice"
+  ],
+  "root": true,
+  "title": "数学类"
+}

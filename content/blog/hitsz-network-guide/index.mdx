@@ -1,0 +1,136 @@
+---
+title: HITSZ 新生网络生存指南
+date: 2026-07-18
+description: 如何优雅地同时使用校园网和外网：从自动登录到 EZ4Connect，再到 Mihomo 全局分流。
+authors:
+  - name: Fun10165
+    link: https://github.com/Fun10165
+    image: https://github.com/Fun10165.png
+tags:
+  - 新生指南
+  - 校园生活
+  - 网络
+---
+
+> 原文发布于作者个人博客：[https://fun10165.github.io/blog/hitsz-network-guide/](https://fun10165.github.io/blog/hitsz-network-guide/)
+
+在 HITSZ，新生入学后很快就会面临两个网络问题：
+
+1.  **校园网登录**：每次连上 WiFi 都要打开浏览器手动登录，切个网还得重来一遍
+2.  **外网访问加速**：学校网络访问部分境外资源速度很慢，作业查资料、看论文、用一些开发工具都很痛苦
+
+这两个问题其实可以用一套方案同时解决。本文假设读者对命令行和网络配置有基本了解，如果你是完全零基础的新生，可以先收藏，后面慢慢看。
+
+## 校园网自动登录
+
+HITSZ 的校园网认证页面位于 `10.248.98.2`，并且只能通过校园网地址访问。每次手动登录都很烦，可以用自动化工具减少重复操作。
+
+我写了一个 [hitsz-autonet](https://github.com/Fun10165/hitsz-autonet)：目前官方支持 **macOS 的 Python 后台服务**和 **Android App**，会定时检测连通性并在需要时完成认证。Windows 版尚未提供，Windows 用户仍需使用认证页，或按仓库协议自行编写定时任务；不要把 macOS 安装步骤直接照搬到 Windows。
+
+如果你不想用第三方工具，也可以通过拼接 URL 的方式手动登录，但会比较麻烦：
+
+```
+https://net.hitsz.edu.cn/srun_portal_pc?ac_id=1&theme=basic4&wlanuserip=<你的校园网IP>
+```
+
+这种方式需要提前知道本机在校园网中被分配的 IP，不够优雅。
+
+## 绕过深信服 VPN
+
+HITSZ 的部分校内资源只能从内网访问。学校提供 EasyConnect / aTrust 客户端；如果你不希望安装这类系统级客户端，可以选择兼容其协议的开源实现，但应自行评估安全性并保留官方客户端作为故障排查基线。
+
+浙大同学开发了 [ZJU-Connect](https://github.com/Mythologyli/zju-connect)，HITSZ 的 [chenx](https://github.com/chenx-dust) 又基于相关图形客户端开发了 [EZ4Connect](https://github.com/chenx-dust/EZ4Connect)，支持 Windows、macOS 和 Linux，并针对 aTrust / EasyConnect 提供图形化配置。
+
+安装 EZ4Connect 后，需要先在「设置 → 核心」填写服务器地址，再在「设置 → 认证」选择服务器类型并配置登录信息。连接成功后，可按官方[高级使用方式](https://github.com/chenx-dust/EZ4Connect/blob/master/docs/ADVANCED_USAGE.md)在核心设置中启用 SOCKS5 端口；下文统一以 `127.0.0.1:11080` 为例。
+
+## 外网访问加速
+
+> ⚠️ 以下内容仅讨论技术方案，不提供任何具体服务的获取方式。请遵守当地法律法规。
+
+使用基于 [Mihomo](https://github.com/MetaCubeX/mihomo) 内核的客户端，可以创建虚拟网卡接管系统的所有流量，然后根据规则把不同类型的流量分流到不同的出口。
+
+### 为什么不指定图形客户端
+
+Mihomo 是通用代理内核，Windows、macOS 和 Linux 都有多个图形前端。2026 年 6 月，Clash Verge Rev 社区围绕 CVD 订阅设备绑定展开了[硬件指纹与隐私争议](https://github.com/clash-verge-rev/clash-verge-rev/discussions/7186)。这并不等于所有版本都会上传相同信息，但足以说明客户端选择需要单独审计。
+
+因此本文只讨论 Mihomo 配置结构，不指定某个图形客户端。选择时应优先查看源码、发布签名、权限范围和社区维护状态。
+
+### 架构
+
+```
+系统网络栈 → Mihomo TUN 虚拟网卡
+                ├── 校园网资源 → EZ4Connect SOCKS5 (127.0.0.1:11080) → 校园网
+                ├── 国内网站    → DIRECT
+                └── 境外资源    → [REDACTED]
+```
+
+Mihomo 开启 TUN 与 `auto-route` 后，会把匹配的系统流量路由进虚拟网卡，再按规则选择直连或代理出口。不同 `stack` 的行为并不相同；具体差异应以 [Mihomo TUN 文档](https://wiki.metacubex.one/config/inbound/tun/)为准，不要笼统假设所有连接都由同一种用户态协议栈处理。
+
+### 配置要点
+
+**1. 在 EZ4Connect 中启用 SOCKS5 端口**：
+
+在「设置 → 核心」中将 SOCKS5 代理端口设为 `11080`，关闭 EZ4Connect 的系统代理；如果客户端要求，再启用「允许外部访问」。
+
+**2. 在 Mihomo 配置中添加校园网节点**：
+
+```yaml
+proxies:
+  - name: local-campus
+    type: socks5
+    server: 127.0.0.1
+    port: 11080
+    udp: true
+```
+
+**3. 把校园网流量送往本地节点**：
+
+```yaml
+rules:
+  # 先排除 VPN 客户端自身流量，避免在 TUN 中形成代理回环
+  - PROCESS-PATH-WILDCARD,*EZ4Connect*,DIRECT
+  - PROCESS-NAME,EZ4Connect.exe,DIRECT
+  - PROCESS-NAME,zju-connect.exe,DIRECT
+  # 校园网认证入口必须直连
+  - IP-CIDR,10.248.98.2/32,DIRECT,no-resolve
+  - DOMAIN-SUFFIX,net.hitsz.edu.cn,DIRECT
+  # 其余校内资源交给 EZ4Connect
+  - DOMAIN-SUFFIX,hitsz.edu.cn,local-campus
+  - IP-CIDR,10.248.0.0/14,local-campus,no-resolve
+```
+
+`10.248.0.0/14` 覆盖 `10.248.0.0` 到 `10.251.255.255`。若你的实际资源位于其他私网段，应以 EZ4Connect 日志和学校当前网络为准扩充规则，而不是直接把全部 `10.0.0.0/8` 都交给代理。
+
+**4. 境外访问**：
+
+> \[REDACTED\] —— 此处省略外网访问加速服务的获取与配置方法。请通过常规搜索引擎自行了解 Mihomo 订阅配置。
+
+**5. 开启 TUN 模式**：
+
+在 Mihomo 客户端中开启 TUN 模式与自动路由（通常需要管理员权限）。启用后，浏览器、终端和 App 不必分别配置代理；若使用 `fake-ip`，还应按 EZ4Connect 高级文档为 `hitsz.edu.cn` 添加过滤规则，避免校内域名被映射到无法识别的地址。
+
+## 验证
+
+-   直接访问 `net.hitsz.edu.cn` 时命中 `DIRECT`
+-   访问校内资源时，Mihomo 日志命中 `local-campus`
+-   EZ4Connect 日志能看到对应请求，且没有持续回环
+-   国内网站保持直连；其他流量按你自己的合法配置处理
+
+### 常见问题
+
+-   **EZ4Connect 无法连接**：重新核对服务器类型、地址和认证方式，而不是只反复点击连接
+-   **TUN 模式启动失败**：确认客户端拥有所需权限，并按 Mihomo 文档检查防火墙与 TUN 网卡
+-   **出现代理回环**：把 EZ4Connect / zju-connect 进程直连规则放到校园网规则之前
+-   **规则不生效**：检查 YAML 缩进、规则顺序，以及当前配置文件是否真的被客户端加载
+
+## 总结
+
+这套方案把职责拆开：hitsz-autonet 负责受支持设备上的校园网认证，EZ4Connect 负责校内 VPN 链路，Mihomo 负责系统级分流。配置时最重要的不是照抄端口，而是确认平台支持范围、代理类型、规则顺序和回环排除都与当前版本一致。
+
+## 参考资料
+
+-   [hitsz-autonet README](https://github.com/Fun10165/hitsz-autonet#readme)
+-   [EZ4Connect README](https://github.com/chenx-dust/EZ4Connect#readme)
+-   [EZ4Connect：高级使用方式](https://github.com/chenx-dust/EZ4Connect/blob/master/docs/ADVANCED_USAGE.md)
+-   [Mihomo：TUN 配置](https://wiki.metacubex.one/config/inbound/tun/)
+-   [Clash Verge Rev CVD 隐私讨论 #7186](https://github.com/clash-verge-rev/clash-verge-rev/discussions/7186)
