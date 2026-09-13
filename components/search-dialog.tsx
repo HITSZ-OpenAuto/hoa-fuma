@@ -17,9 +17,10 @@ import type { DefaultSearchDialogProps } from 'fumadocs-ui/components/dialog/sea
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
 import { useDocsSearch } from 'fumadocs-core/search/client';
 import { fetchClient } from 'fumadocs-core/search/client/fetch';
-import { oramaStaticClient } from 'fumadocs-core/search/client/orama-static';
 import { useOnChange } from 'fumadocs-core/utils/use-on-change';
 import { useMemo, useState } from 'react';
+
+type SearchDialogProps = Omit<DefaultSearchDialogProps, 'type'>;
 
 function EmptySearchResults() {
   return (
@@ -34,20 +35,16 @@ export function SearchDialog({
   tags = [],
   api,
   delayMs,
-  type,
   allowClear = false,
   links = [],
   footer,
   ...props
-}: DefaultSearchDialogProps) {
+}: SearchDialogProps) {
   const { locale } = useI18n();
   const [tag, setTag] = useState(defaultTag);
   const client = useMemo(
-    () =>
-      type === 'static'
-        ? oramaStaticClient({ from: api, locale, tag })
-        : fetchClient({ api, locale, tag }),
-    [type, api, locale, tag]
+    () => fetchClient({ api, locale, tag }),
+    [api, locale, tag]
   );
   const { search, setSearch, query } = useDocsSearch({ client, delayMs });
   const defaultItems = useMemo(() => {

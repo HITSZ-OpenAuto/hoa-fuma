@@ -6,6 +6,9 @@ const withMDX = createMDX();
 const config = {
   output: 'standalone',
   reactStrictMode: true,
+  experimental: {
+    useTypeScriptCli: true,
+  },
   images: {
     dangerouslyAllowLocalIP: true,
     remotePatterns: [

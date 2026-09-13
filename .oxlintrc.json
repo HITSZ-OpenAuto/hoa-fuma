@@ -13,6 +13,6 @@
     "promise"
   ],
   "categories": {
-    "correctness": "warn"
+    "correctness": "error"
   }
 }

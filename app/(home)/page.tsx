@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { Mail } from 'lucide-react';
 import localFont from 'next/font/local';
+import Link from 'next/link';
 import { RecentRepos } from '@/components/recent-repos';
 import { ScrollHint } from '@/components/scroll-hint';
 import { LatestPosts } from '@/components/latest-posts';
@@ -126,12 +127,12 @@ export default function HomePage() {
           <p className="text-muted-foreground flex items-center justify-center gap-2 text-xs">
             <span>© 2026 HITSZ OpenAuto</span>
             <span aria-hidden="true">·</span>
-            <a
+            <Link
               href="/privacy"
               className="hover:text-foreground transition-colors"
             >
               隐私政策
-            </a>
+            </Link>
           </p>
         </div>
       </footer>
