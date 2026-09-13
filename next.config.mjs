@@ -9,9 +9,6 @@ const config = {
   experimental: {
     useTypeScriptCli: true,
   },
-  outputFileTracingIncludes: {
-    '/*': ['node_modules/@swc/helpers/**/*'],
-  },
   images: {
     dangerouslyAllowLocalIP: true,
     remotePatterns: [
