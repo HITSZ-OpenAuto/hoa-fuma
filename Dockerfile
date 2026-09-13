@@ -6,15 +6,20 @@ ARG NODE_VERSION=24.17.0-slim
 
 FROM node:${NODE_VERSION} AS dependencies
 
+ARG PNPM_VERSION=12.4.1
+
 # Set working directory
 WORKDIR /app
+
+RUN npm install --global --prefix /opt/pnpm "pnpm@${PNPM_VERSION}"
+ENV PATH="/opt/pnpm/bin:$PATH"
 
 # Copy package-related files first to leverage Docker's caching mechanism
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* .npmrc* source.config.ts next.config.* ./
 
 # Install project dependencies with frozen lockfile for reproducible builds
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
-  corepack enable pnpm && pnpm install --frozen-lockfile
+  pnpm install --frozen-lockfile
 
 # ============================================
 # Stage 2: Build Next.js application in standalone mode
@@ -27,6 +32,9 @@ WORKDIR /app
 
 # Copy project dependencies from dependencies stage
 COPY --from=dependencies /app/node_modules ./node_modules
+
+COPY --from=dependencies /opt/pnpm /opt/pnpm
+ENV PATH="/opt/pnpm/bin:$PATH"
 
 # Copy application source code
 COPY . .
@@ -49,7 +57,7 @@ ENV NEXT_PUBLIC_UMAMI_WEBSITE_ID=$NEXT_PUBLIC_UMAMI_WEBSITE_ID
 # This caches the .next/cache directory across builds, but it also prevents
 # .next/cache/fetch-cache from being included in the final image, meaning
 # cached fetch responses from the build won't be available at runtime.
-RUN corepack enable pnpm && pnpm build
+RUN pnpm build
 
 # ============================================
 # Stage 3: Run Next.js application
