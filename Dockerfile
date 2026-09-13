@@ -9,7 +9,8 @@ FROM node:${NODE_VERSION} AS dependencies
 # Set working directory
 WORKDIR /app
 
-COPY --from=ghcr.io/pnpm/pnpm:12 /opt/pnpm/pnpm /usr/local/bin/pnpm
+RUN npm install --global --prefix /opt/pnpm pnpm@12
+ENV PATH="/opt/pnpm/bin:$PATH"
 
 # Copy package-related files first to leverage Docker's caching mechanism
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* .npmrc* source.config.ts next.config.* ./
@@ -30,7 +31,8 @@ WORKDIR /app
 # Copy project dependencies from dependencies stage
 COPY --from=dependencies /app/node_modules ./node_modules
 
-COPY --from=dependencies /usr/local/bin/pnpm /usr/local/bin/pnpm
+COPY --from=dependencies /opt/pnpm /opt/pnpm
+ENV PATH="/opt/pnpm/bin:$PATH"
 
 # Copy application source code
 COPY . .
