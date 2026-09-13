@@ -6,10 +6,12 @@ ARG NODE_VERSION=24.17.0-slim
 
 FROM node:${NODE_VERSION} AS dependencies
 
+ARG PNPM_VERSION=12.4.1
+
 # Set working directory
 WORKDIR /app
 
-RUN npm install --global --prefix /opt/pnpm pnpm@12
+RUN npm install --global --prefix /opt/pnpm "pnpm@${PNPM_VERSION}"
 ENV PATH="/opt/pnpm/bin:$PATH"
 
 # Copy package-related files first to leverage Docker's caching mechanism
