@@ -30,7 +30,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: make content
 
-      - uses: pnpm/action-setup@v6.0.9
+      - uses: pnpm/action-setup@v6.1.0
         with:
           cache: true
 
