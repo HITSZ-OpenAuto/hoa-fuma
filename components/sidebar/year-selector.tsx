@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from 'fumadocs-ui/components/ui/popover';
 import Link from 'fumadocs-core/link';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { CalendarDays, Check, ChevronsUpDown } from 'lucide-react';
 import { useState } from 'react';
 
 export function YearSelector({
@@ -21,7 +21,15 @@ export function YearSelector({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger className="bg-fd-secondary/50 text-fd-secondary-foreground hover:bg-fd-accent data-[state=open]:bg-fd-accent data-[state=open]:text-fd-accent-foreground flex items-center gap-2 rounded-lg border p-2 text-start transition-colors">
-        <span className="text-sm font-medium">{currentYear}</span>
+        <div className="text-fd-primary flex size-5 shrink-0 items-center justify-center">
+          <CalendarDays className="size-4" />
+        </div>
+        <div>
+          <p className="text-sm font-medium">入学年份</p>
+          <p className="text-fd-muted-foreground text-[0.8125rem] leading-4">
+            {currentYear}
+          </p>
+        </div>
         <ChevronsUpDown className="text-fd-muted-foreground ms-auto size-4 shrink-0" />
       </PopoverTrigger>
       <PopoverContent className="fd-scroll-container flex w-(--radix-popover-trigger-width) flex-col gap-1 p-1">
