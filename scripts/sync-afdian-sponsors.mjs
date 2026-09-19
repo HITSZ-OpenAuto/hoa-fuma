@@ -65,6 +65,21 @@ function orderDate(order) {
   return Number.isNaN(Date.parse(`${date}T00:00:00+08:00`)) ? null : date;
 }
 
+function addMonths(date, offset) {
+  const [year, month, day] = date.split('-').map(Number);
+  const target = new Date(Date.UTC(year, month - 1 + offset, 1));
+  const lastDay = new Date(
+    Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0)
+  ).getUTCDate();
+  const targetDay = Math.min(day, lastDay);
+
+  return [
+    target.getUTCFullYear(),
+    String(target.getUTCMonth() + 1).padStart(2, '0'),
+    String(targetDay).padStart(2, '0'),
+  ].join('-');
+}
+
 const [orders, sponsors] = await Promise.all([
   queryAll('query-order'),
   queryAll('query-sponsor'),
@@ -74,14 +89,21 @@ const nicknames = new Map(
 );
 const entries = orders
   .filter((order) => order.status === 2 && order.product_type === 0)
-  .map((order) => ({
-    nickname: nicknames.get(order.user_id) || '匿名',
-    date: orderDate(order),
-    amount: Number(order.total_amount).toFixed(2),
-    months: Math.max(1, Number(order.month) || 1),
-    message: String(order.remark || '').trim(),
-  }))
-  .filter((entry) => entry.date && Number(entry.amount) > 0)
+  .flatMap((order) => {
+    const date = orderDate(order);
+    if (!date || Number(order.total_amount) <= 0) return [];
+
+    const months = Math.max(1, Number(order.month) || 1);
+    const entry = {
+      nickname: nicknames.get(order.user_id) || '匿名',
+      message: String(order.remark || '').trim(),
+    };
+
+    return Array.from({ length: months }, (_, offset) => ({
+      ...entry,
+      date: addMonths(date, offset),
+    }));
+  })
   .sort((left, right) => right.date.localeCompare(left.date));
 
 await writeFile(output, `${JSON.stringify(entries, null, 2)}\n`);

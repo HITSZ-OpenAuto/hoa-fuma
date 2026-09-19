@@ -6,53 +6,25 @@ import {
   AfdianSponsors,
   type AfdianSponsor,
 } from '@/components/afdian-sponsors';
-import { Marquee } from '@/components/ui/marquee';
-import { cn } from '@/lib/utils';
 
 type SponsorMarqueeProps = {
   entries: string[][];
   afdianEntries: AfdianSponsor[];
 };
 
-function formatAfdianEntry(entry: AfdianSponsor) {
-  const [year, month, day] = entry.date.split('-').map(Number);
-  return [entry.nickname, `${year}.${month}.${day}`, entry.message];
-}
+function formatHistoricalEntry(entry: string[]): AfdianSponsor {
+  const [nickname, date, message] = entry;
+  const [year, month, day] = date.split('.').map(Number);
 
-function sponsorTimestamp(entry: string[]) {
-  const [year, month, day] = entry[1].split(/[.-]/).map(Number);
-  return Date.UTC(year, month - 1, day);
-}
-
-function SponsorCard({
-  entry,
-  className,
-}: {
-  entry: string[];
-  className?: string;
-}) {
-  const [name, date, message] = entry;
-
-  return (
-    <article
-      className={cn(
-        'bg-fd-card text-fd-card-foreground flex h-24 w-64 shrink-0 flex-col rounded-xl border p-3 shadow-sm',
-        className
-      )}
-    >
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="truncate font-medium">{name || '匿名'}</h3>
-        <time className="text-fd-muted-foreground shrink-0 text-xs">
-          {date}
-        </time>
-      </div>
-      {message && (
-        <p className="text-fd-muted-foreground mt-2 line-clamp-2 text-sm leading-5">
-          {message}
-        </p>
-      )}
-    </article>
-  );
+  return {
+    nickname: nickname || '匿名',
+    date: [
+      year,
+      String(month).padStart(2, '0'),
+      String(day).padStart(2, '0'),
+    ].join('-'),
+    message: message || '',
+  };
 }
 
 export function SponsorMarquee({
@@ -61,29 +33,17 @@ export function SponsorMarquee({
 }: SponsorMarqueeProps) {
   const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
-  const filteredAfdianEntries = deferredQuery
-    ? afdianEntries.filter((entry) =>
-        [
-          entry.nickname,
-          entry.date,
-          entry.amount,
-          `${entry.months} 个月`,
-          entry.message,
-        ].some((value) => value.toLowerCase().includes(deferredQuery))
+  const combinedEntries = [
+    ...entries.map(formatHistoricalEntry),
+    ...afdianEntries,
+  ];
+  const filteredEntries = deferredQuery
+    ? combinedEntries.filter((entry) =>
+        [entry.nickname, entry.date, entry.message].some((value) =>
+          value.toLowerCase().includes(deferredQuery)
+        )
       )
-    : afdianEntries;
-  const filteredHistoricalEntries = deferredQuery
-    ? entries.filter((entry) =>
-        entry.some((value) => value.toLowerCase().includes(deferredQuery))
-      )
-    : entries;
-  const filteredEntries = [
-    ...filteredHistoricalEntries,
-    ...filteredAfdianEntries.map(formatAfdianEntry),
-  ].sort((left, right) => sponsorTimestamp(right) - sponsorTimestamp(left));
-  const rows = Array.from({ length: 6 }, (_, rowIndex) =>
-    filteredEntries.filter((_, entryIndex) => entryIndex % 6 === rowIndex)
-  );
+    : combinedEntries;
 
   return (
     <div className="not-prose py-2">
@@ -102,51 +62,12 @@ export function SponsorMarquee({
         />
       </div>
 
-      <AfdianSponsors entries={filteredAfdianEntries} />
-
-      {deferredQuery ? (
-        filteredEntries.length > 0 ? (
-          <div
-            className={cn(
-              'grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3',
-              filteredAfdianEntries.length > 0 && 'mt-8'
-            )}
-          >
-            {filteredEntries.map((entry, index) => (
-              <SponsorCard
-                key={`${entry[0]}-${entry[1]}-${index}`}
-                entry={entry}
-                className="w-full"
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="text-fd-muted-foreground rounded-xl border border-dashed px-4 py-10 text-center text-sm">
-            没有找到匹配的捐助记录
-          </p>
-        )
+      {filteredEntries.length > 0 ? (
+        <AfdianSponsors entries={filteredEntries} />
       ) : (
-        <div
-          className={cn(
-            'space-y-3',
-            filteredAfdianEntries.length > 0 && 'mt-8'
-          )}
-        >
-          {rows.map((row, rowIndex) => (
-            <Marquee
-              key={rowIndex}
-              duration={`${90 + rowIndex * 5}s`}
-              reverse={rowIndex % 2 === 1}
-            >
-              {row.map((entry, entryIndex) => (
-                <SponsorCard
-                  key={`${entry[0]}-${entry[1]}-${entryIndex}`}
-                  entry={entry}
-                />
-              ))}
-            </Marquee>
-          ))}
-        </div>
+        <p className="text-fd-muted-foreground rounded-xl border border-dashed px-4 py-10 text-center text-sm">
+          没有找到匹配的捐助记录
+        </p>
       )}
     </div>
   );
