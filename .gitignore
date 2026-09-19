@@ -3,7 +3,9 @@
 
 # generated content
 .source
-content/
+content/*
+!content/pages/
+!content/pages/**
 .pnpm-store/
 
 # test & build
