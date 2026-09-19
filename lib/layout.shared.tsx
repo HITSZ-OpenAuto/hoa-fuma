@@ -25,6 +25,12 @@ export function baseOptions(): BaseLayoutProps {
         active: 'nested-url',
       },
       {
+        text: '参与',
+        url: 'https://wiki.hoa.moe',
+        active: 'none',
+        external: true,
+      },
+      {
         text: '友链',
         url: '/links',
         active: 'nested-url',
