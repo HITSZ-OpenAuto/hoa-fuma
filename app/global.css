@@ -140,6 +140,61 @@
   }
 }
 
+@keyframes marquee-scroll {
+  to {
+    transform: translateX(calc(-100% - var(--marquee-gap)));
+  }
+}
+
+.marquee {
+  --marquee-duration: 80s;
+  --marquee-gap: 1rem;
+
+  display: flex;
+  width: 100%;
+  gap: var(--marquee-gap);
+  overflow: hidden;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 5%,
+    black 95%,
+    transparent
+  );
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  flex-shrink: 0;
+  gap: var(--marquee-gap);
+  animation: marquee-scroll var(--marquee-duration) linear infinite;
+}
+
+.marquee-reverse .marquee-track {
+  animation-direction: reverse;
+}
+
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    mask-image: none;
+  }
+
+  .marquee-track {
+    animation: none;
+  }
+
+  .marquee-track[aria-hidden='true'] {
+    display: none;
+  }
+}
+
 /* ========================================
    Hero home page styles
    ======================================== */
