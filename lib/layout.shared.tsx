@@ -30,13 +30,13 @@ export function baseOptions(): BaseLayoutProps {
         active: 'nested-url',
       },
       {
-        text: '关于',
-        url: '/about',
+        text: '捐助',
+        url: '/sponsor',
         active: 'nested-url',
       },
       {
-        text: '捐助',
-        url: '/sponsor',
+        text: '关于',
+        url: '/about',
         active: 'nested-url',
       },
     ],
