@@ -12,6 +12,7 @@ import type { CourseInfoData } from '@/lib/types';
 import { Files, Folder, File } from '@/components/file-tree';
 import { SponsorMarquee } from '@/components/sponsor-marquee';
 import { Accordion, Accordions } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { cn } from '@/lib/utils';
 import {
@@ -79,6 +80,7 @@ export function getMDXComponents(
     Steps,
     SiteIcon,
     SponsorMarquee,
+    Button,
     Card: NoPrefetchCard,
     CourseInfo: (props: ComponentProps<typeof CourseInfo>) => (
       <CourseInfo {...props} data={props.data ?? context?.course} />

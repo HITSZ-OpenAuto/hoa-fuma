@@ -63,7 +63,7 @@ function SponsorTable({
         <TableHeader>
           <TableRow>
             <TableHead>月份</TableHead>
-            <TableHead>昵称</TableHead>
+            <TableHead>ID</TableHead>
             <TableHead>留言</TableHead>
           </TableRow>
         </TableHeader>
