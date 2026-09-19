@@ -35,7 +35,7 @@ export function baseOptions(): BaseLayoutProps {
         active: 'nested-url',
       },
       {
-        text: '捐助我们',
+        text: '捐助',
         url: '/sponsor',
         active: 'nested-url',
       },
