@@ -81,6 +81,7 @@ export const pages = defineCollections({
   dir: 'content/pages',
   schema: pageSchema.extend({
     wide: z.boolean().optional(),
+    showToc: z.boolean().optional(),
   }),
 });
 
