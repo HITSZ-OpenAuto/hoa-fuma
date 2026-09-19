@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc';
 import { getMDXComponents } from '@/components/mdx';
 import { pages } from '@/lib/source/pages';
+import { cn } from '@/lib/utils';
 
 export default async function Page(props: {
   params: Promise<{ slug: string[] }>;
@@ -14,7 +15,12 @@ export default async function Page(props: {
   const Mdx = page.data.body;
 
   return (
-    <article className="mx-auto flex w-full max-w-200 flex-col px-4 py-8">
+    <article
+      className={cn(
+        'mx-auto flex w-full flex-col px-4 py-8',
+        page.data.wide ? 'max-w-page' : 'max-w-200'
+      )}
+    >
       <h1 className="mb-4 text-3xl font-semibold">{page.data.title}</h1>
       {page.data.description && (
         <p className="text-fd-muted-foreground mb-8">{page.data.description}</p>

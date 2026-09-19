@@ -79,7 +79,9 @@ export const newsPosts = defineCollections({
 export const pages = defineCollections({
   type: 'doc',
   dir: 'content/pages',
-  schema: pageSchema,
+  schema: pageSchema.extend({
+    wide: z.boolean().optional(),
+  }),
 });
 
 export default defineConfig({
