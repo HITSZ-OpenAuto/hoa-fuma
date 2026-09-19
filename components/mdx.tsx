@@ -10,7 +10,6 @@ import type { MDXComponents } from 'mdx/types';
 import { CourseInfo } from '@/components/course-info';
 import type { CourseInfoData } from '@/lib/types';
 import { Files, Folder, File } from '@/components/file-tree';
-import { AfdianSponsors } from '@/components/afdian-sponsors';
 import { SponsorMarquee } from '@/components/sponsor-marquee';
 import { Accordion, Accordions } from '@/components/ui/accordion';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
@@ -79,7 +78,6 @@ export function getMDXComponents(
     Step,
     Steps,
     SiteIcon,
-    AfdianSponsors,
     SponsorMarquee,
     Card: NoPrefetchCard,
     CourseInfo: (props: ComponentProps<typeof CourseInfo>) => (

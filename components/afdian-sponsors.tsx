@@ -104,36 +104,35 @@ function MonthSponsors({ month, entries }: MonthGroup) {
 export function AfdianSponsors({ entries }: AfdianSponsorsProps) {
   const years = groupByYear(entries);
 
+  if (years.length === 0) return null;
+
   return (
     <div className="not-prose py-2">
-      {years.length > 0 ? (
-        <Tabs defaultValue={String(years[0].year)}>
-          <div className="overflow-x-auto pb-2">
-            <TabsList variant="line" aria-label="按年份查看爱发电记录">
-              {years.map(({ year }) => (
-                <TabsTrigger key={year} value={String(year)}>
-                  {year} 年
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
-          {years.map(({ year, months }) => (
-            <TabsContent
-              key={year}
-              value={String(year)}
-              className="mt-4 space-y-8"
-            >
-              {months.map((month) => (
-                <MonthSponsors key={month.month} {...month} />
-              ))}
-            </TabsContent>
-          ))}
-        </Tabs>
-      ) : (
-        <p className="text-fd-muted-foreground rounded-xl border border-dashed px-4 py-10 text-center text-sm">
-          暂无爱发电记录
-        </p>
-      )}
+      <Tabs
+        key={years.map(({ year }) => year).join('-')}
+        defaultValue={String(years[0].year)}
+      >
+        <div className="overflow-x-auto pb-2">
+          <TabsList variant="line" aria-label="按年份查看爱发电记录">
+            {years.map(({ year }) => (
+              <TabsTrigger key={year} value={String(year)}>
+                {year} 年
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
+        {years.map(({ year, months }) => (
+          <TabsContent
+            key={year}
+            value={String(year)}
+            className="mt-4 space-y-8"
+          >
+            {months.map((month) => (
+              <MonthSponsors key={month.month} {...month} />
+            ))}
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
   );
 }

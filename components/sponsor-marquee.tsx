@@ -2,12 +2,27 @@
 
 import { useDeferredValue, useState } from 'react';
 import { Search } from 'lucide-react';
+import {
+  AfdianSponsors,
+  type AfdianSponsor,
+} from '@/components/afdian-sponsors';
 import { Marquee } from '@/components/ui/marquee';
 import { cn } from '@/lib/utils';
 
 type SponsorMarqueeProps = {
   entries: string[][];
+  afdianEntries: AfdianSponsor[];
 };
+
+function formatAfdianEntry(entry: AfdianSponsor) {
+  const [year, month, day] = entry.date.split('-').map(Number);
+  return [entry.nickname, `${year}.${month}.${day}`, entry.message];
+}
+
+function sponsorTimestamp(entry: string[]) {
+  const [year, month, day] = entry[1].split(/[.-]/).map(Number);
+  return Date.UTC(year, month - 1, day);
+}
 
 function SponsorCard({
   entry,
@@ -40,16 +55,34 @@ function SponsorCard({
   );
 }
 
-export function SponsorMarquee({ entries }: SponsorMarqueeProps) {
+export function SponsorMarquee({
+  entries,
+  afdianEntries,
+}: SponsorMarqueeProps) {
   const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
-  const filteredEntries = deferredQuery
+  const filteredAfdianEntries = deferredQuery
+    ? afdianEntries.filter((entry) =>
+        [
+          entry.nickname,
+          entry.date,
+          entry.amount,
+          `${entry.months} 个月`,
+          entry.message,
+        ].some((value) => value.toLowerCase().includes(deferredQuery))
+      )
+    : afdianEntries;
+  const filteredHistoricalEntries = deferredQuery
     ? entries.filter((entry) =>
         entry.some((value) => value.toLowerCase().includes(deferredQuery))
       )
     : entries;
+  const filteredEntries = [
+    ...filteredHistoricalEntries,
+    ...filteredAfdianEntries.map(formatAfdianEntry),
+  ].sort((left, right) => sponsorTimestamp(right) - sponsorTimestamp(left));
   const rows = Array.from({ length: 6 }, (_, rowIndex) =>
-    entries.filter((_, entryIndex) => entryIndex % 6 === rowIndex)
+    filteredEntries.filter((_, entryIndex) => entryIndex % 6 === rowIndex)
   );
 
   return (
@@ -69,9 +102,16 @@ export function SponsorMarquee({ entries }: SponsorMarqueeProps) {
         />
       </div>
 
+      <AfdianSponsors entries={filteredAfdianEntries} />
+
       {deferredQuery ? (
         filteredEntries.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            className={cn(
+              'grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3',
+              filteredAfdianEntries.length > 0 && 'mt-8'
+            )}
+          >
             {filteredEntries.map((entry, index) => (
               <SponsorCard
                 key={`${entry[0]}-${entry[1]}-${index}`}
@@ -86,7 +126,12 @@ export function SponsorMarquee({ entries }: SponsorMarqueeProps) {
           </p>
         )
       ) : (
-        <div className="space-y-3">
+        <div
+          className={cn(
+            'space-y-3',
+            filteredAfdianEntries.length > 0 && 'mt-8'
+          )}
+        >
           {rows.map((row, rowIndex) => (
             <Marquee
               key={rowIndex}
