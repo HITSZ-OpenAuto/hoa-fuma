@@ -80,7 +80,6 @@ export const pages = defineCollections({
   type: 'doc',
   dir: 'content/pages',
   schema: pageSchema.extend({
-    wide: z.boolean().optional(),
     showToc: z.boolean().optional(),
   }),
 });
