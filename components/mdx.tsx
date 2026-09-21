@@ -7,6 +7,7 @@ import {
 } from 'fumadocs-ui/components/card';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
+import { Heart } from 'lucide-react';
 import { CourseInfo } from '@/components/course-info';
 import type { CourseInfoData } from '@/lib/types';
 import { Files, Folder, File } from '@/components/file-tree';
@@ -78,6 +79,7 @@ export function getMDXComponents(
     Step,
     Steps,
     SiteIcon,
+    Heart,
     SponsorMarquee,
     Card: NoPrefetchCard,
     CourseInfo: (props: ComponentProps<typeof CourseInfo>) => (

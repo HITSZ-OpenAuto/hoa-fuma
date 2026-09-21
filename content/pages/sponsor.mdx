@@ -3,6 +3,8 @@ title: 捐助我们
 showToc: false
 ---
 
+import afdianSponsors from '../../data/afdian-sponsors.json';
+
 export const sponsorEntries = [
   ['匿名', '2025.12.2', '严肃支持🫡'],
   ['无名小卒', '2025.12.2', 'hoa 对我们帮助很大，伟大无需多言！！！'],
@@ -106,14 +108,27 @@ HITSZ 课程攻略共享计划是一个非盈利项目，为了同学们可以�
   </Accordion>
 </Accordions>
 
-承蒙同学的关注与支持，本站目前已经收到能够覆盖未来多年运营的捐助，因此我们暂时停止接受捐助。如果您希望 HOA 能够更好地持续运营下去，我们鼓励您通过以下方式继续支持我们：
+如果您认为 HITSZ 课程攻略共享计划提供的信息对您有帮助，请考虑在爱发电支持我们。每一份慷慨捐助都将大幅减轻我们承担的域名的费用负担，同时也是对维护者最大的鼓励。你的 ID 和留言将会显示在我们的此页中。
 
-1. **分享本站**：将 HOA 推荐给您身边的同学
-
-2. **参与内容**：我们十分欢迎且需要您参与到内容的编写与维护
+<Card
+  href="https://afdian.com/a/hitsz-openauto"
+  external
+  className="group inline-flex w-fit items-center !rounded-xl !border-transparent !bg-fd-primary px-4 py-4 font-mono text-sm font-medium !text-fd-primary-foreground hover:!bg-fd-primary/90 [&>h3]:mb-0 [&+h2]:mt-5"
+  title={
+    <span className="inline-flex items-center">
+      在爱发电支持 HOA
+      <span className="ms-1 w-0 overflow-hidden transition-[width] group-hover:w-6">
+        <Heart
+          className="size-5 fill-current text-pink-200 dark:text-red-400"
+          aria-hidden="true"
+        />
+      </span>
+    </span>
+  }
+/>
 
 ## 感谢名单
 
 HOA 便捷的访问服务离不开以下每一位同学/社会人士的热心捐助（按照时间排序）：
 
-<SponsorMarquee entries={sponsorEntries} />
+<SponsorMarquee entries={sponsorEntries} afdianEntries={afdianSponsors} />
