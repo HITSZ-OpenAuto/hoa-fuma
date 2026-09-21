@@ -76,6 +76,14 @@ export const newsPosts = defineCollections({
   }),
 });
 
+export const pages = defineCollections({
+  type: 'doc',
+  dir: 'content/pages',
+  schema: pageSchema.extend({
+    showToc: z.boolean().optional(),
+  }),
+});
+
 export default defineConfig({
   mdxOptions: {
     providerImportSource: '@/components/mdx',

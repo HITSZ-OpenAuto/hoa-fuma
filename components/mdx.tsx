@@ -1,5 +1,6 @@
 import type { ComponentProps, JSX } from 'react';
 import Link, { type LinkProps } from 'fumadocs-core/link';
+import Image from 'next/image';
 import {
   Card as FumadocsCard,
   Cards as FumadocsCards,
@@ -9,6 +10,7 @@ import type { MDXComponents } from 'mdx/types';
 import { CourseInfo } from '@/components/course-info';
 import type { CourseInfoData } from '@/lib/types';
 import { Files, Folder, File } from '@/components/file-tree';
+import { SponsorMarquee } from '@/components/sponsor-marquee';
 import { Accordion, Accordions } from '@/components/ui/accordion';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { cn } from '@/lib/utils';
@@ -47,6 +49,20 @@ function Cards(props: ComponentProps<typeof FumadocsCards>) {
   );
 }
 
+function SiteIcon({
+  className,
+  ...props
+}: Omit<ComponentProps<typeof Image>, 'width' | 'height'>) {
+  return (
+    <Image
+      {...props}
+      width={24}
+      height={24}
+      className={cn('size-4', className)}
+    />
+  );
+}
+
 export function getMDXComponents(
   components?: MDXComponents,
   context?: MdxContext
@@ -61,6 +77,8 @@ export function getMDXComponents(
     Accordions,
     Step,
     Steps,
+    SiteIcon,
+    SponsorMarquee,
     Card: NoPrefetchCard,
     CourseInfo: (props: ComponentProps<typeof CourseInfo>) => (
       <CourseInfo {...props} data={props.data ?? context?.course} />

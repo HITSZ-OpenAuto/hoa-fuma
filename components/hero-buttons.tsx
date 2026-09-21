@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { Sidebar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -108,14 +107,6 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               onClick={handleDocsClick}
             >
               查看文档
-            </Button>
-            <Button
-              variant="secondary"
-              size="lg"
-              className="rounded-full transition-transform hover:scale-105"
-              asChild
-            >
-              <Link href="https://wiki.hoa.moe">参与指南</Link>
             </Button>
             <CopyAgentPrompt />
           </>
