@@ -21,7 +21,7 @@ function SponsorCard({
   return (
     <article
       className={cn(
-        'bg-fd-card text-fd-card-foreground flex h-24 w-64 shrink-0 flex-col rounded-xl border p-3 shadow-sm',
+        'bg-fd-card text-fd-card-foreground flex min-h-24 w-64 shrink-0 flex-col rounded-xl border p-3 shadow-sm',
         className
       )}
     >
