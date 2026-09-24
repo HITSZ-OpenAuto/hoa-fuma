@@ -1,7 +1,6 @@
 import { SEMESTER_NAMES, COURSE_CODE_RE } from '@/lib/constants';
 import { isYear } from '@/lib/utils';
 import { getDocsPathEntries } from '@/lib/docs-paths';
-import { getCourseCanonical } from '@/lib/docs-seo';
 
 function isSemester(segment: string): boolean {
   return SEMESTER_NAMES.has(segment);
@@ -45,9 +44,7 @@ export function findRedirect(
   } else {
     // docs/<course_code>
     courseCode = segments[0].toUpperCase();
-    if (!isCourseCode(courseCode) && !getCourseCanonical(courseCode)) {
-      return null;
-    }
+    if (!isCourseCode(courseCode)) return null;
   }
 
   const matches: { slugs: string[] }[] = [];
@@ -84,16 +81,7 @@ export function findRedirect(
     }
   }
 
-  if (!semester) {
-    const canonical = getCourseCanonical(courseCode);
-    if (canonical) return canonical;
-  }
-
-  const sorted = matches.sort(
-    (a, b) =>
-      b.slugs[0].localeCompare(a.slugs[0]) ||
-      a.slugs.join('/').localeCompare(b.slugs.join('/'))
-  );
+  const sorted = matches.sort((a, b) => b.slugs[0].localeCompare(a.slugs[0]));
   const best = sorted[0];
   if (best) {
     return '/docs/' + best.slugs.join('/');

@@ -47,10 +47,6 @@ function getCoursePages() {
   return { coursePages: pages, canonicalCourses: canonicals };
 }
 
-export function getCourseCanonical(code: string): string | undefined {
-  return getCoursePages().canonicalCourses.get(code.toUpperCase());
-}
-
 export function getDocsSeoPath(slugs: string[]) {
   const url = `/docs/${slugs.join('/')}`;
   if (slugs.length !== 4) return { canonical: url, indexable: true };
