@@ -33,3 +33,5 @@ ln -s "$repos_list" "$workdir/repos_list.txt"
   cd "$workdir"
   "$hoa_backend" --fetch
 )
+
+node ./scripts/normalize-content-links.mjs

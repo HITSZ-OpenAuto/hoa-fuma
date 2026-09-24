@@ -45,7 +45,9 @@ export function findRedirect(
   } else {
     // docs/<course_code>
     courseCode = segments[0].toUpperCase();
-    if (!isCourseCode(courseCode)) return null;
+    if (!isCourseCode(courseCode) && !getCourseCanonical(courseCode)) {
+      return null;
+    }
   }
 
   const matches: { slugs: string[] }[] = [];
