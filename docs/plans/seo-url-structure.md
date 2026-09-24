@@ -45,7 +45,7 @@
 
 从现有页面与内容源生成 `/sitemap.xml`，只包含返回 200、允许抓取且被选为首选版本的绝对 URL。`/docs` 这类重定向入口、RSS、搜索 API、404 和重复页面不列入。只有能取得可靠的实际修改时间时才填写 `lastmod`。在 `robots.txt` 中加入站点地图地址，并提交至 Google Search Console。
 
-### 4. 修复旧地址和站内链接
+### 4. 修正内容源中的旧链接
 
 已确认的旧地址与目标地址如下，两处新地址均已在线返回 200：
 
@@ -54,9 +54,9 @@
 | `/blog/distributive-guidance-for-21` | `https://hoa.moe/blog/course-selection-auto/distributive-guidance-for-21` |
 | `/blog/writing-rules`                | `https://wiki.hoa.moe/`                                                   |
 
-为这两个旧地址配置永久重定向，包括已有站点自动处理的末尾斜杠形式，并将内容中的站内链接直接改为目标地址。第二条是跨域跳转，目标域名由已确认的新链接决定。继续清点其他仍被引用的旧博客与文档路径；能确定对应内容时才添加永久重定向，已删除且无对应内容的地址保持 404。优先处理有内部引用或搜索流量的地址，不为每个历史拼写新增规则。
+博客文章中的旧地址在上游 [hoa-blog](https://github.com/HITSZ-OpenAuto/hoa-blog) 直接改为目标地址；新闻与生成的课程内容在抓取后修正引用。此次不新增旧博客地址重定向；旧地址继续返回 404。第二条是跨域链接，目标域名由已确认的新链接决定。
 
-将内容中沿用 `/docs/{学期}/{课程代码}` 形式的旧课程引用改为对应的 `/docs/{课程代码}`；例如 `https://hoa.moe/docs/junior-spring/auto3007/` 改为 `https://hoa.moe/docs/auto3007`。现有短链接已可用，会根据访问者的历史年级、专业或默认匹配结果跳转到具体页面；无 Cookie 时实测经过一次跳转到 `/docs/2024/030201/junior-spring/AUTO3007`。它适合作为不限定年级的课程引用，具体年级页面仍作为 canonical 和站点地图中的收录 URL。旧课程地址保留现有兼容跳转，无需为了修改站内引用额外增加一层重定向。
+将内容中沿用 `/docs/{学期}/{课程代码}` 形式的旧课程引用改为对应的 `/docs/{课程代码}`；例如 `https://hoa.moe/docs/junior-spring/auto3007/` 改为 `https://hoa.moe/docs/auto3007`。博客内容直接在 hoa-blog 修改；生成的课程内容在抓取后处理。现有短链接已可用，会根据访问者的历史年级、专业或默认匹配结果跳转到具体页面；无 Cookie 时实测经过一次跳转到 `/docs/2024/030201/junior-spring/AUTO3007`。它适合作为不限定年级的课程引用，具体年级页面仍作为 canonical 和站点地图中的收录 URL。
 
 `/docs` 入口可继续服务个性化跳转，但站点地图和搜索入口应直接使用稳定的年级 URL。只有确认需要让 `/docs` 本身作为搜索落地页时，再将其改为固定的年级导航页。
 
@@ -68,7 +68,7 @@
 
 1. 线上 `robots.txt` 允许公开页面抓取，`/sitemap.xml` 返回有效 XML，所有列出的 URL 均可直接返回 200。
 2. 抽查首页、博客、新闻、课程和标签页的 canonical、页面标题、语言标记及内部链接；canonical 与站点地图不得相互冲突。以 `CHEM1018` 验证占位页有 `noindex` 且不在站点地图中，以 `AUTO3007` 验证有资料的课程页仍可收录；以 `/news/weekly`、一篇周报和 `/news/daily` 验证新闻排除规则，并确认其他新闻仍可收录。
-3. 抽查已修复的旧链接，确认永久重定向到相关页面且无多余跳转；无法映射的地址保持真实 404。
+3. 抽查已修复的内容链接，确认直接指向目标页面；旧博客地址不新增重定向，继续返回 404。
 4. 在 Search Console 观察“已抓取但未编入索引”“重复网页”和规范网址选择情况，再决定是否扩大课程去重范围。收录与排名变化需要搜索引擎重新抓取后才能评估，不能仅凭部署成功判断。
 5. 每项代码变更完成后执行仓库要求的 `make check`，并核对线上关键响应。
 
@@ -78,4 +78,3 @@
 - [Google：URL 结构最佳实践](https://developers.google.com/search/docs/crawling-indexing/url-structure)
 - [Google：规范网址及重复 URL](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls)
 - [Google：建立并提交站点地图](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap)
-- [Google：重定向与搜索](https://developers.google.com/search/docs/crawling-indexing/301-redirects)

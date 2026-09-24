@@ -1,18 +1,6 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const blogDestinations = new Map([
-  [
-    'distributive-guidance-for-21',
-    'https://hoa.moe/blog/course-selection-auto/distributive-guidance-for-21',
-  ],
-  [
-    'distributive-guidance-for-22',
-    'https://hoa.moe/blog/course-selection-auto/distributive-guidance-for-22',
-  ],
-  ['writing-rules', 'https://wiki.hoa.moe/'],
-]);
-
 function normalizeLinks(source) {
   return source
     .replace(
@@ -20,8 +8,8 @@ function normalizeLinks(source) {
       (_, origin, code) => `${origin ? 'https://hoa.moe' : ''}/docs/${code}`
     )
     .replace(
-      /(?:https?:\/\/hoa\.moe)?\/blog\/(distributive-guidance-for-21|distributive-guidance-for-22|writing-rules)\/?(?=[^a-z0-9/-]|$)/gi,
-      (_, slug) => blogDestinations.get(slug.toLowerCase())
+      /(?:https?:\/\/hoa\.moe)?\/blog\/writing-rules\/?(?=[^a-z0-9/-]|$)/gi,
+      'https://wiki.hoa.moe/'
     );
 }
 
@@ -38,6 +26,6 @@ function processDirectory(dir) {
   }
 }
 
-for (const kind of ['blog', 'news', 'docs']) {
+for (const kind of ['news', 'docs']) {
   processDirectory(join('content', kind));
 }

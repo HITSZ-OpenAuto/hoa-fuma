@@ -7,25 +7,6 @@ const config = {
   agentRules: false,
   output: 'standalone',
   reactStrictMode: true,
-  async redirects() {
-    return [
-      {
-        source: '/blog/distributive-guidance-for-21',
-        destination: '/blog/course-selection-auto/distributive-guidance-for-21',
-        permanent: true,
-      },
-      {
-        source: '/blog/distributive-guidance-for-22',
-        destination: '/blog/course-selection-auto/distributive-guidance-for-22',
-        permanent: true,
-      },
-      {
-        source: '/blog/writing-rules',
-        destination: 'https://wiki.hoa.moe/',
-        permanent: true,
-      },
-    ];
-  },
   experimental: {
     useTypeScriptCli: true,
     workerThreads: true,
