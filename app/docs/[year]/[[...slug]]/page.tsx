@@ -17,6 +17,7 @@ import { findRedirect } from '@/lib/redirect';
 import { isYear } from '@/lib/utils';
 import { getMDXComponents, NoPrefetchLink } from '@/components/mdx';
 import { getDocsCourse } from '@/lib/course-frontmatter';
+import { getDocsSeoPath } from '@/lib/docs-seo';
 
 export default async function Page(props: {
   params: Promise<{ year: string; slug?: string[] }>;
@@ -84,8 +85,10 @@ export async function generateMetadata(props: {
   params: Promise<{ year: string; slug?: string[] }>;
 }): Promise<Metadata> {
   const params = await props.params;
-  const page = source.getPage([params.year, ...(params.slug ?? [])]);
+  const slugs = [params.year, ...(params.slug ?? [])];
+  const page = source.getPage(slugs);
   if (!page) notFound();
+  const seo = getDocsSeoPath(slugs);
 
   return {
     title: page.data.title,
@@ -93,5 +96,7 @@ export async function generateMetadata(props: {
     openGraph: {
       images: getPageImage(page).url,
     },
+    alternates: seo.canonical ? { canonical: seo.canonical } : undefined,
+    robots: seo.indexable ? undefined : { index: false, follow: true },
   };
 }

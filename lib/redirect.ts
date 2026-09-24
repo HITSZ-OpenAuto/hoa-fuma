@@ -1,6 +1,7 @@
 import { SEMESTER_NAMES, COURSE_CODE_RE } from '@/lib/constants';
 import { isYear } from '@/lib/utils';
 import { getDocsPathEntries } from '@/lib/docs-paths';
+import { getCourseCanonical } from '@/lib/docs-seo';
 
 function isSemester(segment: string): boolean {
   return SEMESTER_NAMES.has(segment);
@@ -81,7 +82,16 @@ export function findRedirect(
     }
   }
 
-  const sorted = matches.sort((a, b) => b.slugs[0].localeCompare(a.slugs[0]));
+  if (!semester) {
+    const canonical = getCourseCanonical(courseCode);
+    if (canonical) return canonical;
+  }
+
+  const sorted = matches.sort(
+    (a, b) =>
+      b.slugs[0].localeCompare(a.slugs[0]) ||
+      a.slugs.join('/').localeCompare(b.slugs.join('/'))
+  );
   const best = sorted[0];
   if (best) {
     return '/docs/' + best.slugs.join('/');
