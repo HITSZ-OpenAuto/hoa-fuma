@@ -9,6 +9,7 @@ const config = {
   reactStrictMode: true,
   experimental: {
     useTypeScriptCli: true,
+    workerThreads: true,
   },
   images: {
     dangerouslyAllowLocalIP: true,
