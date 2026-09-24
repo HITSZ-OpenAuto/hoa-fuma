@@ -138,8 +138,11 @@ export async function generateMetadata(props: {
   const params = await props.params;
   const page = news.getPage(params.slug);
   if (!page) notFound();
+  const excluded = params.slug[0] === 'weekly' || params.slug[0] === 'daily';
   return {
     title: page.data.title,
     description: page.data.description,
+    alternates: excluded ? undefined : { canonical: page.url },
+    robots: excluded ? { index: false, follow: true } : undefined,
   };
 }
