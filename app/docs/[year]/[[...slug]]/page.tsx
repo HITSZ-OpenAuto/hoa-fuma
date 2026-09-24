@@ -96,7 +96,7 @@ export async function generateMetadata(props: {
     openGraph: {
       images: getPageImage(page).url,
     },
-    alternates: seo.canonical ? { canonical: seo.canonical } : undefined,
+    alternates: { canonical: seo.canonical ?? page.url },
     robots: seo.indexable ? undefined : { index: false, follow: true },
   };
 }

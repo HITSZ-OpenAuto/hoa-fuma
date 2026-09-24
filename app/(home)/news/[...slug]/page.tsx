@@ -142,7 +142,7 @@ export async function generateMetadata(props: {
   return {
     title: page.data.title,
     description: page.data.description,
-    alternates: excluded ? undefined : { canonical: page.url },
+    alternates: { canonical: page.url },
     robots: excluded ? { index: false, follow: true } : undefined,
   };
 }

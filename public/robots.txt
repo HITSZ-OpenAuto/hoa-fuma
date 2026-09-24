@@ -11,4 +11,6 @@ User-agent: OAI-SearchBot
 Allow: /
 
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://hoa.moe/sitemap.xml
