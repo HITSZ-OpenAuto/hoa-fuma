@@ -92,7 +92,7 @@ export async function generateMetadata(props: {
   const course = seo.indexable ? getDocsCourse(slugs) : undefined;
   const title = course ? `${slugs.at(-1)} ${page.data.title}` : page.data.title;
   const description =
-    page.data.description || (course ? `HITSZ ${title}课程资料` : undefined);
+    page.data.description || (course ? `HITSZ ${title}课程攻略` : undefined);
 
   return {
     title,

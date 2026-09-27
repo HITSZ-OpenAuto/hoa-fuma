@@ -33,7 +33,7 @@ function HeroContent() {
       </h2>
 
       <p className="text-muted-foreground mx-auto max-w-md text-lg before:mr-1 before:content-['//'] lg:mx-0">
-        为你的 HITSZ 求学路提供全面的课程资料与经验分享
+        为你的 HITSZ 求学路提供全面的课程攻略与经验分享
       </p>
 
       <HeroButtons yearMajorMap={yearMajorMap} />
