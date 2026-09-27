@@ -71,7 +71,7 @@ function HeroCard({ linkTo, content, imageURL, index }: HeroCardProps) {
             fill
             className="object-cover object-top"
             sizes="512px"
-            loading="eager"
+            fetchPriority={isTopCard ? 'high' : undefined}
           />
         </div>
       </Link>
@@ -89,7 +89,7 @@ function MobileLogo() {
         height={160}
         className="h-auto w-70 dark:opacity-90 dark:brightness-110"
         style={{ height: 'auto' }}
-        loading="eager"
+        fetchPriority="high"
       />
     </div>
   );
