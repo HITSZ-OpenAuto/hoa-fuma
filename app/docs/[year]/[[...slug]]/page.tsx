@@ -91,7 +91,8 @@ export async function generateMetadata(props: {
   const seo = getDocsSeoPath(slugs);
   const course = seo.indexable ? getDocsCourse(slugs) : undefined;
   const title = course ? `${slugs.at(-1)} ${page.data.title}` : page.data.title;
-  const description = page.data.description || undefined;
+  const description =
+    page.data.description || (course ? `HITSZ ${title}课程资料` : undefined);
 
   return {
     title,
