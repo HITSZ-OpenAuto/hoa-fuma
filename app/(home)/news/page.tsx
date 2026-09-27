@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     title: '新闻 - HITSZ 课程攻略共享计划',
     description: 'HOA 最新动态与公告',
     url: '/news',
-    images: '/images/hoa-banner.png',
+    images: '/apple-icon.png',
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: '新闻 - HITSZ 课程攻略共享计划',
     description: 'HOA 最新动态与公告',
-    images: '/images/hoa-banner.png',
+    images: '/apple-icon.png',
   },
 };
 

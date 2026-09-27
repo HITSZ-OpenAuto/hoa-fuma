@@ -152,7 +152,7 @@ export async function generateMetadata(props: {
       title,
       description,
       url: page.url,
-      images: '/images/hoa-banner.png',
+      images: '/apple-icon.png',
       ...(isArticle && {
         type: 'article' as const,
         publishedTime: new Date(date).toISOString(),
@@ -160,10 +160,10 @@ export async function generateMetadata(props: {
       }),
     },
     twitter: {
-      card: 'summary_large_image',
+      card: 'summary',
       title,
       description,
-      images: '/images/hoa-banner.png',
+      images: '/apple-icon.png',
     },
   };
 }

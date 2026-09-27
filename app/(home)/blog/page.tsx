@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     title: '博客 - HITSZ 课程攻略共享计划',
     description: '了解校内最新资讯，分享学习心得',
     url: '/blog',
-    images: '/images/hoa-banner.png',
+    images: '/apple-icon.png',
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary',
     title: '博客 - HITSZ 课程攻略共享计划',
     description: '了解校内最新资讯，分享学习心得',
-    images: '/images/hoa-banner.png',
+    images: '/apple-icon.png',
   },
 };
 
