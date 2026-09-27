@@ -91,14 +91,7 @@ export async function generateMetadata(props: {
   const seo = getDocsSeoPath(slugs);
   const course = seo.indexable ? getDocsCourse(slugs) : undefined;
   const title = course ? `${slugs.at(-1)} ${page.data.title}` : page.data.title;
-  const grading = course?.gradingScheme
-    .map(({ name, percent }) => `${name} ${percent}%`)
-    .join('、');
-  const description =
-    page.data.description ||
-    (course
-      ? `${title}：${course.credit} 学分，${course.courseNature}，${course.assessmentMethod}${grading ? `；评分构成：${grading}` : ''}。`
-      : undefined);
+  const description = page.data.description || undefined;
 
   return {
     title,
