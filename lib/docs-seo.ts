@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { basename } from 'node:path';
 import { getDocsPathEntries } from '@/lib/docs-paths';
 
 type CoursePage = {
@@ -22,9 +23,10 @@ function getCoursePages() {
   const canonicals = new Map<string, string>();
 
   for (const { slugs, file } of getDocsPathEntries()) {
-    if (slugs.length !== 4) continue;
+    if (/^index\.mdx?$/.test(basename(file))) continue;
 
-    const [year, , , code] = slugs;
+    const year = slugs[0];
+    const code = slugs[slugs.length - 1];
     const url = `/docs/${slugs.join('/')}`;
     const placeholder = readFileSync(file, 'utf8').includes(placeholderText);
     pages.set(url, { url, year, placeholder });
@@ -49,15 +51,13 @@ function getCoursePages() {
 
 export function getDocsSeoPath(slugs: string[]) {
   const url = `/docs/${slugs.join('/')}`;
-  if (slugs.length !== 4) return { canonical: url, indexable: true };
-
   const { coursePages, canonicalCourses } = getCoursePages();
   const page = coursePages.get(url);
   if (!page || page.placeholder)
     return { canonical: undefined, indexable: false };
 
   return {
-    canonical: canonicalCourses.get(slugs[3].toUpperCase()),
+    canonical: canonicalCourses.get(slugs[slugs.length - 1].toUpperCase()),
     indexable: true,
   };
 }
