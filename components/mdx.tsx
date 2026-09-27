@@ -65,11 +65,15 @@ function SiteIcon({
 
 function MdxImage(props: ComponentProps<typeof defaultMdxComponents.img>) {
   // Shields badges are SVGs; Next.js's image optimizer rejects SVG responses.
-  const unoptimized =
+  if (
     typeof props.src === 'string' &&
-    props.src.startsWith('https://img.shields.io/');
+    props.src.startsWith('https://img.shields.io/')
+  ) {
+    // oxlint-disable-next-line next/no-img-element -- Shields serves SVG badges without dimensions.
+    return <img {...props} className={cn('rounded-lg', props.className)} />;
+  }
 
-  return defaultMdxComponents.img({ ...props, unoptimized });
+  return defaultMdxComponents.img(props);
 }
 
 export function getMDXComponents(
