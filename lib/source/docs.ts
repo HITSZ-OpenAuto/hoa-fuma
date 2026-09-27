@@ -1,5 +1,5 @@
 import { docs } from 'fumadocs-mdx:collections/dynamic';
-import { type InferPageType, loader } from 'fumadocs-core/source';
+import { loader } from 'fumadocs-core/source';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { i18n } from '@/lib/i18n';
 
@@ -9,12 +9,3 @@ export const source = loader({
   plugins: [lucideIconsPlugin()],
   i18n,
 });
-
-export function getPageImage(page: InferPageType<typeof source>) {
-  const segments = [...page.slugs, 'image.png'];
-
-  return {
-    segments,
-    url: `/og/docs/${segments.join('/')}`,
-  };
-}

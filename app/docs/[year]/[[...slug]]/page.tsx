@@ -1,4 +1,4 @@
-import { getPageImage, source } from '@/lib/source/docs';
+import { source } from '@/lib/source/docs';
 import {
   DocsBody,
   DocsDescription,
@@ -89,12 +89,25 @@ export async function generateMetadata(props: {
   const page = source.getPage(slugs);
   if (!page) notFound();
   const seo = getDocsSeoPath(slugs);
+  const course = seo.indexable ? getDocsCourse(slugs) : undefined;
+  const title = course ? `${slugs.at(-1)} ${page.data.title}` : page.data.title;
+  const description =
+    page.data.description || (course ? `HITSZ ${title}课程攻略` : undefined);
 
   return {
-    title: page.data.title,
-    description: page.data.description,
+    title,
+    description,
     openGraph: {
-      images: getPageImage(page).url,
+      title,
+      description,
+      url: seo.canonical ?? page.url,
+      images: '/apple-icon.png',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+      images: '/apple-icon.png',
     },
     alternates: { canonical: seo.canonical ?? page.url },
     robots: seo.indexable ? undefined : { index: false, follow: true },

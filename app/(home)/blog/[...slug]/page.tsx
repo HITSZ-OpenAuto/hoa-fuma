@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -156,13 +157,33 @@ export function generateStaticParams(): { slug: string[] }[] {
 
 export async function generateMetadata(props: {
   params: Promise<{ slug: string[] }>;
-}) {
+}): Promise<Metadata> {
   const params = await props.params;
   const page = blog.getPage(params.slug);
   if (!page) notFound();
+  const { title, description, date, authors } = page.data;
+  const isArticle = getSeriesPosts('blog', page.slugs).length === 0;
+
   return {
-    title: page.data.title,
-    description: page.data.description,
+    title,
+    description,
     alternates: { canonical: page.url },
+    openGraph: {
+      title,
+      description,
+      url: page.url,
+      images: '/apple-icon.png',
+      ...(isArticle && {
+        type: 'article' as const,
+        publishedTime: new Date(date).toISOString(),
+        authors: authors?.map((author) => author.name),
+      }),
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+      images: '/apple-icon.png',
+    },
   };
 }

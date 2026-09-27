@@ -8,8 +8,16 @@ import { SearchDialog } from '@/components/search-dialog';
 
 export const metadata: Metadata = {
   title: 'HITSZ 课程攻略共享计划',
-  description: '为你的 HITSZ 求学路提供全面的课程资料与经验分享',
+  description:
+    'HITSZ OpenAuto(HOA) 汇集 HITSZ 课程攻略、选课经验与复习建议。按年级、专业和学期查找课程攻略，阅读同学分享的笔记与学习心得。',
   metadataBase: new URL('https://hoa.moe'),
+  openGraph: {
+    images: '/apple-icon.png',
+  },
+  twitter: {
+    card: 'summary',
+    images: '/apple-icon.png',
+  },
   alternates: {
     canonical: '/',
     types: {
