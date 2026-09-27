@@ -26,6 +26,11 @@ const config = {
       },
       {
         protocol: 'https',
+        hostname: 'img.shields.io',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'picsum.photos',
         pathname: '/**',
       },
