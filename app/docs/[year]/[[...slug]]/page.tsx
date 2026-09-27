@@ -1,4 +1,4 @@
-import { getPageImage, source } from '@/lib/source/docs';
+import { source } from '@/lib/source/docs';
 import {
   DocsBody,
   DocsDescription,
@@ -89,12 +89,33 @@ export async function generateMetadata(props: {
   const page = source.getPage(slugs);
   if (!page) notFound();
   const seo = getDocsSeoPath(slugs);
+  const course = seo.indexable ? getDocsCourse(slugs) : undefined;
+  const title = course
+    ? `${page.data.title}（${slugs.at(-1)}）`
+    : page.data.title;
+  const grading = course?.gradingScheme
+    .map(({ name, percent }) => `${name} ${percent}%`)
+    .join('、');
+  const description =
+    page.data.description ||
+    (course
+      ? `${title}：${course.credit} 学分，${course.courseNature}，${course.assessmentMethod}${grading ? `；评分构成：${grading}` : ''}。`
+      : undefined);
 
   return {
-    title: page.data.title,
-    description: page.data.description,
+    title,
+    description,
     openGraph: {
-      images: getPageImage(page).url,
+      title,
+      description,
+      url: seo.canonical ?? page.url,
+      images: '/images/hoa-banner.png',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: '/images/hoa-banner.png',
     },
     alternates: { canonical: seo.canonical ?? page.url },
     robots: seo.indexable ? undefined : { index: false, follow: true },
