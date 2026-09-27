@@ -3,7 +3,7 @@ import { Callout } from 'fumadocs-ui/components/callout';
 
 export const metadata: Metadata = {
   title: '隐私政策 - HITSZ 课程攻略共享计划',
-  description: 'HITSZ OpenAuto 隐私政策',
+  description: '了解 HOA 如何使用 Umami 统计访问数据，以及如何保护访客隐私。',
   alternates: { canonical: '/privacy' },
 };
 

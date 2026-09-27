@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   description:
     'HOA 汇集 HITSZ 课程资料、选课经验与复习建议。按年级、专业和学期查找课程，阅读同学分享的笔记与学习心得。',
   metadataBase: new URL('https://hoa.moe'),
+  openGraph: {
+    images: '/apple-icon.png',
+  },
+  twitter: {
+    card: 'summary',
+    images: '/apple-icon.png',
+  },
   alternates: {
     canonical: '/',
     types: {
