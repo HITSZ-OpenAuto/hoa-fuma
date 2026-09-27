@@ -90,9 +90,7 @@ export async function generateMetadata(props: {
   if (!page) notFound();
   const seo = getDocsSeoPath(slugs);
   const course = seo.indexable ? getDocsCourse(slugs) : undefined;
-  const title = course
-    ? `${page.data.title}（${slugs.at(-1)}）`
-    : page.data.title;
+  const title = course ? `${slugs.at(-1)} ${page.data.title}` : page.data.title;
   const grading = course?.gradingScheme
     .map(({ name, percent }) => `${name} ${percent}%`)
     .join('、');
