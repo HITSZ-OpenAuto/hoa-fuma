@@ -4,6 +4,7 @@ import { Callout } from 'fumadocs-ui/components/callout';
 export const metadata: Metadata = {
   title: '隐私政策 - HITSZ 课程攻略共享计划',
   description: 'HITSZ OpenAuto 隐私政策',
+  alternates: { canonical: '/privacy' },
 };
 
 export default function Page() {

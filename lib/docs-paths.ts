@@ -9,6 +9,7 @@ import {
 
 export type DocsPathEntry = {
   slugs: string[];
+  file: string;
 };
 
 let docsPathEntries: DocsPathEntry[] | undefined;
@@ -21,7 +22,7 @@ export function getDocsPathEntries(): DocsPathEntry[] {
 
   for (const [year, yearDir] of Object.entries(docsDirs)) {
     for (const file of getMarkdownFiles(yearDir)) {
-      entries.push({ slugs: fileToSlugs(year as DocsYear, file) });
+      entries.push({ slugs: fileToSlugs(year as DocsYear, file), file });
     }
   }
 

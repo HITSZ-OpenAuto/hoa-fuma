@@ -26,4 +26,6 @@ export default function Page() {
 export const metadata = {
   title: '未分类',
   description: '浏览未分类的博客文章',
+  robots: { index: false, follow: true },
+  alternates: { canonical: '/blog/tags' },
 };

@@ -57,5 +57,7 @@ export async function generateMetadata(props: {
   return {
     title: tag,
     description: `浏览标签为 ${tag} 的博客文章`,
+    robots: { index: false, follow: true },
+    alternates: { canonical: `/blog/tags/${encodeURIComponent(tag)}` },
   };
 }

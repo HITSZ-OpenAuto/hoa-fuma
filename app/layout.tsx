@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description: '为你的 HITSZ 求学路提供全面的课程资料与经验分享',
   metadataBase: new URL('https://hoa.moe'),
   alternates: {
+    canonical: '/',
     types: {
       'application/rss+xml': [
         {
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
         <RootProvider search={{ SearchDialog }}>
           {children}
