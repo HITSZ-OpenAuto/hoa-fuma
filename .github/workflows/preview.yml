@@ -42,6 +42,9 @@ jobs:
     needs: pull-request
     if: needs.pull-request.outputs.head-repository == github.repository
     runs-on: blacksmith-8vcpu-ubuntu-2404
+    concurrency:
+      group: preview-${{ needs.pull-request.outputs.number }}
+      cancel-in-progress: true
     env:
       VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
