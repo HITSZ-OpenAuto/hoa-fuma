@@ -5,24 +5,57 @@ permissions:
   issues: write
   pull-requests: write
 
-env:
-  VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  NEXT_TELEMETRY_DISABLED: 1
-
 on:
+  issue_comment:
+    types: [created]
   pull_request:
+    types: [labeled, synchronize]
 
 jobs:
+  pull-request:
+    if: >-
+      (github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        github.event.comment.body == '/preview' &&
+        contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)) ||
+      (github.event_name == 'pull_request' &&
+        ((github.event.action == 'labeled' && github.event.label.name == 'preview') ||
+        (github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'preview'))))
+    runs-on: ubuntu-latest
+    outputs:
+      head-repository: ${{ steps.pull-request.outputs.head-repository }}
+      head-sha: ${{ steps.pull-request.outputs.head-sha }}
+      number: ${{ steps.pull-request.outputs.number }}
+    steps:
+      - name: Resolve pull request
+        id: pull-request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+        run: |
+          pull_request=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}")
+          echo "head-repository=$(jq -r '.head.repo.full_name' <<< "$pull_request")" >> "$GITHUB_OUTPUT"
+          echo "head-sha=$(jq -r '.head.sha' <<< "$pull_request")" >> "$GITHUB_OUTPUT"
+          echo "number=$(jq -r '.number' <<< "$pull_request")" >> "$GITHUB_OUTPUT"
+
   preview:
+    needs: pull-request
+    if: needs.pull-request.outputs.head-repository == github.repository
     runs-on: blacksmith-8vcpu-ubuntu-2404
+    concurrency:
+      group: preview-${{ needs.pull-request.outputs.number }}
+      cancel-in-progress: true
+    env:
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      NEXT_TELEMETRY_DISABLED: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.0
         with:
           repository: ${{ github.repository }}
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ needs.pull-request.outputs.head-sha }}
 
       - name: Build content
         env:
@@ -92,10 +125,9 @@ jobs:
           INSPECT_URL: ${{ steps.deploy.outputs.inspect_url }}
           PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
           COMMENT_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ needs.pull-request.outputs.number }}
         run: |
           node --input-type=module <<'JS'
-          import { readFileSync } from 'node:fs';
-
           const marker = '<!-- hoa-fuma-vercel-preview -->';
           const updated = new Date().toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' UTC');
           const body = [
@@ -107,8 +139,7 @@ jobs:
             `| hoa-fuma | Ready | [Preview](${process.env.PREVIEW_URL}), [Inspect](${process.env.INSPECT_URL}) | ${updated} |`,
           ].join('\n');
           const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
-          const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
-          const issueNumber = event.pull_request.number;
+          const issueNumber = Number(process.env.PR_NUMBER);
           const headers = {
             Authorization: `Bearer ${process.env.COMMENT_TOKEN}`,
             Accept: 'application/vnd.github+json',
