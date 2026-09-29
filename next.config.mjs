@@ -31,7 +31,7 @@ const config = {
       },
       {
         protocol: 'https',
-        hostname: 'osa.moe',
+        hostname: 'www.osa.moe',
         pathname: '/**',
       },
       {
