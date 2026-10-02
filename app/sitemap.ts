@@ -5,7 +5,7 @@ import { getPostSummaries } from '@/lib/posts-summary';
 import { pages } from '@/lib/source/pages';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const paths = new Set(['/', '/blog', '/news', '/privacy']);
+  const paths = new Set(['/', '/blog', '/news']);
 
   for (const page of pages.getPages()) {
     paths.add(page.url);
