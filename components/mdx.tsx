@@ -14,7 +14,6 @@ import { SponsorMarquee } from '@/components/sponsor-marquee';
 import { Accordion, Accordions } from '@/components/ui/accordion';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { cn } from '@/lib/utils';
-import { Contributors } from '@/components/contributors';
 import {
   Select,
   SelectContent,
@@ -80,7 +79,6 @@ export function getMDXComponents(
     Steps,
     SiteIcon,
     SponsorMarquee,
-    Contributors,
     Card: NoPrefetchCard,
     CourseInfo: (props: ComponentProps<typeof CourseInfo>) => (
       <CourseInfo {...props} data={props.data ?? context?.course} />
