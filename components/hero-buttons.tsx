@@ -73,7 +73,11 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               <SelectTrigger className={triggerClasses}>
                 <SelectValue placeholder="入学年份" />
               </SelectTrigger>
-              <SelectContent className="min-w-0 rounded-xl">
+              <SelectContent
+                alignItemWithTrigger={false}
+                align="start"
+                className="rounded-xl"
+              >
                 {years.map((y) => (
                   <SelectItem key={y} value={y}>
                     {y}
@@ -89,7 +93,11 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               <SelectTrigger className={triggerClasses}>
                 <SelectValue placeholder="专业" />
               </SelectTrigger>
-              <SelectContent className="max-h-72 min-w-0 rounded-xl">
+              <SelectContent
+                alignItemWithTrigger={false}
+                align="start"
+                className="max-h-72 rounded-xl"
+              >
                 {majors.map((m) => (
                   <SelectItem key={m.id} value={m.id}>
                     {m.name}
