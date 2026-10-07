@@ -41,7 +41,7 @@ function MajorSelector({ options }: { options: SidebarTabWithProps[] }) {
         </div>
         <ChevronsUpDown className="text-fd-muted-foreground ms-auto size-4 shrink-0" />
       </PopoverTrigger>
-      <PopoverContent className="fd-scroll-container flex w-(--anchor-width) flex-col gap-1 p-1">
+      <PopoverContent className="fd-scroll-container flex max-h-72 w-(--anchor-width) flex-col gap-1 p-1">
         {options.map((item) => {
           const active = selected?.url === item.url;
           if (!active && item.unlisted) return null;
