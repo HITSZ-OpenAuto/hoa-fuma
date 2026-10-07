@@ -79,6 +79,8 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
     : 'flex flex-wrap justify-center gap-4 pt-4 lg:justify-start min-h-10 items-center';
   const triggerClasses =
     'h-9 rounded-lg border-0 px-3 shadow-none hover:bg-accent data-popup-open:bg-accent dark:bg-transparent dark:hover:bg-accent [&>svg]:hidden';
+  const contentClasses =
+    'rounded-xl [&_[data-slot=select-item]]:rounded-lg [&_[data-slot=select-item]]:py-2 [&_[data-slot=select-item]]:pl-3';
 
   return (
     <div className="flex min-h-24 flex-col gap-3">
@@ -133,7 +135,9 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
                 <SelectContent
                   alignItemWithTrigger={false}
                   align="start"
-                  className="rounded-xl"
+                  alignOffset={-5}
+                  sideOffset={9}
+                  className={contentClasses}
                 >
                   <SelectItem value="undergrad">本科生</SelectItem>
                   <SelectItem value="postgrad">研究生</SelectItem>
@@ -150,7 +154,9 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
                 <SelectContent
                   alignItemWithTrigger={false}
                   align="start"
-                  className="rounded-xl"
+                  alignOffset={-5}
+                  sideOffset={9}
+                  className={contentClasses}
                 >
                   {years.map((y) => (
                     <SelectItem key={y} value={y}>
@@ -174,7 +180,9 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
                 <SelectContent
                   alignItemWithTrigger={false}
                   align="start"
-                  className="max-h-72 rounded-xl"
+                  alignOffset={-5}
+                  sideOffset={9}
+                  className={`max-h-72 ${contentClasses}`}
                 >
                   {majors.map((m) => (
                     <SelectItem key={m.id} value={m.id}>
