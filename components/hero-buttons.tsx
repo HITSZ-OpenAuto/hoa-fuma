@@ -87,7 +87,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               id="program-selection-hint"
               className="text-muted-foreground text-sm leading-5"
             >
-              选择培养方案
+              请选择你的培养方案
             </p>
             <div
               role="group"
@@ -182,7 +182,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
       >
         进入文档后，可通过侧边栏
         <Sidebar className="mx-0.5 inline size-4 align-text-bottom" />
-        随时切换年份和专业
+        随时切换培养方案
       </p>
     </div>
   );
