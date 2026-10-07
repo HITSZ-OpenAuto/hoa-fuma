@@ -91,15 +91,21 @@ function ActionsCell({
 
   return (
     <div className="flex justify-end gap-1">
-      <Button variant="ghost" size="icon-sm" asChild>
-        <Link
-          href={`https://prev.hoa.moe?file=${encodeURIComponent(finalUrl)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <ExternalLinkIcon className="size-4" />
-        </Link>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        nativeButton={false}
+        role="link"
+        render={
+          <Link
+            href={`https://prev.hoa.moe?file=${encodeURIComponent(finalUrl)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          />
+        }
+      >
+        <ExternalLinkIcon className="size-4" />
       </Button>
       <Button
         variant="ghost"
@@ -137,9 +143,10 @@ export function createColumns(
       id: 'select',
       header: ({ table }) => (
         <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          checked={table.getIsAllPageRowsSelected()}
+          indeterminate={
+            !table.getIsAllPageRowsSelected() &&
+            table.getIsSomePageRowsSelected()
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"

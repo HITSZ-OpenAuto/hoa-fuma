@@ -19,15 +19,15 @@ function GitHubButton({
         '[&_svg]:text-fd-muted-foreground gap-2 no-underline [&_svg]:size-3.5',
         className
       )}
-      asChild
+      nativeButton={false}
+      role="link"
+      render={<a href={href} rel="noreferrer noopener" target="_blank" />}
     >
-      <a href={href} rel="noreferrer noopener" target="_blank">
-        <svg fill="currentColor" role="img" viewBox="0 0 24 24">
-          <title>{siGithub.title}</title>
-          <path d={siGithub.path} />
-        </svg>
-        GitHub
-      </a>
+      <svg fill="currentColor" role="img" viewBox="0 0 24 24">
+        <title>{siGithub.title}</title>
+        <path d={siGithub.path} />
+      </svg>
+      GitHub
     </Button>
   );
 }

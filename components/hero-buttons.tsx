@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { CopyAgentPrompt } from '@/components/copy-agent-prompt';
 import { HOA_LAST_PATH_COOKIE } from '@/lib/constants';
 
@@ -29,7 +28,7 @@ function hasCookie(name: string): boolean {
 export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
   const router = useRouter();
   const [selecting, setSelecting] = useState(false);
-  const [year, setYear] = useState<string>('');
+  const [year, setYear] = useState<string | null>(null);
 
   const years = useMemo(
     () => Object.keys(yearMajorMap).sort((a, b) => b.localeCompare(a)),
@@ -49,12 +48,13 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
     }
   }, [router]);
 
-  const handleYearChange = useCallback((value: string) => {
+  const handleYearChange = useCallback((value: string | null) => {
     setYear(value);
   }, []);
 
   const handleMajorChange = useCallback(
-    (value: string) => {
+    (value: string | null) => {
+      if (value === null) return;
       router.push(`/docs/${year}/${value}`);
     },
     [router, year]
@@ -73,7 +73,11 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               <SelectTrigger className={triggerClasses}>
                 <SelectValue placeholder="入学年份" />
               </SelectTrigger>
-              <SelectContent className="min-w-0 rounded-xl">
+              <SelectContent
+                alignItemWithTrigger={false}
+                align="start"
+                className="rounded-xl"
+              >
                 {years.map((y) => (
                   <SelectItem key={y} value={y}>
                     {y}
@@ -81,20 +85,24 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
                 ))}
               </SelectContent>
             </Select>
-            <Select value="" onValueChange={handleMajorChange} disabled={!year}>
+            <Select
+              value={null}
+              onValueChange={handleMajorChange}
+              disabled={!year}
+            >
               <SelectTrigger className={triggerClasses}>
                 <SelectValue placeholder="专业" />
               </SelectTrigger>
-              <SelectContent className="min-w-0 rounded-xl">
-                <ScrollArea className="h-72">
-                  <div className="p-1">
-                    {majors.map((m) => (
-                      <SelectItem key={m.id} value={m.id}>
-                        {m.name}
-                      </SelectItem>
-                    ))}
-                  </div>
-                </ScrollArea>
+              <SelectContent
+                alignItemWithTrigger={false}
+                align="start"
+                className="max-h-72 rounded-xl"
+              >
+                {majors.map((m) => (
+                  <SelectItem key={m.id} value={m.id}>
+                    {m.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </>
