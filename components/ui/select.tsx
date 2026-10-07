@@ -39,7 +39,9 @@ function SelectTrigger({
       {...props}
     >
       {children}
-      <SelectPrimitive.Icon render={<ChevronDownIcon className="size-4 opacity-50" />} />
+      <SelectPrimitive.Icon
+        render={<ChevronDownIcon className="size-4 opacity-50" />}
+      />
     </SelectPrimitive.Trigger>
   )
 }
@@ -53,9 +55,11 @@ function SelectContent({
   side = "bottom",
   sideOffset = 4,
   ...props
-}: SelectPrimitive.Popup.Props & Pick<SelectPrimitive.Positioner.Props,
-  "alignItemWithTrigger" | "align" | "alignOffset" | "side" | "sideOffset"
->) {
+}: SelectPrimitive.Popup.Props &
+  Pick<
+    SelectPrimitive.Positioner.Props,
+    "alignItemWithTrigger" | "align" | "alignOffset" | "side" | "sideOffset"
+  >) {
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Positioner
