@@ -83,6 +83,7 @@ export default function HomePage() {
               size="lg"
               className="rounded-full"
               nativeButton={false}
+              role="link"
               render={<a href="mailto:hi@hoa.moe" />}
             >
               <Mail className="h-4 w-4" />
@@ -93,6 +94,7 @@ export default function HomePage() {
               size="lg"
               className="rounded-full"
               nativeButton={false}
+              role="link"
               render={
                 <a
                   href="https://github.com/HITSZ-OpenAuto"

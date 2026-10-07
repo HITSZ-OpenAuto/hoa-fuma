@@ -20,6 +20,7 @@ function GitHubButton({
         className
       )}
       nativeButton={false}
+      role="link"
       render={<a href={href} rel="noreferrer noopener" target="_blank" />}
     >
       <svg fill="currentColor" role="img" viewBox="0 0 24 24">

@@ -86,6 +86,7 @@ export function Toolbar({
           size="sm"
           className="h-8 px-2 sm:px-3"
           nativeButton={false}
+          role="link"
           render={<a href={url} target="_blank" rel="noopener noreferrer" />}
         >
           <HardDrive className="text-muted-foreground size-4" />

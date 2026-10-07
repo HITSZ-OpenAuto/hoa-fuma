@@ -95,6 +95,7 @@ function ActionsCell({
         variant="ghost"
         size="icon-sm"
         nativeButton={false}
+        role="link"
         render={
           <Link
             href={`https://prev.hoa.moe?file=${encodeURIComponent(finalUrl)}`}
