@@ -3,7 +3,3 @@ allowBuilds:
   sharp: true
 
 pmOnFail: download
-
-minimumReleaseAgeExclude:
-  - oxlint
-  - '@oxlint/binding-*'
