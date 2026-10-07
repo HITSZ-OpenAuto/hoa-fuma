@@ -1,8 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { Bot, Check } from 'lucide-react';
-import { toast } from 'sonner';
+import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const AGENT_PROMPT =
@@ -15,10 +14,9 @@ export function CopyAgentPrompt() {
     try {
       await navigator.clipboard.writeText(AGENT_PROMPT);
       setCopied(true);
-      toast.success('已复制，粘贴给你的 AI 助手即可开始贡献');
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error('复制失败，请手动访问 hoa.moe/install.txt');
+      setCopied(false);
     }
   }, []);
 
@@ -29,8 +27,10 @@ export function CopyAgentPrompt() {
       className="hidden rounded-full transition-transform hover:scale-105 lg:inline-flex"
       onClick={handleCopy}
     >
-      {copied ? <Check className="size-4" /> : <Bot className="size-4" />}
-      Agent 技能
+      {copied ? <Check aria-hidden="true" className="size-4" /> : null}
+      <span aria-live="polite">
+        {copied ? '已复制提示词' : '安装 Agent 技能'}
+      </span>
     </Button>
   );
 }
