@@ -1,10 +1,9 @@
 'use client';
 
 import { YearSelector } from '@/components/sidebar/year-selector';
-import {
-  isTabActive,
-  type SidebarTabWithProps,
-} from 'fumadocs-ui/components/sidebar/tabs/dropdown';
+import type { SidebarTabWithProps } from 'fumadocs-ui/components/sidebar/tabs/dropdown';
+import { isLayoutTabActive } from 'fumadocs-ui/layouts/shared';
+import { useTreePath } from 'fumadocs-ui/contexts/tree';
 import {
   Popover,
   PopoverContent,
@@ -15,21 +14,22 @@ import { usePathname } from 'fumadocs-core/framework';
 import Link from 'fumadocs-core/link';
 import { BookOpenText, Check, ChevronsUpDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { getSidebarTabs } from 'fumadocs-ui/utils/get-sidebar-tabs';
+import { getSidebarTabs } from 'fumadocs-ui/components/sidebar/tabs';
 import type * as PageTree from 'fumadocs-core/page-tree';
 
 function MajorSelector({ options }: { options: SidebarTabWithProps[] }) {
   const [open, setOpen] = useState(false);
   const { closeOnRedirect } = useSidebar();
   const pathname = usePathname();
+  const path = useTreePath();
   const selected = useMemo(
-    () => options.findLast((item) => isTabActive(item, pathname)),
-    [options, pathname]
+    () => options.findLast((item) => isLayoutTabActive(item, path, pathname)),
+    [options, path, pathname]
   );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="bg-fd-secondary/50 text-fd-secondary-foreground hover:bg-fd-accent data-[state=open]:bg-fd-accent data-[state=open]:text-fd-accent-foreground flex items-center gap-2 rounded-lg border p-2 text-start transition-colors">
+      <PopoverTrigger className="bg-fd-secondary/50 text-fd-secondary-foreground hover:bg-fd-accent data-popup-open:bg-fd-accent data-popup-open:text-fd-accent-foreground flex items-center gap-2 rounded-lg border p-2 text-start transition-colors">
         <div className="text-fd-primary flex size-5 shrink-0 items-center justify-center">
           <BookOpenText className="size-4" />
         </div>
@@ -41,7 +41,7 @@ function MajorSelector({ options }: { options: SidebarTabWithProps[] }) {
         </div>
         <ChevronsUpDown className="text-fd-muted-foreground ms-auto size-4 shrink-0" />
       </PopoverTrigger>
-      <PopoverContent className="fd-scroll-container flex w-(--radix-popover-trigger-width) flex-col gap-1 p-1">
+      <PopoverContent className="fd-scroll-container flex w-(--anchor-width) flex-col gap-1 p-1">
         {options.map((item) => {
           const active = selected?.url === item.url;
           if (!active && item.unlisted) return null;

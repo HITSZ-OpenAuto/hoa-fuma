@@ -55,8 +55,5 @@ export function Accordion({
 }
 
 export function Accordions(props: ComponentProps<typeof FumaAccordions>) {
-  if (props.type === 'single') {
-    return <FumaAccordions {...props} />;
-  }
-  return <FumaAccordions {...props} type="multiple" />;
+  return <FumaAccordions multiple {...props} />;
 }

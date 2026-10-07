@@ -20,7 +20,7 @@ export function YearSelector({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="bg-fd-secondary/50 text-fd-secondary-foreground hover:bg-fd-accent data-[state=open]:bg-fd-accent data-[state=open]:text-fd-accent-foreground flex items-center gap-2 rounded-lg border p-2 text-start transition-colors">
+      <PopoverTrigger className="bg-fd-secondary/50 text-fd-secondary-foreground hover:bg-fd-accent data-popup-open:bg-fd-accent data-popup-open:text-fd-accent-foreground flex items-center gap-2 rounded-lg border p-2 text-start transition-colors">
         <div className="text-fd-primary flex size-5 shrink-0 items-center justify-center">
           <CalendarDays className="size-4" />
         </div>
@@ -32,7 +32,7 @@ export function YearSelector({
         </div>
         <ChevronsUpDown className="text-fd-muted-foreground ms-auto size-4 shrink-0" />
       </PopoverTrigger>
-      <PopoverContent className="fd-scroll-container flex w-(--radix-popover-trigger-width) flex-col gap-1 p-1">
+      <PopoverContent className="fd-scroll-container flex w-(--anchor-width) flex-col gap-1 p-1">
         {years.map((year) => (
           <Link
             key={year}
