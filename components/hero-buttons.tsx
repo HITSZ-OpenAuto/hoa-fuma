@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Sidebar } from 'lucide-react';
+import { ChevronRight, Sidebar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -74,13 +74,18 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
 
   const rowClasses =
     'flex flex-wrap justify-center gap-4 pt-4 lg:justify-start min-h-10 items-center';
-  const triggerClasses = 'h-10 rounded-full';
+  const triggerClasses =
+    'h-9 rounded-lg border-0 px-3 shadow-none hover:bg-accent data-popup-open:bg-accent dark:bg-transparent dark:hover:bg-accent [&>svg]:hidden';
 
   return (
-    <div className="flex h-[5.25rem] flex-col justify-between">
+    <div className="flex min-h-24 flex-col gap-3">
       <div className={rowClasses}>
         {selecting ? (
-          <>
+          <div
+            role="group"
+            aria-label="选择培养方案"
+            className="bg-background/80 inline-flex max-w-full items-center gap-1 rounded-xl border p-1 shadow-xs"
+          >
             <Select<StudyLevel>
               value={studyLevel}
               onValueChange={(value) => {
@@ -103,6 +108,10 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
                 <SelectItem value="postgrad">研究生</SelectItem>
               </SelectContent>
             </Select>
+            <ChevronRight
+              aria-hidden="true"
+              className="text-muted-foreground/50 size-3.5 shrink-0"
+            />
             <Select value={year} onValueChange={handleYearChange}>
               <SelectTrigger className={triggerClasses} aria-label="入学年份">
                 <SelectValue placeholder="入学年份" />
@@ -119,6 +128,10 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
                 ))}
               </SelectContent>
             </Select>
+            <ChevronRight
+              aria-hidden="true"
+              className="text-muted-foreground/50 size-3.5 shrink-0"
+            />
             <Select
               value={null}
               onValueChange={handleMajorChange}
@@ -139,7 +152,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
                 ))}
               </SelectContent>
             </Select>
-          </>
+          </div>
         ) : (
           <>
             <Button
@@ -155,7 +168,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
         )}
       </div>
       <p
-        className={`text-muted-foreground h-5 shrink-0 text-center text-sm leading-5 lg:text-left ${selecting ? '' : 'invisible'}`}
+        className={`text-muted-foreground min-h-5 shrink-0 text-center text-sm leading-5 lg:text-left ${selecting ? '' : 'invisible'}`}
       >
         进入文档后，可通过侧边栏
         <Sidebar className="mx-0.5 inline size-4 align-text-bottom" />
