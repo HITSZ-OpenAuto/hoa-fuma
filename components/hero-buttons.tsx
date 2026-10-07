@@ -32,6 +32,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
   const [selecting, setSelecting] = useState(false);
   const [studyLevel, setStudyLevel] = useState<StudyLevel>('undergrad');
   const [year, setYear] = useState<string | null>(null);
+  const [hintOpen, setHintOpen] = useState(false);
 
   const years = useMemo(
     () =>
@@ -86,11 +87,13 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
           <>
             <div className="text-muted-foreground flex items-center gap-1 text-sm leading-5">
               <p id="program-selection-hint">请选择你的培养方案</p>
-              <Tooltip.Root>
+              <Tooltip.Root open={hintOpen} onOpenChange={setHintOpen}>
                 <Tooltip.Trigger
                   aria-label="培养方案切换提示"
                   aria-describedby="program-selection-tooltip"
-                  render={<Button variant="ghost" size="icon-xs" />}
+                  closeOnClick={false}
+                  onClick={() => setHintOpen(true)}
+                  className="hover:text-foreground focus-visible:ring-ring/50 inline-flex size-6 items-center justify-center rounded-md bg-transparent outline-none focus-visible:ring-2"
                 >
                   <CircleAlert aria-hidden="true" className="size-3.5" />
                 </Tooltip.Trigger>
