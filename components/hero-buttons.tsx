@@ -91,6 +91,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
                 <Tooltip.Trigger
                   aria-label="培养方案切换提示"
                   aria-describedby="program-selection-tooltip"
+                  delay={0}
                   closeOnClick={false}
                   onClick={() => setHintOpen((open) => !open)}
                   className="hover:text-foreground focus-visible:ring-ring/50 inline-flex size-6 items-center justify-center rounded-md bg-transparent outline-none focus-visible:ring-2"
