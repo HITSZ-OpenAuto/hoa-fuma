@@ -1,9 +1,13 @@
 import { readdirSync } from 'node:fs';
 import majorMapping from '@/lib/data/major_mapping.json';
-import { computeYearMajorMap, type MajorEntry } from '@/lib/docs-utils';
+import {
+  computeYearMajorMap,
+  type MajorEntry,
+  type YearMajorMap,
+} from '@/lib/docs-utils';
 import { docsDirs } from '@/lib/docs-content';
 
-let yearMajorMap: Record<string, { id: string; name: string }[]> | undefined;
+let yearMajorMap: YearMajorMap | undefined;
 
 export function getYearMajorMap() {
   if (yearMajorMap) return yearMajorMap;

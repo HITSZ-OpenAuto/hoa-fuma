@@ -1,17 +1,23 @@
-export type MajorEntry = {
+export type StudyLevel = 'undergrad' | 'postgrad';
+
+type MajorOption = {
+  id: string;
   name: string;
-  study_level?: string;
-  majors?: { name: string; major_ID: string }[];
+  studyLevel: StudyLevel;
 };
 
-function getMajorDisplayName(entry: MajorEntry): string {
-  return entry.study_level === 'postgrad' ? `【研】${entry.name}` : entry.name;
-}
+export type YearMajorMap = Record<string, MajorOption[]>;
+
+export type MajorEntry = {
+  name: string;
+  study_level?: StudyLevel;
+  majors?: { name: string; major_ID: string }[];
+};
 
 export function computeYearMajorMap(
   pages: { slugs: string[] }[],
   mapping: Record<string, Record<string, MajorEntry>>
-): Record<string, { id: string; name: string }[]> {
+): YearMajorMap {
   const yearMajorSet = new Map<string, Set<string>>();
 
   for (const page of pages) {
@@ -23,29 +29,35 @@ export function computeYearMajorMap(
     }
   }
 
-  const result: Record<string, { id: string; name: string }[]> = {};
+  const result: YearMajorMap = {};
 
   for (const [year, majors] of yearMajorSet) {
     const yearData = mapping[year];
 
-    let fastLookup: Map<string, string> | undefined;
+    let fastLookup: Map<string, Omit<MajorOption, 'id'>> | undefined;
     if (yearData) {
-      fastLookup = new Map<string, string>();
+      fastLookup = new Map();
       for (const entry of Object.values(yearData)) {
         if (entry.majors) {
           for (const m of entry.majors) {
-            fastLookup.set(m.major_ID, m.name);
+            fastLookup.set(m.major_ID, {
+              name: m.name,
+              studyLevel: entry.study_level ?? 'undergrad',
+            });
           }
         }
       }
       for (const [id, entry] of Object.entries(yearData)) {
-        fastLookup.set(id, getMajorDisplayName(entry));
+        fastLookup.set(id, {
+          name: entry.name,
+          studyLevel: entry.study_level ?? 'undergrad',
+        });
       }
     }
 
     result[year] = Array.from(majors).map((id) => ({
       id,
-      name: fastLookup ? (fastLookup.get(id) ?? id) : id,
+      ...(fastLookup?.get(id) ?? { name: id, studyLevel: 'undergrad' }),
     }));
   }
 

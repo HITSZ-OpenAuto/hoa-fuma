@@ -13,9 +13,10 @@ import {
 } from '@/components/ui/select';
 import { CopyAgentPrompt } from '@/components/copy-agent-prompt';
 import { HOA_LAST_PATH_COOKIE } from '@/lib/constants';
+import type { StudyLevel, YearMajorMap } from '@/lib/docs-utils';
 
 interface HeroButtonsProps {
-  yearMajorMap: Record<string, { id: string; name: string }[]>;
+  yearMajorMap: YearMajorMap;
 }
 
 function hasCookie(name: string): boolean {
@@ -28,16 +29,27 @@ function hasCookie(name: string): boolean {
 export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
   const router = useRouter();
   const [selecting, setSelecting] = useState(false);
+  const [studyLevel, setStudyLevel] = useState<StudyLevel>('undergrad');
   const [year, setYear] = useState<string | null>(null);
 
   const years = useMemo(
-    () => Object.keys(yearMajorMap).sort((a, b) => b.localeCompare(a)),
-    [yearMajorMap]
+    () =>
+      Object.keys(yearMajorMap)
+        .filter((year) =>
+          yearMajorMap[year].some((major) => major.studyLevel === studyLevel)
+        )
+        .sort((a, b) => b.localeCompare(a)),
+    [yearMajorMap, studyLevel]
   );
 
   const majors = useMemo(
-    () => (year ? (yearMajorMap[year] ?? []) : []),
-    [yearMajorMap, year]
+    () =>
+      year
+        ? (yearMajorMap[year] ?? []).filter(
+            (major) => major.studyLevel === studyLevel
+          )
+        : [],
+    [yearMajorMap, year, studyLevel]
   );
 
   const handleDocsClick = useCallback(() => {
@@ -69,8 +81,30 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
       <div className={rowClasses}>
         {selecting ? (
           <>
+            <Select<StudyLevel>
+              value={studyLevel}
+              onValueChange={(value) => {
+                if (!value) return;
+                setStudyLevel(value);
+                setYear(null);
+              }}
+            >
+              <SelectTrigger className={triggerClasses} aria-label="培养层次">
+                <SelectValue>
+                  {studyLevel === 'postgrad' ? '研究生' : '本科生'}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent
+                alignItemWithTrigger={false}
+                align="start"
+                className="rounded-xl"
+              >
+                <SelectItem value="undergrad">本科生</SelectItem>
+                <SelectItem value="postgrad">研究生</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={year} onValueChange={handleYearChange}>
-              <SelectTrigger className={triggerClasses}>
+              <SelectTrigger className={triggerClasses} aria-label="入学年份">
                 <SelectValue placeholder="入学年份" />
               </SelectTrigger>
               <SelectContent
@@ -90,7 +124,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               onValueChange={handleMajorChange}
               disabled={!year}
             >
-              <SelectTrigger className={triggerClasses}>
+              <SelectTrigger className={triggerClasses} aria-label="专业">
                 <SelectValue placeholder="专业" />
               </SelectTrigger>
               <SelectContent
