@@ -89,7 +89,7 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
               <SelectTrigger className={triggerClasses}>
                 <SelectValue placeholder="专业" />
               </SelectTrigger>
-              <SelectContent className="max-h-72 min-w-0 rounded-xl">
+              <SelectContent className="max-h-48 min-w-0 rounded-xl">
                 {majors.map((m) => (
                   <SelectItem key={m.id} value={m.id}>
                     {m.name}
