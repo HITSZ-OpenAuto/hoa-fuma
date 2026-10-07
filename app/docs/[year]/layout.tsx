@@ -1,11 +1,8 @@
 import { DocsPathMemory } from '@/components/docs/docs-path-memory';
 import { SidebarBanner } from '@/components/sidebar/sidebar-banner';
 import { baseOptions } from '@/lib/layout.shared';
-import {
-  getAvailableYears,
-  getDocsPageTree,
-  getYearPageTree,
-} from '@/lib/docs';
+import { getDocsPageTree, getYearPageTree } from '@/lib/docs';
+import { getYearMajorMap } from '@/lib/docs-home';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { notFound } from 'next/navigation';
 import { ReactNode } from 'react';
@@ -38,8 +35,6 @@ export default async function Layout(props: {
     return notFound();
   }
 
-  const years = getAvailableYears();
-
   return (
     <DocsLayout
       tree={treeAsRoot}
@@ -50,7 +45,7 @@ export default async function Layout(props: {
         banner: (
           <SidebarBanner
             key="sidebar-banner"
-            years={years}
+            yearMajorMap={getYearMajorMap()}
             currentYear={year}
             tree={treeAsRoot}
           />

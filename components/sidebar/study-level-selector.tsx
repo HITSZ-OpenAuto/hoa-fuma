@@ -6,15 +6,16 @@ import {
   PopoverTrigger,
 } from 'fumadocs-ui/components/ui/popover';
 import Link from 'fumadocs-core/link';
-import { CalendarDays, Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown, GraduationCap } from 'lucide-react';
 import { useState } from 'react';
+import type { StudyLevel } from '@/lib/docs-utils';
 
-export function YearSelector({
-  years,
-  currentYear,
+export function StudyLevelSelector({
+  options,
+  studyLevel,
 }: {
-  years: { year: string; url: string }[];
-  currentYear: string;
+  options: { level: StudyLevel; url: string }[];
+  studyLevel: StudyLevel;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -22,29 +23,29 @@ export function YearSelector({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger className="bg-fd-secondary/50 text-fd-secondary-foreground hover:bg-fd-accent data-popup-open:bg-fd-accent data-popup-open:text-fd-accent-foreground flex items-center gap-2 rounded-lg border p-2 text-start transition-colors">
         <div className="text-fd-primary flex size-5 shrink-0 items-center justify-center">
-          <CalendarDays className="size-4" />
+          <GraduationCap className="size-4" />
         </div>
         <div>
-          <p className="text-sm font-medium">入学年份</p>
+          <p className="text-sm font-medium">培养层次</p>
           <p className="text-fd-muted-foreground text-[0.8125rem] leading-4">
-            {currentYear}
+            {studyLevel === 'postgrad' ? '研究生' : '本科生'}
           </p>
         </div>
         <ChevronsUpDown className="text-fd-muted-foreground ms-auto size-4 shrink-0" />
       </PopoverTrigger>
-      <PopoverContent className="fd-scroll-container flex w-(--anchor-width) flex-col gap-1 p-1">
-        {years.map(({ year, url }) => (
+      <PopoverContent className="flex w-(--anchor-width) flex-col gap-1 p-1">
+        {options.map(({ level, url }) => (
           <Link
-            key={year}
-            className="hover:bg-fd-accent hover:text-fd-accent-foreground flex items-center gap-2 rounded-lg p-1.5"
+            key={level}
             href={url}
-            onClick={() => {
-              setOpen(false);
-            }}
+            onClick={() => setOpen(false)}
+            className="hover:bg-fd-accent hover:text-fd-accent-foreground flex items-center gap-2 rounded-lg p-1.5"
           >
-            <span className="text-sm font-medium">{year}</span>
+            <span className="text-sm font-medium">
+              {level === 'postgrad' ? '研究生' : '本科生'}
+            </span>
             <Check
-              className={`text-fd-primary ms-auto size-3.5 shrink-0 ${year !== currentYear ? 'invisible' : ''}`}
+              className={`text-fd-primary ms-auto size-3.5 shrink-0 ${level === studyLevel ? '' : 'invisible'}`}
             />
           </Link>
         ))}
