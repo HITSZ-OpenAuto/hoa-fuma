@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, Sidebar } from 'lucide-react';
+import { ChevronRight, CircleAlert } from 'lucide-react';
+import { Tooltip } from '@base-ui/react/tooltip';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -83,12 +84,29 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
       <div className={rowClasses}>
         {selecting ? (
           <>
-            <p
-              id="program-selection-hint"
-              className="text-muted-foreground text-sm leading-5"
-            >
-              请选择你的培养方案
-            </p>
+            <div className="text-muted-foreground flex items-center gap-1 text-sm leading-5">
+              <p id="program-selection-hint">请选择你的培养方案</p>
+              <Tooltip.Root>
+                <Tooltip.Trigger
+                  aria-label="培养方案切换提示"
+                  aria-describedby="program-selection-tooltip"
+                  render={<Button variant="ghost" size="icon-xs" />}
+                >
+                  <CircleAlert aria-hidden="true" className="size-3.5" />
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Positioner sideOffset={6} className="z-50">
+                    <Tooltip.Popup
+                      id="program-selection-tooltip"
+                      role="tooltip"
+                      className="bg-popover text-popover-foreground max-w-64 rounded-lg border px-3 py-2 text-xs leading-5 shadow-md"
+                    >
+                      进入文档后，可通过侧边栏随时切换培养方案
+                    </Tooltip.Popup>
+                  </Tooltip.Positioner>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </div>
             <div
               role="group"
               aria-label="选择培养方案"
@@ -177,13 +195,6 @@ export function HeroButtons({ yearMajorMap }: HeroButtonsProps) {
           </>
         )}
       </div>
-      <p
-        className={`text-muted-foreground min-h-5 shrink-0 text-center text-sm leading-5 lg:text-left ${selecting ? '' : 'invisible'}`}
-      >
-        进入文档后，可通过侧边栏
-        <Sidebar className="mx-0.5 inline size-4 align-text-bottom" />
-        随时切换培养方案
-      </p>
     </div>
   );
 }
