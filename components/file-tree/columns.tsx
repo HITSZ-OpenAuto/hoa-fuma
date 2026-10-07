@@ -91,15 +91,20 @@ function ActionsCell({
 
   return (
     <div className="flex justify-end gap-1">
-      <Button variant="ghost" size="icon-sm" asChild>
-        <Link
-          href={`https://prev.hoa.moe?file=${encodeURIComponent(finalUrl)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <ExternalLinkIcon className="size-4" />
-        </Link>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        nativeButton={false}
+        render={
+          <Link
+            href={`https://prev.hoa.moe?file=${encodeURIComponent(finalUrl)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          />
+        }
+      >
+        <ExternalLinkIcon className="size-4" />
       </Button>
       <Button
         variant="ghost"

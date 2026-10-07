@@ -82,34 +82,34 @@ export default function HomePage() {
               variant="outline"
               size="lg"
               className="rounded-full"
-              asChild
+              nativeButton={false}
+              render={<a href="mailto:hi@hoa.moe" />}
             >
-              <a href="mailto:hi@hoa.moe">
-                <Mail className="h-4 w-4" />
-                hi@hoa.moe
-              </a>
+              <Mail className="h-4 w-4" />
+              hi@hoa.moe
             </Button>
             <Button
               variant="outline"
               size="lg"
               className="rounded-full"
-              asChild
+              nativeButton={false}
+              render={
+                <a
+                  href="https://github.com/HITSZ-OpenAuto"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              }
             >
-              <a
-                href="https://github.com/HITSZ-OpenAuto"
-                target="_blank"
-                rel="noopener noreferrer"
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-4 w-4"
+                aria-hidden="true"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="h-4 w-4"
-                  aria-hidden="true"
-                >
-                  <path d={githubPath} />
-                </svg>
-                GitHub
-              </a>
+                <path d={githubPath} />
+              </svg>
+              GitHub
             </Button>
           </div>
         </div>
