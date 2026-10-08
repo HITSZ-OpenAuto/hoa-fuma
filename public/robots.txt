@@ -35,7 +35,7 @@ User-agent: omgili
 User-agent: omgilibot
 User-agent: PetalBot
 User-agent: Timpibot
-Content-Signal: search=yes, ai-input=yes, ai-train=no
+Content-Signal: search=no, ai-input=no, ai-train=no
 Disallow: /
 
 User-agent: *
