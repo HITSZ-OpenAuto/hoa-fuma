@@ -33,6 +33,7 @@ User-agent: img2dataset
 User-agent: Meta-ExternalAgent
 User-agent: omgili
 User-agent: omgilibot
+User-agent: PetalBot
 User-agent: Timpibot
 Content-Signal: search=yes, ai-input=yes, ai-train=no
 Disallow: /
