@@ -1,0 +1,88 @@
+---
+title: 机器人力学分析
+description: ''
+course:
+  credit: 2.0
+  assessmentMethod: 考查
+  courseNature: 限选
+  hourDistribution:
+    theory: 24
+    lab: 8
+    practice: 0
+    exercise: 0
+    computer: 0
+    tutoring: 0
+  gradingScheme: []
+---
+
+<CourseInfo />
+
+待补
+
+这门课是机器人与智能装备专业自动化方向的限选课，2026 年改为大二课程，开设定位相当于机器人学导论，但实际上是机器人学的拓展。使用的教材为 MIT 的 [Underactuated Robotics](https://underactuated.mit.edu)，授课范围为前八章。
+没有作业，包含实验。
+
+## 授课教师
+
+- 熊小刚
+  
+  - 章节顺序按照教材，小节内思路有变化。念PPT自娱自乐为主，基本上不补充前置知识，有时扯两嘴强化学习和多体运动学，但没有实质性内容。使用豆包把教材转为PPT，起初不校对让学生看Latex代码，后面改正。
+    > 文 / [shiftcarl](https://github.com/shiftcarl)，2026-07
+
+## 考核方式
+
+2024 级的考核分为课程设计和实验两方面。
+课程设计为单人独立选择一个仿真项目完成，并通过报告展示工作，具体见仓库。老师推荐用 Drake，但很多同学都是用 AI 从头搓的。
+实验内容为 ROS 仿真配置和 MPC 参数调整，不需要理解 MPC，不提供报告模板自由发挥。
+
+> 文 / [shiftcarl](https://github.com/shiftcarl)，2026-07
+
+## 课程简介
+
+### 关于教材
+2024 级自动化方向的培养方案中，这门课的前置知识严重缺失，而且引入大量新概念。绪论PPT中认为学生应该先学习理论力学、经典控制、数值优化乃至强化学习，但显然必修中对应的只有大学物理、电路与电子学、程序设计与实践，而理论力学是机械方向的限选，经典控制是大三的课程。
+前八章内容：
+- 欠驱动系统的定义、重要性、特点
+- 单摆，了解经典控制，引入能量成型控制
+- 2~3 自由度欠驱动模型，引入局部线性化分析可控性和部分反馈线性化解耦
+- 行走模型和跳跃/跑步模型，引入周期稳定和冲量
+- 用质心思想研究复杂机器人足系统
+- 为之前的模型加入随机性
+- 动态规划/全局优化，引入 HJB 方程
+- 推导约束下的 LQR 控制器
+
+> 文 / [shiftcarl](https://github.com/shiftcarl)，2026-07
+
+### 关于实验
+应该可以后续自己补完
+- 熟悉 Linux 和 ROS 的使用，成功运行 launch 文件（2 学时）
+- 熟悉 rosbag 和 rqt，调整车载倒立摆模型的 MPC 控制参数（2 学时）
+（貌似滞后启动控制，初状态还不同难以复现，求大佬出手）
+- 熟悉 gazebo，调整两足机器人模型的控制参数使其能跨过台阶障碍（4 学时）
+（手操累加式控制是最大不稳定因素来源）
+
+> 文 / [shiftcarl](https://github.com/shiftcarl)，2026-07
+
+## 学习资料
+
+• B 站有转载 MIT 的课，[Underactuated Robotics](https://www.bilibili.com/video/BV1sS411K7dn/?spm_id_from=333.337.search-card.all.click&vd_source=a1cfc84421a081dcc6a10bf45b247be4)
+
+## 资源下载
+
+<Files url="https://open.osa.moe/openauto/AUTO2009">
+  <Folder name="assignments">
+    <Folder name="2026_shiftcarl">
+      <File name="一份过程错误的课设.zip" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AUTO2009/raw/main/assignments/2026_shiftcarl/%E4%B8%80%E4%BB%BD%E8%BF%87%E7%A8%8B%E9%94%99%E8%AF%AF%E7%9A%84%E8%AF%BE%E8%AE%BE.zip" date="2026-10-09" size={1917469} />
+      <File name="课程设计报告模版.md" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AUTO2009/raw/main/assignments/2026_shiftcarl/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%8A%A5%E5%91%8A%E6%A8%A1%E7%89%88.md" date="2026-10-09" size={4210} />
+      <File name="课程设计要求.pdf" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AUTO2009/raw/main/assignments/2026_shiftcarl/%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1%E8%A6%81%E6%B1%82.pdf" date="2026-10-09" size={254340} />
+    </Folder>
+  </Folder>
+  <Folder name="notes">
+    <File name="2026_shiftcarl.pdf" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AUTO2009/raw/main/notes/2026_shiftcarl.pdf" date="2026-10-09" size={6464191} />
+  </Folder>
+  <Folder name="slides">
+    <Folder name="2026_shiftcarl">
+      <File name="24级绪论PPT.pdf" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AUTO2009/raw/main/slides/2026_shiftcarl/24%E7%BA%A7%E7%BB%AA%E8%AE%BAPPT.pdf" date="2026-10-09" size={12958644} />
+    </Folder>
+  </Folder>
+</Files>
