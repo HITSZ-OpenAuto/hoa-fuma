@@ -1,14 +1,6 @@
-import { SEMESTER_NAMES, COURSE_CODE_RE } from '@/lib/constants';
+import { COURSE_CODE_RE } from '@/lib/constants';
 import { isYear } from '@/lib/utils';
 import { getDocsPathEntries } from '@/lib/docs-paths';
-
-function isSemester(segment: string): boolean {
-  return SEMESTER_NAMES.has(segment);
-}
-
-function isCourseCode(segment: string): boolean {
-  return COURSE_CODE_RE.test(segment.toUpperCase());
-}
 
 function parseCookiePath(cookiePath: string): {
   year?: string;
@@ -28,24 +20,11 @@ function parseCookiePath(cookiePath: string): {
 }
 
 export function findRedirect(
-  segments: string[],
+  segment: string,
   cookiePath?: string
 ): string | null {
-  if (segments.length === 0 || segments.length > 2) return null;
-
-  let courseCode: string;
-  let semester: string | undefined;
-
-  if (segments.length === 2) {
-    // docs/<semester>/<course_code>
-    if (!isSemester(segments[0])) return null;
-    semester = segments[0];
-    courseCode = segments[1].toUpperCase();
-  } else {
-    // docs/<course_code>
-    courseCode = segments[0].toUpperCase();
-    if (!isCourseCode(courseCode)) return null;
-  }
+  const courseCode = segment.toUpperCase();
+  if (!COURSE_CODE_RE.test(courseCode)) return null;
 
   const matches: { slugs: string[] }[] = [];
 
@@ -53,7 +32,6 @@ export function findRedirect(
     if (page.slugs.length < 4) continue;
     const pageCourseCode = page.slugs[3]?.toUpperCase();
     if (pageCourseCode !== courseCode) continue;
-    if (semester && page.slugs[2] !== semester) continue;
 
     matches.push(page);
   }
