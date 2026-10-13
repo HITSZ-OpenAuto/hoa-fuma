@@ -13,7 +13,6 @@ type Meta = {
   collapsible?: boolean;
 };
 
-let docsPageTree: Root | undefined;
 const yearPageTrees = new Map<string, Root>();
 
 function pathToName(name: string): string {
@@ -283,21 +282,6 @@ function buildFolder(dir: string, slugs: string[]): Folder {
         : undefined,
     },
   };
-}
-
-export function getDocsPageTree(): Root {
-  if (docsPageTree) return docsPageTree;
-
-  docsPageTree = {
-    type: 'root',
-    name: 'Docs',
-    children: Object.entries(docsDirs).map(([year, dir]) =>
-      buildFolder(dir, [year])
-    ),
-    $id: 'root',
-  };
-
-  return docsPageTree;
 }
 
 export function getAvailableYears(): string[] {
