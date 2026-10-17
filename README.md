@@ -14,8 +14,6 @@ make content # fetch full HOA content
 make dev # start dev
 ```
 
-The `/llms.txt` endpoint provides a Markdown index of project pages, canonical courses, blog posts, and news. It is generated from the site's content at build time, following the same course selection and news exclusions as the sitemap.
-
 ## Contributing
 
 Contributions are welcome. Please read the [contributing guide](/.github/contributing.md) before submitting a pull request.
