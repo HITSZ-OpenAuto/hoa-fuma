@@ -23,7 +23,9 @@ export function GET() {
       title: string;
       description?: string;
     };
-    return [link(`${slugs.at(-1)} ${data.title}`, url, data.description)];
+    return [
+      link(`${slugs.at(-1)} ${data.title}`, `${url}.md`, data.description),
+    ];
   });
 
   const sections = [
@@ -35,7 +37,9 @@ export function GET() {
       link('课程文档', '/docs'),
       ...pages
         .getPages()
-        .map((page) => link(page.data.title, page.url, page.data.description)),
+        .map((page) =>
+          link(page.data.title, `${page.url}.md`, page.data.description)
+        ),
       link('参与指南', 'https://wiki.hoa.moe'),
       link('GitHub', 'https://github.com/HITSZ-OpenAuto'),
     ].join('\n'),
@@ -43,13 +47,13 @@ export function GET() {
     courses.sort().join('\n'),
     '## 博客',
     getPostSummaries('blog')
-      .map((post) => link(post.title, post.url, post.description))
+      .map((post) => link(post.title, `${post.url}.md`, post.description))
       .sort()
       .join('\n'),
     '## 新闻',
     getPostSummaries('news')
       .filter((post) => !['weekly', 'daily'].includes(post.slugs[0]))
-      .map((post) => link(post.title, post.url, post.description))
+      .map((post) => link(post.title, `${post.url}.md`, post.description))
       .sort()
       .join('\n'),
   ];

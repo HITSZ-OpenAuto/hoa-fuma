@@ -23,7 +23,7 @@ export const docs = defineDocs({
         rehypePlugins: (plugins) => [rehypeKatex, ...plugins],
       })(environment),
     postprocess: {
-      includeProcessedMarkdown: false,
+      includeProcessedMarkdown: true,
     },
   },
   meta: {
@@ -34,6 +34,9 @@ export const docs = defineDocs({
 export const blogPosts = defineCollections({
   type: 'doc',
   dir: 'content/blog',
+  postprocess: {
+    includeProcessedMarkdown: true,
+  },
   schema: pageSchema.extend({
     authors: z
       .array(
@@ -57,6 +60,9 @@ export const blogPosts = defineCollections({
 export const newsPosts = defineCollections({
   type: 'doc',
   dir: 'content/news',
+  postprocess: {
+    includeProcessedMarkdown: true,
+  },
   schema: pageSchema.extend({
     authors: z
       .array(
@@ -79,6 +85,9 @@ export const newsPosts = defineCollections({
 export const pages = defineCollections({
   type: 'doc',
   dir: 'content/pages',
+  postprocess: {
+    includeProcessedMarkdown: true,
+  },
   schema: pageSchema.extend({
     showToc: z.boolean().optional(),
   }),
