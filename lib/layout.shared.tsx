@@ -1,4 +1,5 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import { siGithub } from 'simple-icons';
 
 export function baseOptions(
   linkPlacement: 'nav' | 'all' = 'nav'
@@ -54,7 +55,18 @@ export function baseOptions(
         active: 'nested-url',
         on: linkPlacement,
       },
+      {
+        type: 'icon',
+        text: 'GitHub',
+        label: 'GitHub',
+        url: 'https://github.com/hitsz-openauto',
+        external: true,
+        icon: (
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+            <path d={siGithub.path} />
+          </svg>
+        ),
+      },
     ],
-    githubUrl: 'https://github.com/hitsz-openauto',
   };
 }
