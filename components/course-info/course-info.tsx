@@ -6,6 +6,7 @@ import {
   Tag,
   ClipboardCheck,
 } from 'lucide-react';
+import { asMarkdown } from 'fumadocs-core/server';
 import { cn } from '@/lib/utils';
 import type { CourseInfoData } from '@/lib/types';
 import { InfoItem } from './info-item';
@@ -19,6 +20,35 @@ type CourseInfoProps = {
 };
 
 export function CourseInfo({ data, className }: CourseInfoProps) {
+  if (asMarkdown()) {
+    if (!data) return '课程信息缺失。\n\n';
+
+    return [
+      '## 基本信息',
+      '',
+      `- 学分：${formatCredit(data.credit)}`,
+      `- 课程性质：${data.courseNature}`,
+      `- 考核方式：${data.assessmentMethod}`,
+      '',
+      '## 学时分配',
+      '',
+      ...HOUR_DISTRIBUTION_CONFIG.flatMap(({ key, label }) => {
+        const value = data.hourDistribution[key];
+        return value > 0 ? [`- ${label}：${value} 学时`] : [];
+      }),
+      '',
+      '## 成绩构成',
+      '',
+      data.gradingScheme.length > 0
+        ? data.gradingScheme
+            .map((item) => `- ${item.name}：${item.percent}%`)
+            .join('\n')
+        : '暂无成绩构成信息，请到 [HOA Wiki](https://wiki.hoa.moe/contribution-guide/grades) 查看如何帮我们补充',
+      '',
+      '',
+    ].join('\n');
+  }
+
   if (!data) {
     return (
       <div

@@ -7,6 +7,14 @@ const config = {
   agentRules: false,
   output: 'standalone',
   reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: '/:slug*.md',
+        destination: '/llms.mdx/:slug*/content.md',
+      },
+    ];
+  },
   experimental: {
     useTypeScriptCli: true,
     workerThreads: true,
