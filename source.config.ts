@@ -23,7 +23,7 @@ export const docs = defineDocs({
         rehypePlugins: (plugins) => [rehypeKatex, ...plugins],
       })(environment),
     postprocess: {
-      includeProcessedMarkdown: true,
+      includeProcessedMarkdown: { mdxAsPlaceholder: ['CourseInfo'] },
     },
   },
   meta: {
