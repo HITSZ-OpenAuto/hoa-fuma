@@ -16,7 +16,7 @@ import { getMDXComponents, NoPrefetchLink } from '@/components/mdx';
 import { getDocsCourse } from '@/lib/course-frontmatter';
 import { getDocsSeoPath } from '@/lib/docs-seo';
 
-export default async function Page(props: {
+export async function DocsContentPage(props: {
   params: Promise<{ year: string; slug?: string[] }>;
 }) {
   const params = await props.params;
@@ -67,11 +67,7 @@ export default async function Page(props: {
   );
 }
 
-export function generateStaticParams(): { year: string; slug?: string[] }[] {
-  return [];
-}
-
-export async function generateMetadata(props: {
+export async function getDocsMetadata(props: {
   params: Promise<{ year: string; slug?: string[] }>;
 }): Promise<Metadata> {
   const params = await props.params;
