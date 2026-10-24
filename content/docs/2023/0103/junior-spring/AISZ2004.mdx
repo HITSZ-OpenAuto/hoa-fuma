@@ -1,0 +1,142 @@
+---
+title: 信息论
+description: ''
+course:
+  credit: 2.0
+  assessmentMethod: 考试
+  courseNature: 必修
+  hourDistribution:
+    theory: 32
+    lab: 0
+    practice: 0
+    exercise: 0
+    computer: 0
+    tutoring: 0
+  gradingScheme: []
+---
+
+<CourseInfo />
+
+信息论（Information Theory），2 学分，理论课，总学时 32。开课单位：信息科学与技术学院。面向人工智能院士班。讲授信息度量、信源编码、信道编码与率失真等经典内容。
+
+## 授课教师
+
+白方，哈尔滨工业大学（深圳）教授、博士生导师。研究方向包括几何优化、3D 感知、医疗影像导航与空间计算等。
+
+> 文 / [aqua](https://github.com/marine-aqua)，2026-07
+
+- 白方
+  
+  - 2025 年底入职哈工深后首开本课，课业与科研任务都重，状态上能感觉到比较辛苦。
+  - 老师学习与消化新课的能力很强：此前主要方向并非通信 / 压缩，备课周期据了解也很短，但仍能很快把内容吃透，课堂主线清楚、insight 突出。语速偏快。课堂上常提醒更应抓住思路与直觉，而不必过度纠结数学形式的绝对严谨。
+    > 文 / [aqua](https://github.com/marine-aqua)，2026-07
+
+## 考核方式
+
+本课程与其他集群开设的「信息论导论」不同。
+
+- 平时成绩：30%（点名 + 作业）
+- 期末考试：70%（闭卷）
+- 期末侧重概念关系与思路；课堂曾强调噪声信道编码定理、Kraft / Huffman / Hamming、马尔可夫熵率、信道容量与高斯信道等
+
+> 文 / [aqua](https://github.com/marine-aqua)，2026-07
+
+## 教材与参考书
+
+本课内容脉络与常见信息论教材相近，但更重要的学习材料是**教师课件**——作业与期末题均出自课件，老师在课件上投入很大；也没有另行发放纸质讲义。课件因版权原因不上传本仓库。
+
+公开参考材料（据课堂整理，供拓展阅读）：
+
+- 课程要点脉络：Duke 信息论相关 PPT
+- 前期（至噪声信道编码定理）：David MacKay, *Information Theory, Inference, and Learning Algorithms*
+- 后期：Stanford 信息论课程讲义
+
+> 文 / [aqua](https://github.com/marine-aqua)，2026-07
+
+## 学习资料
+
+- 本仓库：考试笔记、分章节习题集（`notes/`）；期末回忆卷（`exams/`）
+
+> 文 / [aqua](https://github.com/marine-aqua)，2026-07
+
+- [2026 年 AISZ-23 复习资料总览](notes/2026_AISZ-23-CS-Reviews/信息论复习.html)：知识图谱、考试重点、三个讲解模块与疑问解答
+- `notes/2026_AISZ-23-CS-Reviews/知识清单/` 与 `章节测试/`：覆盖 Lecture 2–16 的知识清单和交互式章节测试
+- HTML 可直接用浏览器打开；公式由 MathJax 渲染，首次加载需要联网
+- 资料来源：[MukioXun/AISZ-23-CS-Review-Materials](https://github.com/MukioXun/AISZ-23-CS-Review-Materials)
+
+## 课程内容
+
+大致覆盖（按照 2026 春实际授课情况总结，供参考）：
+
+- 信息度量：熵、条件熵、互信息、KL 散度、交叉熵
+- 不等式与凹凸性：Jensen、log-sum、Gibbs；熵与互信息的凹凸性
+- 信源编码：AEP（IID / 平稳遍历）、熵率与马尔可夫、Kraft、变长编码、Huffman
+- 信道编码：数据处理不等式与 Fano、信道容量与联合典型性、噪声信道编码定理、高斯信道与水填充、Hamming 码
+- 有损压缩与综合：率失真、信源–信道分离；略及 VAE 与信息论的联系
+
+> 文 / [aqua](https://github.com/marine-aqua)，2026-07
+
+## 课程建议
+
+- 更重要的是概念和思路要清楚，而不是死记公式；按往年题型，证明比重并不大
+- 复习以课件与作业为主；本仓库笔记、分章节习题集与期末回忆卷可作补充
+- 教师课件因版权问题，不上传至仓库
+
+> 文 / [aqua](https://github.com/marine-aqua)，2026-07
+
+## 资源下载
+
+<Files url="https://open.osa.moe/openauto/AISZ2004">
+  <Folder name="exams">
+    <File name="2026春_期末回忆版.pdf" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/exams/2026%E6%98%A5_%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E7%89%88.pdf" date="2026-07-18" size={117495} />
+    <File name="2026春_期末回忆版.tex" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/exams/2026%E6%98%A5_%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E7%89%88.tex" date="2026-07-18" size={9491} />
+  </Folder>
+  <Folder name="notes">
+    <Folder name="2026_Quizot&KW_InforTheory_notes">
+      <Folder name="知识清单">
+        <File name="Lec10-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec10-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={16353} />
+        <File name="Lec11-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec11-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={15630} />
+        <File name="Lec12-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec12-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={14429} />
+        <File name="Lec13-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec13-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={14937} />
+        <File name="Lec14-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec14-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={12780} />
+        <File name="Lec15-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec15-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={17816} />
+        <File name="Lec16-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec16-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={12987} />
+        <File name="Lec2-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec2-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={28061} />
+        <File name="Lec3-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec3-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={22677} />
+        <File name="Lec4-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec4-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={21121} />
+        <File name="Lec5-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec5-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={14445} />
+        <File name="Lec6-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec6-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={16293} />
+        <File name="Lec7-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec7-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={17843} />
+        <File name="Lec8-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec8-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={13226} />
+        <File name="Lec9-知识清单.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95/Lec9-%E7%9F%A5%E8%AF%86%E6%B8%85%E5%8D%95.html" date="2026-08-15" size={15787} />
+      </Folder>
+      <Folder name="章节测试">
+        <File name="Lec10-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec10-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={39872} />
+        <File name="Lec11-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec11-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={41393} />
+        <File name="Lec12-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec12-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={42420} />
+        <File name="Lec13-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec13-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={42797} />
+        <File name="Lec14-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec14-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={46194} />
+        <File name="Lec15-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec15-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={45464} />
+        <File name="Lec16-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec16-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={40671} />
+        <File name="Lec2-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec2-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={56116} />
+        <File name="Lec3-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec3-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={59749} />
+        <File name="Lec4-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec4-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={63202} />
+        <File name="Lec5-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec5-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={43137} />
+        <File name="Lec6-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec6-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={42862} />
+        <File name="Lec7-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec7-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={39389} />
+        <File name="Lec8-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec8-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={37786} />
+        <File name="Lec9-章节测试.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95/Lec9-%E7%AB%A0%E8%8A%82%E6%B5%8B%E8%AF%95.html" date="2026-08-15" size={38933} />
+      </Folder>
+      <File name="信息论复习.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E4%BF%A1%E6%81%AF%E8%AE%BA%E5%A4%8D%E4%B9%A0.html" date="2026-08-15" size={36551} />
+      <File name="信息论疑问解答.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E4%BF%A1%E6%81%AF%E8%AE%BA%E7%96%91%E9%97%AE%E8%A7%A3%E7%AD%94.html" date="2026-08-15" size={18964} />
+      <File name="模块一_基础工具.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E6%A8%A1%E5%9D%97%E4%B8%80_%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7.html" date="2026-08-15" size={22597} />
+      <File name="模块三_信道编码.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E6%A8%A1%E5%9D%97%E4%B8%89_%E4%BF%A1%E9%81%93%E7%BC%96%E7%A0%81.html" date="2026-08-15" size={37979} />
+      <File name="模块二_信源编码.html" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_Quizot%26KW_InforTheory_notes/%E6%A8%A1%E5%9D%97%E4%BA%8C_%E4%BF%A1%E6%BA%90%E7%BC%96%E7%A0%81.html" date="2026-08-15" size={43636} />
+    </Folder>
+    <File name="2026_aqua_分章节习题集.pdf" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_aqua_%E5%88%86%E7%AB%A0%E8%8A%82%E4%B9%A0%E9%A2%98%E9%9B%86.pdf" date="2026-07-18" size={479554} />
+    <File name="2026_aqua_分章节习题集.tex" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_aqua_%E5%88%86%E7%AB%A0%E8%8A%82%E4%B9%A0%E9%A2%98%E9%9B%86.tex" date="2026-07-18" size={77994} />
+    <File name="2026_aqua_笔记.pdf" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_aqua_%E7%AC%94%E8%AE%B0.pdf" date="2026-07-18" size={454394} />
+    <File name="2026_aqua_笔记.tex" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_aqua_%E7%AC%94%E8%AE%B0.tex" date="2026-07-18" size={89099} />
+    <File name="2026_wuqinhong_笔记.pdf" url="https://gh.hoa.moe/github.com/HITSZ-OpenAuto/AISZ2004/raw/main/notes/2026_wuqinhong_%E7%AC%94%E8%AE%B0.pdf" date="2026-08-02" size={1520128} />
+  </Folder>
+</Files>
