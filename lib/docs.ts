@@ -1,1 +1,5 @@
-export { getAvailableYears, getYearPageTree } from '@/lib/docs-tree';
+export {
+  getAvailableYears,
+  getYearPageTree,
+  getMajorPageTree,
+} from '@/lib/docs-tree';
