@@ -28,6 +28,8 @@ export default async function Page(props: {
   );
 }
 
+export const dynamicParams = false;
+
 export function generateStaticParams(): { slug: string[] }[] {
   return pages.getPages().map((page) => ({ slug: page.slugs }));
 }
