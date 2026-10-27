@@ -42,6 +42,8 @@ export default async function Page(props: {
   );
 }
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getTags().map((tag) => ({ tag }));
 }
