@@ -1,0 +1,14 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "junior-autumn",
+    "junior-spring",
+    "senior-autumn",
+    "cross-specialty",
+    "general-knowledge",
+    "innovation-and-proctice"
+  ],
+  "root": true,
+  "title": "人工智能"
+}
