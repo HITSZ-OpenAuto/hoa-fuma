@@ -1,0 +1,33 @@
+name: Deploy HOA API
+
+# 把 HITSZ-OpenAuto 官方 API 与 MCP Server 部署到官方 VPS。
+#
+# 实现位于独立仓库 HITSZ-OpenAuto/hoa-api，通过可复用工作流复用本仓库
+# 已有的 VPS / Tailscale / Cloudflare 凭据，避免在多个仓库间分散密钥。
+#
+# 对外地址：https://api.hoa.moe/api/v1  ·  https://api.hoa.moe/mcp
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '30 14 * * *' # 每天 22:30（UTC+8）拉取最新镜像并重启
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  deploy-hoa-api:
+    uses: HITSZ-OpenAuto/hoa-api/.github/workflows/deploy.yml@main
+    with:
+      vps_host: ${{ vars.VPS_HOST }}
+      vps_user: ${{ vars.VPS_USER }}
+      vps_port: ${{ vars.VPS_PORT }}
+      vps_app_port: '19801'
+      cloudflare_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
+      api_domain: api.hoa.moe
+      origin_domain: hoa.moe
+      container_name: hoa-api
+    secrets: inherit
