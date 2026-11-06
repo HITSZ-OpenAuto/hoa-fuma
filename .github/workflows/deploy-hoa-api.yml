@@ -28,6 +28,6 @@ jobs:
       vps_app_port: '19801'
       cloudflare_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
       api_domain: api.hoa.moe
-      origin_domain: hoa.moe
+      additional_domains: hoa-api.limpu.cn
       container_name: hoa-api
     secrets: inherit
