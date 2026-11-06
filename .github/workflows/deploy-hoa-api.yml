@@ -29,5 +29,6 @@ jobs:
       cloudflare_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
       api_domain: api.hoa.moe
       additional_domains: hoa-api.limpu.cn
+      origin_ip: ${{ vars.VPS_PUBLIC_IP }}
       container_name: hoa-api
     secrets: inherit
