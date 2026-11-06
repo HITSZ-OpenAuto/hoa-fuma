@@ -28,7 +28,10 @@ jobs:
       vps_app_port: '19801'
       cloudflare_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
       api_domain: api.hoa.moe
-      additional_domains: hoa-api.limpu.cn
+      # hoa-api.limpu.cn：自有域名，DNS 在自己手里
+      # 77.42.21.198.sslip.io：IP 型公共域名，零 DNS 权限的临时入口，
+      #   等 api.hoa.moe 的 A 记录加好后即可移除
+      additional_domains: hoa-api.limpu.cn,77.42.21.198.sslip.io
       origin_ip: ${{ vars.VPS_PUBLIC_IP }}
       container_name: hoa-api
     secrets: inherit
