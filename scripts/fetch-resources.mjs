@@ -50,7 +50,7 @@ function loadEnvFiles() {
 
 loadEnvFiles();
 
-const ORG = process.env.RESOURCES_ORG ?? 'HITSZ-OpenResources';
+const ORG = process.env.RESOURCES_ORG ?? 'HITSZ-OpenAuto';
 
 /**
  * 本地调试模式：指向一个包含各资料仓本地克隆的目录，
@@ -62,7 +62,7 @@ const LOCAL_DIR = process.env.RESOURCES_LOCAL_DIR;
 const SOURCES = [
   {
     id: 'e-cube',
-    repo: 'e-cube-studio',
+    repo: 'hoa-e-cube-studio',
     title: '深圳 E立方工作室',
     subtitle: '信息学部「E立方」学风涵养工作室 × HITSZ 开源技术协会',
     fallback: {
@@ -79,7 +79,7 @@ const SOURCES = [
   },
   {
     id: 'wentian',
-    repo: 'wentian-lecturer-group',
+    repo: 'hoa-wentian-lecturer-group',
     title: '哈尔滨 问天讲师团',
     subtitle: '哈尔滨工业大学未来技术学院 · 学业支持资料库',
     fallback: {
