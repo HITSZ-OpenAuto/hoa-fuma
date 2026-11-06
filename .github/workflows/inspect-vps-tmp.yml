@@ -1,0 +1,19 @@
+name: Inspect VPS (temporary)
+
+# 临时诊断：调用 hoa-api 的只读 VPS 拓扑诊断工作流，输出反向代理与容器的真实配置。
+# 诊断完成后本文件会被删除。
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-vps:
+    uses: HITSZ-OpenAuto/hoa-api/.github/workflows/inspect-vps.yml@main
+    with:
+      vps_host: ${{ vars.VPS_HOST }}
+      vps_user: ${{ vars.VPS_USER }}
+      vps_port: ${{ vars.VPS_PORT }}
+    secrets: inherit
