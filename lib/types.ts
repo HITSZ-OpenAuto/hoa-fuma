@@ -12,6 +12,8 @@ export interface FileNode {
   depth: number; // For indentation
   children?: FileNode[];
   defaultOpen?: boolean;
+  /** 补充说明，例如「原站下载」标记 */
+  note?: string;
 }
 
 export interface FileProps {
