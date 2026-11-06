@@ -1,0 +1,52 @@
+{
+  "id": "e-cube",
+  "title": "深圳 E立方工作室",
+  "subtitle": "信息学部「E立方」学风涵养工作室 × HITSZ 开源技术协会",
+  "summary": "E立方学风涵养工作室资料栈，围绕创新创业、学业辅导、生涯规划三大板块，沉淀工作室历年活动的方案、讲义、录播与经验分享。",
+  "origin": "http://10.249.44.116:5244",
+  "originLabel": "资料栈（校内网）",
+  "access": "资料栈部署在校内网，需校园网或学校 VPN 访问；账号凭据通过内部渠道分发，本站不公开。",
+  "license": "工作室内部资料，转载请注明来源并保留原作者署名。",
+  "licenseUrl": "",
+  "notice": "资料栈由「E立方」学风涵养工作室与 HITSZ 开源技术协会共同筹备维护，反馈与建议可通过工作室问卷提交。",
+  "generatedAt": "2026-11-06T15:51:56.691Z",
+  "notes": [
+    "「学业辅导」暂时无法读取（资料栈目录索引异常），完整内容请前往资料栈查看。",
+    "「生涯规划」暂时无法读取（资料栈目录索引异常），完整内容请前往资料栈查看。"
+  ],
+  "files": [
+    {
+      "path": "“程序援”学风涵养工作室资料栈用户反馈问卷二维码.png",
+      "name": "“程序援”学风涵养工作室资料栈用户反馈问卷二维码.png",
+      "group": "",
+      "size": 98580,
+      "modified": "2025-01-05T12:25:29.208+08:00",
+      "extension": "png",
+      "mirrored": true,
+      "downloadUrl": "/resources/e-cube/%E2%80%9C%E7%A8%8B%E5%BA%8F%E6%8F%B4%E2%80%9D%E5%AD%A6%E9%A3%8E%E6%B6%B5%E5%85%BB%E5%B7%A5%E4%BD%9C%E5%AE%A4%E8%B5%84%E6%96%99%E6%A0%88%E7%94%A8%E6%88%B7%E5%8F%8D%E9%A6%88%E9%97%AE%E5%8D%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.png",
+      "externalUrl": "http://10.249.44.116:5244/home/cxy/alist-srv/“程序援”学风涵养工作室资料栈用户反馈问卷二维码.png"
+    },
+    {
+      "path": "QQ群二维码.jpg",
+      "name": "QQ群二维码.jpg",
+      "group": "",
+      "size": 442964,
+      "modified": "2025-01-05T12:23:43.487+08:00",
+      "extension": "jpg",
+      "mirrored": true,
+      "downloadUrl": "/resources/e-cube/QQ%E7%BE%A4%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg",
+      "externalUrl": "http://10.249.44.116:5244/home/cxy/alist-srv/QQ群二维码.jpg"
+    },
+    {
+      "path": "readme.md",
+      "name": "readme.md",
+      "group": "",
+      "size": 3126,
+      "modified": "2025-09-30T11:58:30.277+08:00",
+      "extension": "md",
+      "mirrored": true,
+      "downloadUrl": "/resources/e-cube/readme.md",
+      "externalUrl": "http://10.249.44.116:5244/home/cxy/alist-srv/readme.md"
+    }
+  ]
+}
