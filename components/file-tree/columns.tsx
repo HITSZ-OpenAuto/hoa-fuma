@@ -49,7 +49,14 @@ function NameCell({ row }: { row: Row<FileTreeFeatures, FileNode> }) {
       ) : (
         <span className="mt-1 shrink-0 sm:mt-0">{getFileIcon(node.url)}</span>
       )}
-      <span className="min-w-0 flex-1 text-wrap break-normal">{node.name}</span>
+      <span className="min-w-0 flex-1 text-wrap break-normal">
+        {node.name}
+        {node.note && (
+          <span className="text-fd-muted-foreground ml-2 text-xs whitespace-nowrap">
+            {node.note}
+          </span>
+        )}
+      </span>
     </div>
   );
 }

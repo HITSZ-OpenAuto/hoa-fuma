@@ -3,11 +3,16 @@ import { getDocsPathEntries } from '@/lib/docs-paths';
 import { getDocsSeoPath } from '@/lib/docs-seo';
 import { getPostSummaries } from '@/lib/posts-summary';
 import { pages } from '@/lib/source/pages';
+import { resources } from '@/lib/source/resources';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const paths = new Set(['/', '/blog', '/news']);
 
   for (const page of pages.getPages()) {
+    paths.add(page.url);
+  }
+
+  for (const page of resources.getPages()) {
     paths.add(page.url);
   }
 
