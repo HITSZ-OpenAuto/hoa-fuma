@@ -3,6 +3,7 @@ import { basename, extname, join } from 'node:path';
 import type { Folder, Item, Node, Root } from 'fumadocs-core/page-tree';
 import { frontmatter } from 'fumadocs-core/content/md/frontmatter';
 import { docsDirs, type DocsYear } from '@/lib/docs-content';
+import { externalResourceNodes } from '@/lib/external-resources';
 
 type Meta = {
   title?: string;
@@ -258,6 +259,15 @@ function buildFolder(dir: string, slugs: string[]): Folder {
       ? buildPageFromFile(indexFile, slugs, indexInfo.title)
       : undefined;
 
+  const children = buildChildren(
+    dir,
+    slugs,
+    meta,
+    indexInfo.cardTitles,
+    indexInfo.title,
+    Boolean(index)
+  );
+
   return {
     type: 'folder',
     name: meta.title ?? indexInfo.title ?? pathToName(basename(dir)),
@@ -266,14 +276,8 @@ function buildFolder(dir: string, slugs: string[]): Folder {
     defaultOpen: meta.defaultOpen,
     collapsible: meta.collapsible,
     index,
-    children: buildChildren(
-      dir,
-      slugs,
-      meta,
-      indexInfo.cardTitles,
-      indexInfo.title,
-      Boolean(index)
-    ),
+    // 专业目录（meta.root）的最后追加站外资料入口
+    children: isRoot ? [...children, ...externalResourceNodes] : children,
     $id: slugs.join('/'),
     $ref: {
       folder: slugs.join('/'),
