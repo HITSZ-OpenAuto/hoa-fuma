@@ -1,0 +1,17 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "fresh-autumn",
+    "fresh-spring",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "sophomore-summer",
+    "junior-autumn",
+    "cross-specialty",
+    "general-knowledge",
+    "innovation-and-proctice"
+  ],
+  "root": true,
+  "title": "机器人工程"
+}

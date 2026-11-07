@@ -1,0 +1,13 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "...",
+    "sophomore-autumn",
+    "sophomore-spring",
+    "cross-specialty",
+    "general-knowledge",
+    "innovation-and-proctice"
+  ],
+  "root": true,
+  "title": "工程力学"
+}
