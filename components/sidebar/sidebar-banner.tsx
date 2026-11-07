@@ -16,8 +16,6 @@ import { usePathname } from 'fumadocs-core/framework';
 import Link from 'fumadocs-core/link';
 import { BookOpenText, Check, ChevronsUpDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { getSidebarTabs } from 'fumadocs-ui/components/sidebar/tabs';
-import type * as PageTree from 'fumadocs-core/page-tree';
 
 function MajorSelector({ options }: { options: SidebarTabWithProps[] }) {
   const [open, setOpen] = useState(false);
@@ -82,11 +80,11 @@ function MajorSelector({ options }: { options: SidebarTabWithProps[] }) {
 export function SidebarBanner({
   yearMajorMap,
   currentYear,
-  tree,
+  majorTabs,
 }: {
   yearMajorMap: YearMajorMap;
   currentYear: string;
-  tree: PageTree.Root;
+  majorTabs: SidebarTabWithProps[];
 }) {
   const pathname = usePathname();
   const majors = yearMajorMap[currentYear] ?? [];
@@ -128,7 +126,7 @@ export function SidebarBanner({
       .filter((major) => major.studyLevel === studyLevel)
       .map((major) => [major.id, major])
   );
-  const tabs = getSidebarTabs(tree).flatMap((tab) => {
+  const tabs = majorTabs.flatMap((tab) => {
     const major = visibleMajors.get(tab.url.split('/')[3]);
     return major ? [{ ...tab, title: major.name }] : [];
   });

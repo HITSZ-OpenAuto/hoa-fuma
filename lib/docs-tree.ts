@@ -307,3 +307,26 @@ export function getYearPageTree(year: string): Root | undefined {
   yearPageTrees.set(year, tree);
   return tree;
 }
+
+/** Keep the selected major intact for sidebar, breadcrumb and footer navigation. */
+export function getMajorPageTree(
+  year: string,
+  major: string
+): Root | undefined {
+  const tree = getYearPageTree(year);
+  if (!tree) return undefined;
+  const id = `${year}/${major}`;
+  const folder = tree.children.find(
+    (node) => node.type === 'folder' && node.$id === id
+  );
+  if (!folder) return undefined;
+
+  return {
+    ...tree,
+    // Fumadocs memoizes tree context by $id, including across client navigations.
+    $id: `docs/${id}`,
+    children: tree.children.filter(
+      (node) => node.type === 'page' || node === folder
+    ),
+  };
+}
