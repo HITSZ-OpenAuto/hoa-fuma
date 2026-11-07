@@ -31,6 +31,22 @@ export const docs = defineDocs({
   },
 });
 
+/**
+ * 站外资料页（工作室 / 讲师团资料库）。
+ * 独立于课程文档集合：课程目录由 hoa-backend 生成到 content/docs，
+ * 资料页需要长期保留，因此单独一个集合，路由挂在 /docs/resources 下。
+ */
+export const resourcePages = defineCollections({
+  type: 'doc',
+  dir: 'content/resources',
+  postprocess: {
+    includeProcessedMarkdown: true,
+  },
+  schema: pageSchema.extend({
+    description: z.string().optional(),
+  }),
+});
+
 export const blogPosts = defineCollections({
   type: 'doc',
   dir: 'content/blog',
