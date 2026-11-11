@@ -5,35 +5,40 @@ import { notFound } from 'next/navigation';
 import { SidebarBanner } from '@/components/sidebar/sidebar-banner';
 import { DocsPathMemory } from '@/components/docs/docs-path-memory';
 import { HOA_LAST_PATH_COOKIE } from '@/lib/constants';
-import { getYearPageTree } from '@/lib/docs';
+import { getResourcePageTree } from '@/lib/docs';
 import { getYearMajorMap } from '@/lib/docs-home';
 import { getAvailableYears } from '@/lib/docs-tree';
 import { baseOptions } from '@/lib/layout.shared';
 
 /**
- * 资料页（/docs/resources/*）沿用课程文档的目录树，
- * 这样从侧栏点进来时左侧目录不会消失，并保持用户上一次浏览的年级。
+ * 资料页（/resources/*）沿用课程文档的目录树，
+ * 这样从侧栏点进来时左侧目录不会消失，并保持用户上一次浏览的年级与专业。
  */
-async function resolveYear(): Promise<string | undefined> {
+async function resolveContext(): Promise<{
+  year?: string;
+  major?: string;
+}> {
   const store = await cookies();
   const lastPath = store.get(HOA_LAST_PATH_COOKIE)?.value;
   const years = getAvailableYears();
 
   if (lastPath) {
-    const year = decodeURIComponent(lastPath).split('/')[2];
-    if (year && years.includes(year)) return year;
+    const [, , year, major] = decodeURIComponent(lastPath).split('/');
+    if (year && years.includes(year)) {
+      return { year, major };
+    }
   }
 
-  return years[0];
+  return { year: years[0] };
 }
 
 export default async function Layout(props: { children: ReactNode }) {
-  const year = await resolveYear();
+  const { year, major } = await resolveContext();
   if (!year) {
     return notFound();
   }
 
-  const tree = getYearPageTree(year);
+  const tree = getResourcePageTree(year, major);
   if (!tree) {
     return notFound();
   }

@@ -311,3 +311,42 @@ export function getYearPageTree(year: string): Root | undefined {
   yearPageTrees.set(year, tree);
   return tree;
 }
+
+/**
+ * 资料页（/resources/*）专用目录树：
+ * 仅在当前激活的专业节点下保留 externalResourceNodes，
+ * 避免所有专业同时命中 /resources/* 导致侧栏目录与专业选择器错位。
+ */
+export function getResourcePageTree(
+  year: string,
+  major?: string
+): Root | undefined {
+  const base = getYearPageTree(year);
+  if (!base) return undefined;
+
+  const folders = base.children.filter(
+    (node): node is Folder => node.type === 'folder' && Boolean(node.root)
+  );
+  const activeFolderId =
+    (major && folders.find((f) => f.$id === `${year}/${major}`)?.$id) ??
+    folders[0]?.$id;
+
+  const externalIds = new Set(
+    externalResourceNodes.map((node) => node.$id).filter(Boolean)
+  );
+
+  return {
+    ...base,
+    children: base.children.map((node) => {
+      if (node.type !== 'folder' || !node.root || node.$id === activeFolderId) {
+        return node;
+      }
+      return {
+        ...node,
+        children: node.children.filter(
+          (child) => !child.$id || !externalIds.has(child.$id)
+        ),
+      };
+    }),
+  };
+}
