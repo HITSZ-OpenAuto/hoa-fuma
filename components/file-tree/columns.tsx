@@ -50,7 +50,19 @@ function NameCell({ row }: { row: Row<FileTreeFeatures, FileNode> }) {
         <span className="mt-1 shrink-0 sm:mt-0">{getFileIcon(node.url)}</span>
       )}
       <span className="min-w-0 flex-1 text-wrap break-normal">
-        {node.name}
+        {node.external && node.url ? (
+          <a
+            href={node.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {node.name}
+          </a>
+        ) : (
+          node.name
+        )}
         {node.note && (
           <span className="text-fd-muted-foreground ml-2 text-xs whitespace-nowrap">
             {node.note}
@@ -74,6 +86,31 @@ function ActionsCell({
 
   if (node.type === 'folder' || !node.url) {
     return null;
+  }
+
+  if (node.external) {
+    return (
+      <div className="flex justify-end gap-1">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          nativeButton={false}
+          role="link"
+          title="前往原站下载"
+          aria-label={`前往原站下载 ${node.name}`}
+          render={
+            <a
+              href={node.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            />
+          }
+        >
+          <ExternalLinkIcon className="size-4" />
+        </Button>
+      </div>
+    );
   }
 
   const finalUrl = isAccelerated ? getAcceleratedUrl(node.url) : node.url;
@@ -132,6 +169,10 @@ function ActionsCell({
 }
 
 function SelectCell({ row }: { row: Row<FileTreeFeatures, FileNode> }) {
+  if (!row.getCanSelect()) {
+    return null;
+  }
+
   return (
     <Checkbox
       checked={row.getIsSelected()}

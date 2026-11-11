@@ -38,6 +38,7 @@ function buildTree(files: ResourceFile[]): FileNode[] {
           fileType: extensionOf(segment),
           depth: index,
           note: file.external ? '原站' : undefined,
+          external: file.external,
         });
         return;
       }

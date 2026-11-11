@@ -14,6 +14,8 @@ export interface FileNode {
   defaultOpen?: boolean;
   /** 补充说明，例如「原站下载」标记 */
   note?: string;
+  /** 是否为原站直链文件（不纳入本站加速与批量拉取下载） */
+  external?: boolean;
 }
 
 export interface FileProps {

@@ -110,7 +110,7 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
     onExpandedChange: setExpanded,
     getSubRows: (row) => row.children,
     getRowId: (row) => row.id,
-    enableRowSelection: true,
+    enableRowSelection: (row) => !row.original.external,
     filterFromLeafRows: true,
     globalFilterFn: (row, columnId, filterValue) => {
       if (!filterValue) return true;
@@ -130,7 +130,7 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
     try {
       const allFiles = getFileNodes(data);
       const selectedFiles = allFiles
-        .filter((file) => rowSelection[file.id])
+        .filter((file) => rowSelection[file.id] && !file.external)
         .map((file) => ({
           path: file.id,
           url: isAccelerated ? getAcceleratedUrl(file.url!) : file.url!,
@@ -138,7 +138,7 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
         }));
 
       if (selectedFiles.length === 0) {
-        toast.error('请选择要下载的文件');
+        toast.error('所选文件不支持批量下载，请前往原站下载');
         return;
       }
 

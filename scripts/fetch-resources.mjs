@@ -41,7 +41,7 @@ function loadEnvFiles() {
         .slice(eq + 1)
         .trim()
         .replace(/^["']|["']$/g, '');
-      if (key && process.env[key] === undefined) {
+      if (key && value && process.env[key] === undefined) {
         process.env[key] = value;
       }
     }
@@ -50,13 +50,13 @@ function loadEnvFiles() {
 
 loadEnvFiles();
 
-const ORG = process.env.RESOURCES_ORG ?? 'HITSZ-OpenAuto';
+const ORG = process.env.RESOURCES_ORG || 'HITSZ-OpenAuto';
 
 /**
  * 本地调试模式：指向一个包含各资料仓本地克隆的目录，
  * 文件清单直接从本地 git 读取，不必先推到 GitHub。
  */
-const LOCAL_DIR = process.env.RESOURCES_LOCAL_DIR;
+const LOCAL_DIR = process.env.RESOURCES_LOCAL_DIR || undefined;
 
 /** 资料源清单。新增资料源只需要在这里加一项。 */
 const SOURCES = [

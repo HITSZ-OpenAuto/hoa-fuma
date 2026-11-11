@@ -7,6 +7,7 @@ import { getDocsCourse } from '@/lib/course-frontmatter';
 import { source } from '@/lib/source/docs';
 import { pages } from '@/lib/source/pages';
 import { blog, news } from '@/lib/source/posts';
+import { resources } from '@/lib/source/resources';
 
 export const revalidate = false;
 
@@ -28,7 +29,9 @@ export async function GET(
         ? blog.getPage(segments)
         : section === 'news'
           ? news.getPage(segments)
-          : pages.getPage(path);
+          : section === 'resources'
+            ? resources.getPage(segments)
+            : pages.getPage(path);
   if (!page) notFound();
 
   const course = section === 'docs' ? getDocsCourse(segments) : undefined;
