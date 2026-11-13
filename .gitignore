@@ -6,6 +6,9 @@
 content/*
 !content/pages/
 !content/pages/**
+# 资料页需要长期保留（课程目录由 hoa-backend 重新生成，资料页不是）
+!content/resources/
+!content/resources/**
 .pnpm-store/
 
 # test & build

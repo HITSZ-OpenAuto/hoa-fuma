@@ -3,6 +3,8 @@ import { basename, extname, join } from 'node:path';
 import type { Folder, Item, Node, Root } from 'fumadocs-core/page-tree';
 import { frontmatter } from 'fumadocs-core/content/md/frontmatter';
 import { docsDirs, type DocsYear } from '@/lib/docs-content';
+import { getYearMajorMap } from '@/lib/docs-home';
+import { externalResourceNodes } from '@/lib/external-resources';
 
 type Meta = {
   title?: string;
@@ -258,6 +260,15 @@ function buildFolder(dir: string, slugs: string[]): Folder {
       ? buildPageFromFile(indexFile, slugs, indexInfo.title)
       : undefined;
 
+  const children = buildChildren(
+    dir,
+    slugs,
+    meta,
+    indexInfo.cardTitles,
+    indexInfo.title,
+    Boolean(index)
+  );
+
   return {
     type: 'folder',
     name: meta.title ?? indexInfo.title ?? pathToName(basename(dir)),
@@ -266,14 +277,8 @@ function buildFolder(dir: string, slugs: string[]): Folder {
     defaultOpen: meta.defaultOpen,
     collapsible: meta.collapsible,
     index,
-    children: buildChildren(
-      dir,
-      slugs,
-      meta,
-      indexInfo.cardTitles,
-      indexInfo.title,
-      Boolean(index)
-    ),
+    // 专业目录（meta.root）的最后追加站外资料入口
+    children: isRoot ? [...children, ...externalResourceNodes] : children,
     $id: slugs.join('/'),
     $ref: {
       folder: slugs.join('/'),
@@ -306,4 +311,51 @@ export function getYearPageTree(year: string): Root | undefined {
 
   yearPageTrees.set(year, tree);
   return tree;
+}
+
+/**
+ * 资料页（/resources/*）专用目录树：
+ * 仅在当前激活的专业节点下保留 externalResourceNodes，
+ * 避免所有专业同时命中 /resources/* 导致侧栏目录与专业选择器错位。
+ */
+export function getResourcePageTree(
+  year: string,
+  major?: string
+): Root | undefined {
+  const base = getYearPageTree(year);
+  if (!base) return undefined;
+
+  const folders = base.children.filter(
+    (node): node is Folder => node.type === 'folder' && Boolean(node.root)
+  );
+  const defaultUndergradMajor = getYearMajorMap()[year]?.find(
+    (item) => item.studyLevel === 'undergrad'
+  )?.id;
+  const fallbackMajor = major ?? defaultUndergradMajor;
+  const activeFolderId =
+    (fallbackMajor &&
+      folders.find((f) => f.$id === `${year}/${fallbackMajor}`)?.$id) ??
+    (defaultUndergradMajor &&
+      folders.find((f) => f.$id === `${year}/${defaultUndergradMajor}`)?.$id) ??
+    folders[0]?.$id;
+
+  const externalIds = new Set(
+    externalResourceNodes.map((node) => node.$id).filter(Boolean)
+  );
+
+  return {
+    ...base,
+    $id: activeFolderId ? `resources:${activeFolderId}` : `resources:${year}`,
+    children: base.children.map((node) => {
+      if (node.type !== 'folder' || !node.root || node.$id === activeFolderId) {
+        return node;
+      }
+      return {
+        ...node,
+        children: node.children.filter(
+          (child) => !child.$id || !externalIds.has(child.$id)
+        ),
+      };
+    }),
+  };
 }

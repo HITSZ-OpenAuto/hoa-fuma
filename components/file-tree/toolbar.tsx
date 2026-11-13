@@ -81,17 +81,19 @@ export function Toolbar({
           <span className="hidden sm:inline">上传文件</span>
         </Button> */}
 
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-8 px-2 sm:px-3"
-          nativeButton={false}
-          role="link"
-          render={<a href={url} target="_blank" rel="noopener noreferrer" />}
-        >
-          <HardDrive className="text-muted-foreground size-4" />
-          <span className="hidden sm:inline">网盘计划</span>
-        </Button>
+        {url && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 px-2 sm:px-3"
+            nativeButton={false}
+            role="link"
+            render={<a href={url} target="_blank" rel="noopener noreferrer" />}
+          >
+            <HardDrive className="text-muted-foreground size-4" />
+            <span className="hidden sm:inline">网盘计划</span>
+          </Button>
+        )}
 
         <Button
           variant="outline"

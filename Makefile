@@ -1,6 +1,6 @@
 PM := pnpm
 
-.PHONY: help prepare dev build start clean lint format type-check knip check content ignore-content-changes
+.PHONY: help prepare dev build start clean lint format type-check knip check content resources ignore-content-changes
 
 help:
 	@printf "%s\n" \
@@ -16,12 +16,14 @@ help:
 		"  check                   Run lint, format, type checks, and knip" \
 		"  clean                   Remove generated dependencies, builds, and local tools" \
 		"  content                 Fetch blog, news, and docs content" \
+		"  resources               Sync external resource sources (listings + light files)" \
 		"  ignore-content-changes  Tell Git to ignore local changes under content/ (run once per clone)"
 
 prepare:
 	$(PM) install
 	./scripts/fetch-data.sh
 	./scripts/install-hoa-backend.sh
+	-$(MAKE) resources
 
 dev:
 	$(PM) run dev
@@ -53,7 +55,11 @@ content:
 	./scripts/fetch-data.sh
 	./scripts/install-hoa-backend.sh
 	./scripts/fetch-content.sh
+	-$(MAKE) resources
 	$(MAKE) ignore-content-changes
 
+resources:
+	node scripts/fetch-resources.mjs
+
 ignore-content-changes:
-	@git ls-files content/ 2>/dev/null | xargs -I {} git update-index --skip-worktree {} 2>/dev/null; echo "Done. Git will ignore local changes under content/."
+	@git ls-files content/blog content/docs content/news 2>/dev/null | xargs -I {} git update-index --skip-worktree {} 2>/dev/null; echo "Done. Git will ignore local changes under content/."
