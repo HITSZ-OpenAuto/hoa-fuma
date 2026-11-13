@@ -10,6 +10,16 @@ import { getYearMajorMap } from '@/lib/docs-home';
 import { getAvailableYears } from '@/lib/docs-tree';
 import { baseOptions } from '@/lib/layout.shared';
 
+function decodeCookiePath(value: string | undefined): string {
+  if (!value) return '';
+
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return '';
+  }
+}
+
 /**
  * 资料页（/resources/*）沿用课程文档的目录树，
  * 这样从侧栏点进来时左侧目录不会消失，并保持用户上一次浏览的年级与专业。
@@ -19,11 +29,11 @@ async function resolveContext(): Promise<{
   major?: string;
 }> {
   const store = await cookies();
-  const lastPath = store.get(HOA_LAST_PATH_COOKIE)?.value;
+  const lastPath = decodeCookiePath(store.get(HOA_LAST_PATH_COOKIE)?.value);
   const years = getAvailableYears();
 
-  if (lastPath) {
-    const [, , year, major] = decodeURIComponent(lastPath).split('/');
+  if (lastPath.startsWith('/docs/')) {
+    const [, , year, major] = lastPath.split('/');
     if (year && years.includes(year)) {
       return { year, major };
     }

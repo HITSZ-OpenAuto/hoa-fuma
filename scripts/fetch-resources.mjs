@@ -168,8 +168,11 @@ async function fetchResourcesMeta(org, repo) {
 
 /** worktree 缺失时退回 GitHub trees API，保证站点不至于空白 */
 async function fetchTreeFallback(org, repo) {
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
   const res = await fetchWithTimeout(
-    `https://api.github.com/repos/${org}/${repo}/git/trees/main?recursive=1`
+    `https://api.github.com/repos/${org}/${repo}/git/trees/main?recursive=1`,
+    { headers }
   );
   if (!res.ok) throw new Error(`仓库树获取失败（${res.status}）`);
 

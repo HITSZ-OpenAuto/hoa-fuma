@@ -53,7 +53,7 @@ function buildTree(files: ResourceFile[]): FileNode[] {
           name: segment,
           type: 'folder',
           depth: index,
-          defaultOpen: index === 0,
+          defaultOpen: index === 0 && segment !== 'docs',
           children: [],
         };
         level.push(folder);

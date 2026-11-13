@@ -62,4 +62,4 @@ resources:
 	node scripts/fetch-resources.mjs
 
 ignore-content-changes:
-	@git ls-files content/ 2>/dev/null | xargs -I {} git update-index --skip-worktree {} 2>/dev/null; echo "Done. Git will ignore local changes under content/."
+	@git ls-files content/blog content/docs content/news 2>/dev/null | xargs -I {} git update-index --skip-worktree {} 2>/dev/null; echo "Done. Git will ignore local changes under content/."

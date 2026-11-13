@@ -3,6 +3,7 @@ import { basename, extname, join } from 'node:path';
 import type { Folder, Item, Node, Root } from 'fumadocs-core/page-tree';
 import { frontmatter } from 'fumadocs-core/content/md/frontmatter';
 import { docsDirs, type DocsYear } from '@/lib/docs-content';
+import { getYearMajorMap } from '@/lib/docs-home';
 import { externalResourceNodes } from '@/lib/external-resources';
 
 type Meta = {
@@ -327,8 +328,15 @@ export function getResourcePageTree(
   const folders = base.children.filter(
     (node): node is Folder => node.type === 'folder' && Boolean(node.root)
   );
+  const defaultUndergradMajor = getYearMajorMap()[year]?.find(
+    (item) => item.studyLevel === 'undergrad'
+  )?.id;
+  const fallbackMajor = major ?? defaultUndergradMajor;
   const activeFolderId =
-    (major && folders.find((f) => f.$id === `${year}/${major}`)?.$id) ??
+    (fallbackMajor &&
+      folders.find((f) => f.$id === `${year}/${fallbackMajor}`)?.$id) ??
+    (defaultUndergradMajor &&
+      folders.find((f) => f.$id === `${year}/${defaultUndergradMajor}`)?.$id) ??
     folders[0]?.$id;
 
   const externalIds = new Set(
@@ -337,6 +345,7 @@ export function getResourcePageTree(
 
   return {
     ...base,
+    $id: activeFolderId ? `resources:${activeFolderId}` : `resources:${year}`,
     children: base.children.map((node) => {
       if (node.type !== 'folder' || !node.root || node.$id === activeFolderId) {
         return node;
