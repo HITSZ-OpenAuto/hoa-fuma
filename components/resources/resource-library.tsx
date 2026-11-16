@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { FileTreeTable } from '@/components/file-tree/table';
 import {
   formatTimestamp,
@@ -65,76 +66,76 @@ function buildTree(files: ResourceFile[]): FileNode[] {
   return root;
 }
 
-function ContactCard({
+function ContactBadges({
   contact,
   snapshot,
 }: {
   contact: ResourceContact;
   snapshot: NonNullable<ReturnType<typeof getResourceSnapshot>>;
 }) {
+  const qqCode = contact.images?.find((image) => image.label.includes('QQ'));
+  const badges = [
+    contact.qq
+      ? {
+          label: 'QQ 群',
+          message: contact.qq,
+          color: '12b7f5',
+          href: qqCode ? getResourceFileUrl(snapshot, qqCode.path) : undefined,
+        }
+      : null,
+    contact.feedback
+      ? {
+          label: '反馈',
+          message: '用户问卷',
+          color: '4caf50',
+          href: contact.feedback,
+        }
+      : null,
+    {
+      label: '原站',
+      message: snapshot.originLabel,
+      color: '6366f1',
+      href: snapshot.origin,
+    },
+  ].filter((badge) => badge !== null);
+
   return (
-    <div className="not-prose border-fd-border bg-fd-muted/30 mt-4 rounded-lg border p-4">
-      <p className="text-sm font-medium">反馈与交流</p>
+    <div
+      aria-label="反馈与交流"
+      className="not-prose mt-4 flex flex-wrap items-center gap-2"
+    >
+      {badges.map((badge) => {
+        const params = new URLSearchParams({
+          label: badge.label,
+          message: badge.message,
+          color: badge.color,
+        });
+        const image = (
+          <Image
+            src={`https://img.shields.io/static/v1?${params}`}
+            alt={`${badge.label}：${badge.message}`}
+            width={180}
+            height={20}
+            unoptimized
+            loading="lazy"
+            className="h-5 w-auto max-w-full"
+          />
+        );
 
-      <div className="mt-3 flex flex-wrap items-start gap-6">
-        <dl className="space-y-1 text-sm">
-          {contact.qq && (
-            <div className="flex gap-2">
-              <dt className="text-fd-muted-foreground">QQ 群</dt>
-              <dd className="font-medium">{contact.qq}</dd>
-            </div>
-          )}
-          {contact.feedback && (
-            <div className="flex gap-2">
-              <dt className="text-fd-muted-foreground">问卷</dt>
-              <dd>
-                <a
-                  href={contact.feedback}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline"
-                >
-                  用户反馈问卷
-                </a>
-              </dd>
-            </div>
-          )}
-          <div className="flex gap-2">
-            <dt className="text-fd-muted-foreground">原站</dt>
-            <dd>
-              <a
-                href={snapshot.origin}
-                target="_blank"
-                rel="noreferrer"
-                className="underline"
-              >
-                {snapshot.originLabel}
-              </a>
-            </dd>
-          </div>
-        </dl>
-
-        {contact.images && contact.images.length > 0 && (
-          <div className="flex flex-wrap gap-4">
-            {contact.images.map((image) => (
-              <figure key={image.path} className="w-32">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={getResourceFileUrl(snapshot, image.path)}
-                  alt={image.label}
-                  width={128}
-                  height={128}
-                  loading="lazy"
-                  className="bg-fd-background rounded-md border object-cover"
-                />
-                <figcaption className="text-fd-muted-foreground mt-1 text-center text-xs">
-                  {image.label}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        )}
-      </div>
+        return badge.href ? (
+          <a
+            key={badge.label}
+            href={badge.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            {image}
+          </a>
+        ) : (
+          <span key={badge.label}>{image}</span>
+        );
+      })}
     </div>
   );
 }
@@ -175,7 +176,7 @@ export function ResourceLibrary({ source }: { source: string }) {
       <FileTreeTable data={nodes} url={snapshot.netdiskUrl || undefined} />
 
       {snapshot.contact && (
-        <ContactCard contact={snapshot.contact} snapshot={snapshot} />
+        <ContactBadges contact={snapshot.contact} snapshot={snapshot} />
       )}
     </div>
   );
