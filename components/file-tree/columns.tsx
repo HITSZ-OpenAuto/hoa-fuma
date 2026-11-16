@@ -5,10 +5,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from 'fumadocs-ui/components/ui/popover';
+import {
   ExternalLinkIcon,
   DownloadIcon,
   Folder,
   FolderOpen,
+  Info,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -64,8 +70,26 @@ function NameCell({ row }: { row: Row<FileTreeFeatures, FileNode> }) {
           node.name
         )}
         {node.note && (
-          <span className="text-fd-muted-foreground ml-2 text-xs whitespace-nowrap">
+          <span className="text-fd-muted-foreground ml-2 inline-flex items-center gap-1 align-middle text-xs whitespace-nowrap">
             {node.note}
+            {node.external && (
+              <Popover>
+                <PopoverTrigger
+                  openOnHover
+                  aria-label="原站下载说明"
+                  onClick={(event) => event.stopPropagation()}
+                  className="hover:text-fd-foreground focus-visible:ring-fd-ring inline-flex size-6 shrink-0 items-center justify-center rounded outline-none focus-visible:ring-2"
+                >
+                  <Info aria-hidden="true" className="size-3.5" />
+                </PopoverTrigger>
+                <PopoverContent
+                  className="max-w-72 text-xs leading-5 whitespace-normal"
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  标注「原站」的文件体积较大或为讲座录像，未纳入仓库镜像，点击后跳转资料栈原地址下载（需校园网访问）。
+                </PopoverContent>
+              </Popover>
+            )}
           </span>
         )}
       </span>

@@ -169,16 +169,9 @@ export function ResourceLibrary({ source }: { source: string }) {
   }
 
   const nodes = buildTree(snapshot.files);
-  const externalCount = snapshot.files.filter((file) => file.external).length;
 
   return (
     <div className="not-prose my-4 space-y-3">
-      {externalCount > 0 && (
-        <p className="text-fd-muted-foreground text-sm">
-          标注「原站」的文件体积较大或为讲座录像，未纳入仓库镜像，点击后跳转资料栈原地址下载（需校园网访问）。
-        </p>
-      )}
-
       <FileTreeTable data={nodes} url={snapshot.netdiskUrl || undefined} />
 
       {snapshot.contact && (
