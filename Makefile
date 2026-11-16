@@ -16,7 +16,7 @@ help:
 		"  check                   Run lint, format, type checks, and knip" \
 		"  clean                   Remove generated dependencies, builds, and local tools" \
 		"  content                 Fetch blog, news, and docs content" \
-		"  resources               Sync external resource sources (listings + light files)" \
+		"  resources               Fetch external resource listings" \
 		"  ignore-content-changes  Tell Git to ignore local changes under content/ (run once per clone)"
 
 prepare:

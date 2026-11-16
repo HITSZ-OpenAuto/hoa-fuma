@@ -1,42 +1,12 @@
 #!/usr/bin/env node
 
 import { mkdir, writeFile } from 'node:fs/promises';
-import { existsSync, readFileSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 
 const ROOT = process.cwd();
 const OUT_DIR = join(ROOT, 'lib/data/resources');
 
-function loadEnvFiles() {
-  for (const file of ['.env.local', '.env']) {
-    const path = join(ROOT, file);
-    if (!existsSync(path)) continue;
-
-    for (const line of readFileSync(path, 'utf8').split('\n')) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) continue;
-
-      const eq = trimmed.indexOf('=');
-      if (eq === -1) continue;
-
-      const key = trimmed.slice(0, eq).trim();
-      const value = trimmed
-        .slice(eq + 1)
-        .trim()
-        .replace(/^["']|["']$/g, '');
-      if (key && value && process.env[key] === undefined) {
-        process.env[key] = value;
-      }
-    }
-  }
-}
-
-loadEnvFiles();
-
-const ORG = process.env.RESOURCES_ORG || 'HITSZ-OpenAuto';
-
-const LOCAL_DIR = process.env.RESOURCES_LOCAL_DIR || undefined;
+const ORG = 'HITSZ-OpenAuto';
 
 const SOURCES = [
   {
@@ -64,7 +34,7 @@ const SOURCES = [
     fallback: {
       summary:
         '问天讲师团整理的课程复习资料，收录离散数学、理论力学B、机械工程制图、C 语言等科目的讲座讲义、题型总结与录播视频。',
-      origin: `https://gitee.com/${process.env.WENTIAN_REPO ?? 'jacobbbbb/lecturer-group'}`,
+      origin: 'https://gitee.com/jacobbbbb/lecturer-group',
       originLabel: 'Gitee 仓库',
       access: '资料已镜像到站内，可直接下载；原始仓库公开可访问。',
       license: '木兰宽松许可证 第 2 版（Mulan PSL v2）',
@@ -123,14 +93,6 @@ async function fetchWorktree(org, repo) {
 }
 
 async function fetchResourcesMeta(org, repo) {
-  if (LOCAL_DIR) {
-    const local = join(LOCAL_DIR, repo, 'resources.json');
-    if (existsSync(local)) {
-      return JSON.parse(readFileSync(local, 'utf8'));
-    }
-    return {};
-  }
-
   try {
     const res = await fetchWithTimeout(
       rawUrl(org, repo, 'main', 'resources.json')
@@ -162,37 +124,6 @@ async function fetchTreeFallback(org, repo) {
   return entries;
 }
 
-function listLocalFiles(repo) {
-  const dir = join(LOCAL_DIR, repo);
-  if (!existsSync(dir)) {
-    throw new Error(`本地目录不存在：${dir}`);
-  }
-
-  const output = execFileSync(
-    'git',
-    ['-C', dir, 'ls-tree', '-r', '-l', '-z', 'HEAD'],
-    {
-      encoding: 'utf8',
-    }
-  );
-  const date = Number(
-    execFileSync('git', ['-C', dir, 'log', '-1', '--format=%ct'], {
-      encoding: 'utf8',
-    }).trim()
-  );
-
-  const entries = {};
-  for (const line of output.split('\0')) {
-    const match = line.match(/^\d+ \w+ ([0-9a-f]+)\s+(\d+|-)\t(.+)$/);
-    if (!match) continue;
-
-    const [, , size, path] = match;
-    entries[path] = { size: size === '-' ? 0 : Number(size), time: date };
-  }
-
-  return entries;
-}
-
 async function syncSource(source) {
   const org = ORG;
   const { id, repo } = source;
@@ -200,18 +131,14 @@ async function syncSource(source) {
   let worktree;
   let fromFallback = false;
 
-  if (LOCAL_DIR) {
-    worktree = listLocalFiles(repo);
-  } else {
-    try {
-      worktree = await fetchWorktree(org, repo);
-    } catch (error) {
-      console.warn(
-        `  ! ${org}/${repo} worktree 不可用（${error.message}），改用仓库树`
-      );
-      worktree = await fetchTreeFallback(org, repo);
-      fromFallback = true;
-    }
+  try {
+    worktree = await fetchWorktree(org, repo);
+  } catch (error) {
+    console.warn(
+      `  ! ${org}/${repo} worktree 不可用（${error.message}），改用仓库树`
+    );
+    worktree = await fetchTreeFallback(org, repo);
+    fromFallback = true;
   }
 
   const meta = await fetchResourcesMeta(org, repo);
@@ -281,13 +208,7 @@ async function syncSource(source) {
 }
 
 async function main() {
-  const only = process.argv.includes('--source')
-    ? process.argv[process.argv.indexOf('--source') + 1]
-    : null;
-
   for (const source of SOURCES) {
-    if (only && only !== source.id) continue;
-
     console.log(`\n[${source.title}] ${ORG}/${source.repo}`);
     try {
       await syncSource(source);
