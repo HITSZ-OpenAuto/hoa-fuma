@@ -8,6 +8,8 @@ import {
   DocsTitle,
 } from 'fumadocs-ui/layouts/docs/page';
 import { getMDXComponents, NoPrefetchLink } from '@/components/mdx';
+import { PageActions } from '@/components/page-actions';
+import { getResourceSnapshot } from '@/lib/resources';
 import { resources } from '@/lib/source/resources';
 
 type PageProps = {
@@ -21,6 +23,7 @@ export default async function Page(props: PageProps) {
   if (!page) notFound();
 
   const Mdx = page.data.body;
+  const snapshot = getResourceSnapshot(page.slugs[0] ?? '');
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
@@ -29,6 +32,11 @@ export default async function Page(props: PageProps) {
         {page.data.description}
       </DocsDescription>
       <DocsBody>
+        {snapshot && (
+          <div className="mb-2">
+            <PageActions githubUrl={snapshot.repoUrl} />
+          </div>
+        )}
         <Mdx
           components={getMDXComponents({
             a: createRelativeLink(resources, page, NoPrefetchLink),

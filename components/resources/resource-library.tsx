@@ -1,6 +1,5 @@
 import { FileTreeTable } from '@/components/file-tree/table';
 import {
-  formatBytes,
   formatTimestamp,
   getResourceFileUrl,
   getResourceSnapshot,
@@ -170,29 +169,10 @@ export function ResourceLibrary({ source }: { source: string }) {
   }
 
   const nodes = buildTree(snapshot.files);
-  const totalSize = snapshot.files.reduce((sum, file) => sum + file.size, 0);
   const externalCount = snapshot.files.filter((file) => file.external).length;
 
   return (
     <div className="not-prose my-4 space-y-3">
-      <div className="text-fd-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-        <span>
-          共 {snapshot.files.length} 个文件
-          {totalSize > 0 && ` · 约 ${formatBytes(totalSize)}`}
-        </span>
-        <span>
-          清单更新于 {formatTimestamp(Date.parse(snapshot.generatedAt) / 1000)}
-        </span>
-        <a
-          href={snapshot.repoUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="underline"
-        >
-          前往仓库
-        </a>
-      </div>
-
       {externalCount > 0 && (
         <p className="text-fd-muted-foreground text-sm">
           标注「原站」的文件体积较大或为讲座录像，未纳入仓库镜像，点击后跳转资料栈原地址下载（需校园网访问）。
