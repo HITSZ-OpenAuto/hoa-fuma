@@ -2,25 +2,18 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 export type ResourceFile = {
-  /** 资料在仓库（或原站）内的相对路径 */
   path: string;
   name: string;
   size: number;
-  /** Unix 时间戳（秒） */
   time: number;
-  /** 站内直链，或未入库文件的原地址 */
   url: string;
-  /** true 表示该文件不在仓库内，点击跳原地址 */
   external: boolean;
   note?: string;
 };
 
 export type ResourceContact = {
-  /** QQ 群号 */
   qq?: string;
-  /** 反馈问卷地址 */
   feedback?: string;
-  /** 站内展示的二维码图片（仓库内相对路径） */
   images?: { label: string; path: string }[];
 };
 
@@ -39,10 +32,8 @@ export type ResourceSnapshot = {
   notice?: string;
   contact?: ResourceContact | null;
   repoUrl: string;
-  /** 网盘计划入口 */
   netdiskUrl: string;
   generatedAt: string;
-  /** 清单是否来自仓库树兜底（worktree 分支不可用时） */
   fromFallback?: boolean;
   files: ResourceFile[];
 };
@@ -73,7 +64,6 @@ export function formatTimestamp(time: number): string {
   const date = new Date(time * 1000);
   if (Number.isNaN(date.getTime())) return '';
 
-  // 资料来源均在境内，统一按北京时间展示
   return new Intl.DateTimeFormat('zh-CN', {
     timeZone: 'Asia/Shanghai',
     year: 'numeric',
@@ -84,7 +74,6 @@ export function formatTimestamp(time: number): string {
     .replace(/\//g, '-');
 }
 
-/** 资料仓内文件的站内直链（与课程页一致，走 gh.hoa.moe 网关） */
 export function getResourceFileUrl(
   snapshot: ResourceSnapshot,
   path: string

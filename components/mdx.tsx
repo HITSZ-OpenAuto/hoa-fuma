@@ -38,7 +38,6 @@ export function NoPrefetchLink(props: LinkProps) {
 }
 
 function NoPrefetchCard(props: CardProps) {
-  // 没有 href 的卡片会渲染成 div，此时不应再带上 prefetch 属性
   return <Card {...props} prefetch={props.href ? false : undefined} />;
 }
 

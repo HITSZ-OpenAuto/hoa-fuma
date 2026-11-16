@@ -277,7 +277,6 @@ function buildFolder(dir: string, slugs: string[]): Folder {
     defaultOpen: meta.defaultOpen,
     collapsible: meta.collapsible,
     index,
-    // 专业目录（meta.root）的最后追加站外资料入口
     children: isRoot ? [...children, ...externalResourceNodes] : children,
     $id: slugs.join('/'),
     $ref: {
@@ -313,11 +312,6 @@ export function getYearPageTree(year: string): Root | undefined {
   return tree;
 }
 
-/**
- * 资料页（/external/*）专用目录树：
- * 仅在当前激活的专业节点下保留 externalResourceNodes，
- * 避免所有专业同时命中 /external/* 导致侧栏目录与专业选择器错位。
- */
 export function getResourcePageTree(
   year: string,
   major?: string

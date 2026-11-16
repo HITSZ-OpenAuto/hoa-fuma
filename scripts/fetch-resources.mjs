@@ -1,19 +1,4 @@
 #!/usr/bin/env node
-/**
- * 同步站外资料仓 → 站点清单
- *
- * 数据源是 GitHub 上的资料仓（与课程仓同构）：
- *   - <org>/<repo>@worktree 分支的 worktree.json  → 文件清单（路径 / 大小 / 时间）
- *   - <org>/<repo>@main 分支的 resources.json     → 补充信息与未入库大文件
- *
- * 产出：
- *   lib/data/resources/<id>.json   站点渲染用的清单（不入库，CI 每次构建重新拉）
- *
- * 设计要点：
- *   - 站点不再直连 Alist / Gitee，只依赖 GitHub（可缓存、可复现、CI 可跑）；
- *   - 未入库的大文件在 resources.json 里登记，站内照样列出，点击跳原地址；
- *   - 资料仓的 org 可用 RESOURCES_ORG 覆盖，方便本地调试。
- */
 
 import { mkdir, writeFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
@@ -23,7 +8,6 @@ import { join } from 'node:path';
 const ROOT = process.cwd();
 const OUT_DIR = join(ROOT, 'lib/data/resources');
 
-/** 读取 .env.local / .env，方便 `make resources` 免去手动 export */
 function loadEnvFiles() {
   for (const file of ['.env.local', '.env']) {
     const path = join(ROOT, file);
@@ -52,13 +36,8 @@ loadEnvFiles();
 
 const ORG = process.env.RESOURCES_ORG || 'HITSZ-OpenAuto';
 
-/**
- * 本地调试模式：指向一个包含各资料仓本地克隆的目录，
- * 文件清单直接从本地 git 读取，不必先推到 GitHub。
- */
 const LOCAL_DIR = process.env.RESOURCES_LOCAL_DIR || undefined;
 
-/** 资料源清单。新增资料源只需要在这里加一项。 */
 const SOURCES = [
   {
     id: 'e-cube',
@@ -95,7 +74,6 @@ const SOURCES = [
   },
 ];
 
-/** 仓库里不需要出现在资料清单中的文件 */
 const IGNORED =
   /^(readme\.md|license|resources\.json|\.gitignore|\.gitattributes|\.sync-state\.json)$/i;
 const IGNORED_DIR = /^(?:\.github|\.git|scripts|history)\//;
@@ -126,7 +104,6 @@ function rawUrl(org, repo, ref, path) {
   return `https://raw.githubusercontent.com/${org}/${repo}/${ref}/${encoded}`;
 }
 
-/** 与课程仓一致的站内下载直链（走 gh.hoa.moe 网关） */
 function downloadUrl(org, repo, path) {
   const encoded = path
     .split('/')
@@ -146,7 +123,6 @@ async function fetchWorktree(org, repo) {
 }
 
 async function fetchResourcesMeta(org, repo) {
-  // 本地调试模式：直接读本地克隆里的 resources.json
   if (LOCAL_DIR) {
     const local = join(LOCAL_DIR, repo, 'resources.json');
     if (existsSync(local)) {
@@ -166,7 +142,6 @@ async function fetchResourcesMeta(org, repo) {
   }
 }
 
-/** worktree 缺失时退回 GitHub trees API，保证站点不至于空白 */
 async function fetchTreeFallback(org, repo) {
   const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -187,14 +162,12 @@ async function fetchTreeFallback(org, repo) {
   return entries;
 }
 
-/** 本地克隆：直接从 git 读文件清单 */
 function listLocalFiles(repo) {
   const dir = join(LOCAL_DIR, repo);
   if (!existsSync(dir)) {
     throw new Error(`本地目录不存在：${dir}`);
   }
 
-  // -z 用 NUL 分隔并关闭路径转义，中文路径可以直接用
   const output = execFileSync(
     'git',
     ['-C', dir, 'ls-tree', '-r', '-l', '-z', 'HEAD'],
@@ -202,7 +175,6 @@ function listLocalFiles(repo) {
       encoding: 'utf8',
     }
   );
-  // 提交时间（秒），与 worktree.json 的 time 字段一致
   const date = Number(
     execFileSync('git', ['-C', dir, 'log', '-1', '--format=%ct'], {
       encoding: 'utf8',
@@ -259,7 +231,6 @@ async function syncSource(source) {
     });
   }
 
-  // 未入库的大文件：站内列出，点击跳原地址
   for (const item of meta.external ?? []) {
     if (!item?.path || !item?.url) continue;
 
@@ -291,8 +262,6 @@ async function syncSource(source) {
     notice: meta.notice ?? source.fallback.notice,
     contact: meta.contact ?? null,
     repoUrl: `https://github.com/${org}/${repo}`,
-    // 网盘计划只覆盖组织内的仓库，新 org 的资料仓默认不接入，
-    // 在资源仓的 resources.json 里声明 "netdisk": true 后才会出现入口。
     netdiskUrl: meta.netdisk
       ? (meta.netdiskUrl ?? `https://open.osa.moe/openauto/${repo}`)
       : '',

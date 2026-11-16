@@ -14,7 +14,6 @@ function extensionOf(name: string): string {
   return index === -1 ? '' : name.slice(index + 1).toLowerCase();
 }
 
-/** 把扁平的文件清单还原成目录树（与课程页 <Files> 的结构一致） */
 function buildTree(files: ResourceFile[]): FileNode[] {
   const root: FileNode[] = [];
 
