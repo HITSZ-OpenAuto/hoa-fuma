@@ -31,6 +31,17 @@ export const docs = defineDocs({
   },
 });
 
+export const resourcePages = defineCollections({
+  type: 'doc',
+  dir: 'content/resources',
+  postprocess: {
+    includeProcessedMarkdown: true,
+  },
+  schema: pageSchema.extend({
+    description: z.string().optional(),
+  }),
+});
+
 export const blogPosts = defineCollections({
   type: 'doc',
   dir: 'content/blog',

@@ -12,6 +12,8 @@ export interface FileNode {
   depth: number; // For indentation
   children?: FileNode[];
   defaultOpen?: boolean;
+  note?: string;
+  external?: boolean;
 }
 
 export interface FileProps {

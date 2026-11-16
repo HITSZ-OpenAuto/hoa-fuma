@@ -8,6 +8,8 @@ import {
   getMarkdownFiles,
   type DocsYear,
 } from '@/lib/docs-content';
+import { getResourceSnapshot } from '@/lib/resources';
+import { resources } from '@/lib/source/resources';
 
 type DocsFrontmatter = {
   title?: string;
@@ -46,7 +48,7 @@ function cleanMarkdown(value: string): string {
 function getEntries(): SearchEntry[] {
   if (cachedEntries) return cachedEntries;
 
-  cachedEntries = Object.entries(docsDirs).flatMap(([year, dir]) =>
+  const docsEntries = Object.entries(docsDirs).flatMap(([year, dir]) =>
     getMarkdownFiles(dir).map((file) => {
       const raw = readFileSync(file, 'utf8');
       const parsed = frontmatter(raw);
@@ -65,6 +67,23 @@ function getEntries(): SearchEntry[] {
     })
   );
 
+  const resourceEntries: SearchEntry[] = resources.getPages().map((page) => {
+    const id = page.slugs[0] ?? '';
+    const snapshot = getResourceSnapshot(id);
+    const fileNames = snapshot
+      ? snapshot.files.map((file) => file.name).join(' ')
+      : '';
+
+    return {
+      title: page.data.title,
+      description: page.data.description ?? snapshot?.summary ?? '',
+      content: fileNames,
+      breadcrumbs: ['外部资料'],
+      url: page.url,
+    };
+  });
+
+  cachedEntries = [...docsEntries, ...resourceEntries];
   return cachedEntries;
 }
 

@@ -1,6 +1,12 @@
 'use client';
 
-import { SearchIcon, DownloadIcon, ZapIcon, HardDrive } from 'lucide-react';
+import {
+  SearchIcon,
+  DownloadIcon,
+  ZapIcon,
+  HardDrive,
+  ExternalLink,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { CircularProgress } from '@/components/ui/circular-progress';
@@ -16,6 +22,7 @@ interface ToolbarProps {
   selectedRowCount: number;
   onBatchDownload: () => void;
   url?: string;
+  originUrl?: string;
 }
 
 export function Toolbar({
@@ -28,6 +35,7 @@ export function Toolbar({
   selectedRowCount,
   onBatchDownload,
   url,
+  originUrl,
 }: ToolbarProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
@@ -81,17 +89,32 @@ export function Toolbar({
           <span className="hidden sm:inline">上传文件</span>
         </Button> */}
 
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-8 px-2 sm:px-3"
-          nativeButton={false}
-          role="link"
-          render={<a href={url} target="_blank" rel="noopener noreferrer" />}
-        >
-          <HardDrive className="text-muted-foreground size-4" />
-          <span className="hidden sm:inline">网盘计划</span>
-        </Button>
+        {(originUrl || url) && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 px-2 sm:px-3"
+            nativeButton={false}
+            role="link"
+            aria-label={originUrl ? '资料原站' : '网盘计划'}
+            render={
+              <a
+                href={originUrl || url}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            }
+          >
+            {originUrl ? (
+              <ExternalLink className="text-muted-foreground size-4" />
+            ) : (
+              <HardDrive className="text-muted-foreground size-4" />
+            )}
+            <span className="hidden sm:inline">
+              {originUrl ? '资料原站' : '网盘计划'}
+            </span>
+          </Button>
+        )}
 
         <Button
           variant="outline"

@@ -6,6 +6,8 @@
 content/*
 !content/pages/
 !content/pages/**
+!content/resources/
+!content/resources/**
 .pnpm-store/
 
 # test & build

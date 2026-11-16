@@ -89,10 +89,12 @@ export function SidebarBanner({
   tree: PageTree.Root;
 }) {
   const pathname = usePathname();
+  const path = useTreePath();
   const majors = yearMajorMap[currentYear] ?? [];
-  const currentMajor = majors.find(
-    (major) => major.id === pathname.split('/')[3]
-  );
+  const activeMajorId =
+    (pathname.startsWith('/docs/') ? pathname.split('/')[3] : undefined) ??
+    path[0]?.$id?.split('/')[1];
+  const currentMajor = majors.find((major) => major.id === activeMajorId);
   const studyLevel = currentMajor?.studyLevel ?? 'undergrad';
   const yearEntries = Object.entries(yearMajorMap).sort(([a], [b]) =>
     b.localeCompare(a)

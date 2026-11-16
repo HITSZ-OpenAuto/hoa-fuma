@@ -4,6 +4,7 @@ import { getDocsPathEntries } from '@/lib/docs-paths';
 import { getDocsSeoPath } from '@/lib/docs-seo';
 import { getPostSummaries } from '@/lib/posts-summary';
 import { pages } from '@/lib/source/pages';
+import { resources } from '@/lib/source/resources';
 
 export const dynamic = 'force-static';
 
@@ -45,6 +46,14 @@ export function GET() {
     ].join('\n'),
     '## 课程',
     courses.sort().join('\n'),
+    '## 资料',
+    resources
+      .getPages()
+      .map((page) =>
+        link(page.data.title, `${page.url}.md`, page.data.description)
+      )
+      .sort()
+      .join('\n'),
     '## 博客',
     getPostSummaries('blog')
       .map((post) => link(post.title, `${post.url}.md`, post.description))

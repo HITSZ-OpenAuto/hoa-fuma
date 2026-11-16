@@ -3,6 +3,7 @@ import { basename, extname, join } from 'node:path';
 import type { Folder, Item, Node, Root } from 'fumadocs-core/page-tree';
 import { frontmatter } from 'fumadocs-core/content/md/frontmatter';
 import { docsDirs, type DocsYear } from '@/lib/docs-content';
+import { externalResourceNodes } from '@/lib/external-resources';
 
 type Meta = {
   title?: string;
@@ -258,6 +259,15 @@ function buildFolder(dir: string, slugs: string[]): Folder {
       ? buildPageFromFile(indexFile, slugs, indexInfo.title)
       : undefined;
 
+  const children = buildChildren(
+    dir,
+    slugs,
+    meta,
+    indexInfo.cardTitles,
+    indexInfo.title,
+    Boolean(index)
+  );
+
   return {
     type: 'folder',
     name: meta.title ?? indexInfo.title ?? pathToName(basename(dir)),
@@ -266,14 +276,7 @@ function buildFolder(dir: string, slugs: string[]): Folder {
     defaultOpen: meta.defaultOpen,
     collapsible: meta.collapsible,
     index,
-    children: buildChildren(
-      dir,
-      slugs,
-      meta,
-      indexInfo.cardTitles,
-      indexInfo.title,
-      Boolean(index)
-    ),
+    children: isRoot ? [...children, ...externalResourceNodes] : children,
     $id: slugs.join('/'),
     $ref: {
       folder: slugs.join('/'),
@@ -288,22 +291,46 @@ export function getAvailableYears(): string[] {
   return Object.keys(docsDirs).sort((a, b) => b.localeCompare(a));
 }
 
-export function getYearPageTree(year: string): Root | undefined {
+export function getYearPageTree(
+  year: string,
+  major?: string
+): Root | undefined {
   if (!(year in docsDirs)) return undefined;
 
-  const cached = yearPageTrees.get(year);
-  if (cached) return cached;
+  let tree = yearPageTrees.get(year);
+  if (!tree) {
+    const folder = buildFolder(docsDirs[year as DocsYear], [year]);
+    tree = {
+      type: 'root',
+      name: folder.name,
+      description: folder.description,
+      children: folder.children,
+      $id: year,
+      $ref: folder.$ref,
+    };
+    yearPageTrees.set(year, tree);
+  }
 
-  const folder = buildFolder(docsDirs[year as DocsYear], [year]);
-  const tree: Root = {
-    type: 'root',
-    name: folder.name,
-    description: folder.description,
-    children: folder.children,
-    $id: year,
-    $ref: folder.$ref,
+  if (!major) return tree;
+
+  const activeFolderId = `${year}/${major}`;
+  const externalIds = new Set(
+    externalResourceNodes.map((node) => node.$id).filter(Boolean)
+  );
+
+  return {
+    ...tree,
+    $id: activeFolderId,
+    children: tree.children.map((node) => {
+      if (node.type !== 'folder' || !node.root || node.$id === activeFolderId) {
+        return node;
+      }
+      return {
+        ...node,
+        children: node.children.filter(
+          (child) => !child.$id || !externalIds.has(child.$id)
+        ),
+      };
+    }),
   };
-
-  yearPageTrees.set(year, tree);
-  return tree;
 }

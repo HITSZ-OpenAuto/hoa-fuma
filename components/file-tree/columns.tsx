@@ -5,10 +5,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from 'fumadocs-ui/components/ui/popover';
+import {
   ExternalLinkIcon,
   DownloadIcon,
   Folder,
   FolderOpen,
+  Info,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -49,7 +55,44 @@ function NameCell({ row }: { row: Row<FileTreeFeatures, FileNode> }) {
       ) : (
         <span className="mt-1 shrink-0 sm:mt-0">{getFileIcon(node.url)}</span>
       )}
-      <span className="min-w-0 flex-1 text-wrap break-normal">{node.name}</span>
+      <span className="min-w-0 flex-1 text-wrap break-normal">
+        {node.external && node.url ? (
+          <a
+            href={node.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {node.name}
+          </a>
+        ) : (
+          node.name
+        )}
+        {node.note && (
+          <span className="text-fd-muted-foreground ml-2 inline-flex items-center gap-1 align-middle text-xs whitespace-nowrap">
+            {node.note}
+            {node.external && (
+              <Popover>
+                <PopoverTrigger
+                  openOnHover
+                  aria-label="原站下载说明"
+                  onClick={(event) => event.stopPropagation()}
+                  className="hover:text-fd-foreground focus-visible:ring-fd-ring inline-flex size-6 shrink-0 items-center justify-center rounded outline-none focus-visible:ring-2"
+                >
+                  <Info aria-hidden="true" className="size-3.5" />
+                </PopoverTrigger>
+                <PopoverContent
+                  className="max-w-72 text-xs leading-5 whitespace-normal"
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  标注「原站」的文件体积较大或为讲座录像，未纳入仓库镜像，点击后跳转资料栈原地址下载（需校园网访问）。
+                </PopoverContent>
+              </Popover>
+            )}
+          </span>
+        )}
+      </span>
     </div>
   );
 }
@@ -67,6 +110,31 @@ function ActionsCell({
 
   if (node.type === 'folder' || !node.url) {
     return null;
+  }
+
+  if (node.external) {
+    return (
+      <div className="flex justify-end gap-1">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          nativeButton={false}
+          role="link"
+          title="前往原站下载"
+          aria-label={`前往原站下载 ${node.name}`}
+          render={
+            <a
+              href={node.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            />
+          }
+        >
+          <ExternalLinkIcon className="size-4" />
+        </Button>
+      </div>
+    );
   }
 
   const finalUrl = isAccelerated ? getAcceleratedUrl(node.url) : node.url;
@@ -125,6 +193,10 @@ function ActionsCell({
 }
 
 function SelectCell({ row }: { row: Row<FileTreeFeatures, FileNode> }) {
+  if (!row.getCanSelect()) {
+    return null;
+  }
+
   return (
     <Checkbox
       checked={row.getIsSelected()}

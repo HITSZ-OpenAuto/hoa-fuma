@@ -11,6 +11,7 @@ import { CourseInfo } from '@/components/course-info';
 import type { CourseInfoData } from '@/lib/types';
 import { Files, Folder, File } from '@/components/file-tree';
 import { SponsorMarquee } from '@/components/sponsor-marquee';
+import { ResourceLibrary } from '@/components/resources';
 import { Accordion, Accordions } from '@/components/ui/accordion';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { cn } from '@/lib/utils';
@@ -37,7 +38,7 @@ export function NoPrefetchLink(props: LinkProps) {
 }
 
 function NoPrefetchCard(props: CardProps) {
-  return <Card {...props} prefetch={false} />;
+  return <Card {...props} prefetch={props.href ? false : undefined} />;
 }
 
 function Cards(props: ComponentProps<typeof FumadocsCards>) {
@@ -79,6 +80,7 @@ export function getMDXComponents(
     Steps,
     SiteIcon,
     SponsorMarquee,
+    ResourceLibrary,
     Card: NoPrefetchCard,
     CourseInfo: (props: ComponentProps<typeof CourseInfo>) => (
       <CourseInfo {...props} data={props.data ?? context?.course} />
