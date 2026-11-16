@@ -9,8 +9,10 @@ import {
 } from 'fumadocs-ui/layouts/docs/page';
 import { getMDXComponents, NoPrefetchLink } from '@/components/mdx';
 import { PageActions } from '@/components/page-actions';
+import { getLatestCommit } from '@/lib/github';
 import { getResourceSnapshot } from '@/lib/resources';
 import { resources } from '@/lib/source/resources';
+import { formatDate } from '@/lib/utils';
 
 type PageProps = {
   params: Promise<{ slug?: string[] }>;
@@ -24,13 +26,29 @@ export default async function Page(props: PageProps) {
 
   const Mdx = page.data.body;
   const snapshot = getResourceSnapshot(page.slugs[0] ?? '');
+  const latestCommit = snapshot
+    ? await getLatestCommit(snapshot.repo, {
+        org: snapshot.org,
+        includeMaintenance: true,
+      })
+    : null;
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription className="mb-0 text-base">
-        {page.data.description}
-      </DocsDescription>
+      {latestCommit && (
+        <DocsDescription className="mb-0 text-base">
+          最近更新于 {formatDate(latestCommit.date)}：
+          <a
+            href={latestCommit.commitUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-fd-foreground hover:underline"
+          >
+            {latestCommit.message}
+          </a>
+        </DocsDescription>
+      )}
       <DocsBody>
         {snapshot && (
           <div className="mb-2">

@@ -157,16 +157,21 @@ function githubFetchOptions(headers: HeadersInit) {
  * Fetch the latest non-ci commit for a specific repo.
  */
 export async function getLatestCommit(
-  repoName: string
+  repoName: string,
+  {
+    org = GITHUB_ORG,
+    includeMaintenance = false,
+  }: { org?: string; includeMaintenance?: boolean } = {}
 ): Promise<LatestCommitInfo | null> {
-  const cached = latestCommitCache.get(repoName);
+  const cacheKey = `${org}/${repoName}:${includeMaintenance}`;
+  const cached = latestCommitCache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) return cached.item;
 
   const headers = githubHeaders();
 
   try {
     const res = await fetch(
-      `https://api.github.com/repos/${GITHUB_ORG}/${repoName}/commits?per_page=50`,
+      `https://api.github.com/repos/${org}/${repoName}/commits?per_page=50`,
       githubFetchOptions(headers)
     );
 
@@ -182,9 +187,11 @@ export async function getLatestCommit(
       author: { login: string; html_url: string; avatar_url: string } | null;
     }[] = await res.json();
 
-    const commit = commits.find((c) => isUserCommit(c.commit.message));
+    const commit = includeMaintenance
+      ? commits[0]
+      : commits.find((c) => isUserCommit(c.commit.message));
     if (!commit) {
-      latestCommitCache.set(repoName, {
+      latestCommitCache.set(cacheKey, {
         expiresAt: Date.now() + GITHUB_CACHE_TTL_MS,
         item: null,
       });
@@ -201,14 +208,14 @@ export async function getLatestCommit(
       date: commit.commit.author.date,
     };
 
-    latestCommitCache.set(repoName, {
+    latestCommitCache.set(cacheKey, {
       expiresAt: Date.now() + GITHUB_CACHE_TTL_MS,
       item,
     });
 
     return item;
   } catch {
-    latestCommitCache.set(repoName, {
+    latestCommitCache.set(cacheKey, {
       expiresAt: Date.now() + GITHUB_CACHE_TTL_MS,
       item: null,
     });
