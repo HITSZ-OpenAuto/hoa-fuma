@@ -314,9 +314,9 @@ export function getYearPageTree(year: string): Root | undefined {
 }
 
 /**
- * 资料页（/resources/*）专用目录树：
+ * 资料页（/external/*）专用目录树：
  * 仅在当前激活的专业节点下保留 externalResourceNodes，
- * 避免所有专业同时命中 /resources/* 导致侧栏目录与专业选择器错位。
+ * 避免所有专业同时命中 /external/* 导致侧栏目录与专业选择器错位。
  */
 export function getResourcePageTree(
   year: string,

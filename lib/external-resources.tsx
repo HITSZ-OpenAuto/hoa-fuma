@@ -17,14 +17,14 @@ export const externalResourceNodes: Node[] = [
   {
     type: 'page',
     name: '深圳 E立方工作室',
-    url: '/resources/e-cube',
+    url: '/external/e-cube',
     icon: <Boxes className="size-4" />,
     $id: 'resources/e-cube',
   },
   {
     type: 'page',
     name: '哈尔滨 问天讲师团',
-    url: '/resources/wentian',
+    url: '/external/wentian',
     icon: <BookMarked className="size-4" />,
     $id: 'resources/wentian',
   },

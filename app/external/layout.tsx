@@ -21,7 +21,7 @@ function decodeCookiePath(value: string | undefined): string {
 }
 
 /**
- * 资料页（/resources/*）沿用课程文档的目录树，
+ * 资料页（/external/*）沿用课程文档的目录树，
  * 这样从侧栏点进来时左侧目录不会消失，并保持用户上一次浏览的年级与专业。
  */
 async function resolveContext(): Promise<{

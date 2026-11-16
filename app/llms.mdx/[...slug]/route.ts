@@ -29,7 +29,7 @@ export async function GET(
         ? blog.getPage(segments)
         : section === 'news'
           ? news.getPage(segments)
-          : section === 'resources'
+          : section === 'external'
             ? resources.getPage(segments)
             : pages.getPage(path);
   if (!page) notFound();
