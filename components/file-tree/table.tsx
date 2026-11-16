@@ -28,6 +28,7 @@ interface FileTreeTableProps {
   data: FileNode[];
   className?: string;
   url?: string;
+  originUrl?: string;
 }
 
 function getInitialExpanded(data: FileNode[]): ExpandedState {
@@ -74,7 +75,12 @@ function getFilteredExpanded(data: FileNode[], filter: string): ExpandedState {
   return expanded;
 }
 
-export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
+export function FileTreeTable({
+  data,
+  className,
+  url,
+  originUrl,
+}: FileTreeTableProps) {
   const [globalFilter, setGlobalFilter] = useState('');
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -164,6 +170,7 @@ export function FileTreeTable({ data, className, url }: FileTreeTableProps) {
         selectedRowCount={selectedRowCount}
         onBatchDownload={handleBatchDownload}
         url={url}
+        originUrl={originUrl}
       />
 
       <div className="bg-background overflow-hidden rounded-md border">

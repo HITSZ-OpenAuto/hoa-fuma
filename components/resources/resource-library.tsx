@@ -95,7 +95,11 @@ export function ResourceLibrary({ source }: { source: string }) {
 
   return (
     <div className="not-prose my-4 space-y-3">
-      <FileTreeTable data={nodes} url={snapshot.netdiskUrl || undefined} />
+      <FileTreeTable
+        data={nodes}
+        url={snapshot.netdiskUrl || undefined}
+        originUrl={snapshot.origin}
+      />
     </div>
   );
 }

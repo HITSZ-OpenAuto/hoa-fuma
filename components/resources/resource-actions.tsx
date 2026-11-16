@@ -1,4 +1,4 @@
-import { ClipboardList, ExternalLink, MessageCircle } from 'lucide-react';
+import { ClipboardList, MessageCircle } from 'lucide-react';
 import { PageActions } from '@/components/page-actions';
 import { Button } from '@/components/ui/button';
 import { getResourceFileUrl, type ResourceSnapshot } from '@/lib/resources';
@@ -23,12 +23,6 @@ export function ResourceActions({ snapshot }: { snapshot: ResourceSnapshot }) {
           icon: ClipboardList,
         }
       : null,
-    {
-      label: '资料原站',
-      title: snapshot.originLabel,
-      href: snapshot.origin,
-      icon: ExternalLink,
-    },
   ].filter((link) => link !== null);
 
   return (
