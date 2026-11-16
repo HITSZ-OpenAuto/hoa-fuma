@@ -1,10 +1,7 @@
-import Image from 'next/image';
 import { FileTreeTable } from '@/components/file-tree/table';
 import {
   formatTimestamp,
-  getResourceFileUrl,
   getResourceSnapshot,
-  type ResourceContact,
   type ResourceFile,
 } from '@/lib/resources';
 import type { FileNode } from '@/lib/types';
@@ -65,80 +62,6 @@ function buildTree(files: ResourceFile[]): FileNode[] {
   return root;
 }
 
-function ContactBadges({
-  contact,
-  snapshot,
-}: {
-  contact: ResourceContact;
-  snapshot: NonNullable<ReturnType<typeof getResourceSnapshot>>;
-}) {
-  const qqCode = contact.images?.find((image) => image.label.includes('QQ'));
-  const badges = [
-    contact.qq
-      ? {
-          label: 'QQ 群',
-          message: contact.qq,
-          color: '12b7f5',
-          href: qqCode ? getResourceFileUrl(snapshot, qqCode.path) : undefined,
-        }
-      : null,
-    contact.feedback
-      ? {
-          label: '反馈',
-          message: '用户问卷',
-          color: '4caf50',
-          href: contact.feedback,
-        }
-      : null,
-    {
-      label: '原站',
-      message: snapshot.originLabel,
-      color: '6366f1',
-      href: snapshot.origin,
-    },
-  ].filter((badge) => badge !== null);
-
-  return (
-    <div
-      aria-label="反馈与交流"
-      className="not-prose mt-4 flex flex-wrap items-center gap-2"
-    >
-      {badges.map((badge) => {
-        const params = new URLSearchParams({
-          label: badge.label,
-          message: badge.message,
-          color: badge.color,
-        });
-        const image = (
-          <Image
-            src={`https://img.shields.io/static/v1?${params}`}
-            alt={`${badge.label}：${badge.message}`}
-            width={180}
-            height={20}
-            unoptimized
-            loading="lazy"
-            className="h-5 w-auto max-w-full"
-          />
-        );
-
-        return badge.href ? (
-          <a
-            key={badge.label}
-            href={badge.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
-          >
-            {image}
-          </a>
-        ) : (
-          <span key={badge.label}>{image}</span>
-        );
-      })}
-    </div>
-  );
-}
-
 export function ResourceLibrary({ source }: { source: string }) {
   const snapshot = getResourceSnapshot(source);
 
@@ -173,10 +96,6 @@ export function ResourceLibrary({ source }: { source: string }) {
   return (
     <div className="not-prose my-4 space-y-3">
       <FileTreeTable data={nodes} url={snapshot.netdiskUrl || undefined} />
-
-      {snapshot.contact && (
-        <ContactBadges contact={snapshot.contact} snapshot={snapshot} />
-      )}
     </div>
   );
 }

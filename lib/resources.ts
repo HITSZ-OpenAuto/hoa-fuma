@@ -11,7 +11,7 @@ export type ResourceFile = {
   note?: string;
 };
 
-export type ResourceContact = {
+type ResourceContact = {
   qq?: string;
   feedback?: string;
   images?: { label: string; path: string }[];

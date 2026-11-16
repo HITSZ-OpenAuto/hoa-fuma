@@ -9,7 +9,7 @@ import {
 } from 'fumadocs-ui/layouts/docs/page';
 import { getMDXComponents, NoPrefetchLink } from '@/components/mdx';
 import { LatestCommit } from '@/components/latest-commit';
-import { PageActions } from '@/components/page-actions';
+import { ResourceActions } from '@/components/resources/resource-actions';
 import { getLatestCommit } from '@/lib/github';
 import { getResourceSnapshot } from '@/lib/resources';
 import { resources } from '@/lib/source/resources';
@@ -44,7 +44,7 @@ export default async function Page(props: PageProps) {
       <DocsBody>
         {snapshot && (
           <div className="mb-2">
-            <PageActions githubUrl={snapshot.repoUrl} />
+            <ResourceActions snapshot={snapshot} />
           </div>
         )}
         <Mdx
