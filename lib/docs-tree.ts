@@ -3,7 +3,6 @@ import { basename, extname, join } from 'node:path';
 import type { Folder, Item, Node, Root } from 'fumadocs-core/page-tree';
 import { frontmatter } from 'fumadocs-core/content/md/frontmatter';
 import { docsDirs, type DocsYear } from '@/lib/docs-content';
-import { getYearMajorMap } from '@/lib/docs-home';
 import { externalResourceNodes } from '@/lib/external-resources';
 
 type Meta = {
@@ -292,55 +291,37 @@ export function getAvailableYears(): string[] {
   return Object.keys(docsDirs).sort((a, b) => b.localeCompare(a));
 }
 
-export function getYearPageTree(year: string): Root | undefined {
-  if (!(year in docsDirs)) return undefined;
-
-  const cached = yearPageTrees.get(year);
-  if (cached) return cached;
-
-  const folder = buildFolder(docsDirs[year as DocsYear], [year]);
-  const tree: Root = {
-    type: 'root',
-    name: folder.name,
-    description: folder.description,
-    children: folder.children,
-    $id: year,
-    $ref: folder.$ref,
-  };
-
-  yearPageTrees.set(year, tree);
-  return tree;
-}
-
-export function getResourcePageTree(
+export function getYearPageTree(
   year: string,
   major?: string
 ): Root | undefined {
-  const base = getYearPageTree(year);
-  if (!base) return undefined;
+  if (!(year in docsDirs)) return undefined;
 
-  const folders = base.children.filter(
-    (node): node is Folder => node.type === 'folder' && Boolean(node.root)
-  );
-  const defaultUndergradMajor = getYearMajorMap()[year]?.find(
-    (item) => item.studyLevel === 'undergrad'
-  )?.id;
-  const fallbackMajor = major ?? defaultUndergradMajor;
-  const activeFolderId =
-    (fallbackMajor &&
-      folders.find((f) => f.$id === `${year}/${fallbackMajor}`)?.$id) ??
-    (defaultUndergradMajor &&
-      folders.find((f) => f.$id === `${year}/${defaultUndergradMajor}`)?.$id) ??
-    folders[0]?.$id;
+  let tree = yearPageTrees.get(year);
+  if (!tree) {
+    const folder = buildFolder(docsDirs[year as DocsYear], [year]);
+    tree = {
+      type: 'root',
+      name: folder.name,
+      description: folder.description,
+      children: folder.children,
+      $id: year,
+      $ref: folder.$ref,
+    };
+    yearPageTrees.set(year, tree);
+  }
 
+  if (!major) return tree;
+
+  const activeFolderId = `${year}/${major}`;
   const externalIds = new Set(
     externalResourceNodes.map((node) => node.$id).filter(Boolean)
   );
 
   return {
-    ...base,
-    $id: activeFolderId ? `resources:${activeFolderId}` : `resources:${year}`,
-    children: base.children.map((node) => {
+    ...tree,
+    $id: activeFolderId,
+    children: tree.children.map((node) => {
       if (node.type !== 'folder' || !node.root || node.$id === activeFolderId) {
         return node;
       }
