@@ -8,11 +8,11 @@ import {
   DocsTitle,
 } from 'fumadocs-ui/layouts/docs/page';
 import { getMDXComponents, NoPrefetchLink } from '@/components/mdx';
+import { LatestCommit } from '@/components/latest-commit';
 import { PageActions } from '@/components/page-actions';
 import { getLatestCommit } from '@/lib/github';
 import { getResourceSnapshot } from '@/lib/resources';
 import { resources } from '@/lib/source/resources';
-import { formatDate } from '@/lib/utils';
 
 type PageProps = {
   params: Promise<{ slug?: string[] }>;
@@ -38,15 +38,7 @@ export default async function Page(props: PageProps) {
       <DocsTitle>{page.data.title}</DocsTitle>
       {latestCommit && (
         <DocsDescription className="mb-0 text-base">
-          最近更新于 {formatDate(latestCommit.date)}：
-          <a
-            href={latestCommit.commitUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-fd-foreground hover:underline"
-          >
-            {latestCommit.message}
-          </a>
+          <LatestCommit commit={latestCommit} />
         </DocsDescription>
       )}
       <DocsBody>
