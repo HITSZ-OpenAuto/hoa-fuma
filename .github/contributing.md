@@ -16,3 +16,5 @@ Blog and news is maintained in separate repositories:
 
 - Blog: https://github.com/HITSZ-OpenAuto/hoa-blog
 - News: https://github.com/HITSZ-OpenAuto/hoa-news
+
+Site-specific blog overrides used for urgent fixes (until upstream merges) live under `content-patches/blog/` and are applied at the end of `scripts/fetch-content.sh`. Prefer landing durable edits in **hoa-blog** and retiring the patch afterward.
