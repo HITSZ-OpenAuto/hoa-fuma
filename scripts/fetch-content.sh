@@ -24,6 +24,12 @@ for type in blog news; do
   rm -rf temp
 done
 
+patches_dir="$repo_root/content-patches/blog"
+if [ -d "$patches_dir" ]; then
+  echo "Applying tracked blog content patches..."
+  cp -a "$patches_dir/." "content/blog/"
+fi
+
 curl -fsSL "$major_data_archive" | tar -xz -C "$workdir"
 mv "$workdir/hoa-major-data-main" "$workdir/hoa-major-data"
 ln -s "$repo_root/content" "$workdir/content"

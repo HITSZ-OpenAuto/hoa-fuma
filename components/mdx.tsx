@@ -13,6 +13,7 @@ import { Files, Folder, File } from '@/components/file-tree';
 import { SponsorMarquee } from '@/components/sponsor-marquee';
 import { ResourceLibrary } from '@/components/resources';
 import { Accordion, Accordions } from '@/components/ui/accordion';
+import { FaqSection } from '@/components/faq-section';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { cn } from '@/lib/utils';
 import {
@@ -76,6 +77,7 @@ export function getMDXComponents(
     File,
     Accordion,
     Accordions,
+    FaqSection,
     Step,
     Steps,
     SiteIcon,
